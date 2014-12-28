@@ -16,6 +16,10 @@
         <servlet-name>Students</servlet-name>
         <servlet-class>servlet.StudentsServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>StudentNodes</servlet-name>
+        <servlet-class>servlet.StudentNodesServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Nodes</servlet-name>
         <url-pattern>/monitor/nodes</url-pattern>
@@ -27,5 +31,9 @@
     <servlet-mapping>
         <servlet-name>Students</servlet-name>
         <url-pattern>/monitor/students</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>StudentNodes</servlet-name>
+        <url-pattern>/monitor/student/nodes</url-pattern>
     </servlet-mapping>
 </web-app>

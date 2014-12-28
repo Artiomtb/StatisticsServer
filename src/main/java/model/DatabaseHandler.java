@@ -31,18 +31,20 @@ public class DatabaseHandler {
     private static final String NODES_QUERY = "SELECT node_id, title FROM node_to_title LIMIT " + NODES_PER_PAGE + " OFFSET ?";
     private static final String STUDENTS_QUERY = "SELECT party_id, title FROM party_to_title LIMIT " + STUDENTS_PER_PAGE + "OFFSET ?";
     private static final String PUB_BY_ID_QUERY = "SELECT pub_id, title FROM pub_to_title WHERE pub_id = ?";
-    private static final String MATERIALS_BY_PUB_ID = "SELECT nt.node_id, nt.title, n.attendance\n" +
+    private static final String MATERIALS_BY_PUB_ID_QUERY = "SELECT nt.node_id, nt.title, n.attendance\n" +
             "FROM (SELECT node_id, sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
             "      FROM attendence\n" +
             "      WHERE pub_id = ?\n" +
             "      GROUP BY node_id) n, node_to_title nt\n" +
             "WHERE n.node_id = nt.node_id";
-    private static final String STUDENTS_BY_PUB_ID = "SELECT pt.party_id, pt.title, p.attendance\n" +
+    private static final String STUDENTS_BY_PUB_ID_QUERY = "SELECT pt.party_id, pt.title, p.attendance\n" +
             "FROM (SELECT party_id, sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
             "      FROM attendence\n" +
             "      WHERE pub_id = ?\n" +
             "      GROUP BY party_id) p, party_to_title pt\n" +
             "WHERE p.party_id = pt.party_id";
+    private static final String STUDENT_BY_ID_QUERY = "SELECT party_id, title FROM party_to_title WHERE party_id = ?";
+    private static final String NODES_BY_ST_ID_QUERY = "SELECT DISTINCT nt.node_id, nt.title FROM attendence a, node_to_title nt WHERE a.party_id = ? AND a.node_id = nt.node_id";
 
     private DatabaseHandler() {
         try {
@@ -189,7 +191,7 @@ public class DatabaseHandler {
                     return materialAttendance;
                 }
             }
-            ps = conn.prepareStatement(MATERIALS_BY_PUB_ID);
+            ps = conn.prepareStatement(MATERIALS_BY_PUB_ID_QUERY);
             ps.setInt(new Integer(1), pubId);
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -223,7 +225,7 @@ public class DatabaseHandler {
                     return studentsAttendance;
                 }
             }
-            ps = conn.prepareStatement(STUDENTS_BY_PUB_ID);
+            ps = conn.prepareStatement(STUDENTS_BY_PUB_ID_QUERY);
             ps.setInt(new Integer(1), pubId);
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -243,6 +245,74 @@ public class DatabaseHandler {
             }
         }
         return studentsAttendance;
+    }
+
+    public Student getStudentById(int studentId) {
+        log.info("Trying to get student by id = " + studentId);
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Student student = null;
+        try {
+            if (conn == null) {
+                if (!connect()) {
+                    log.error("Cannot create connection");
+                    return student;
+                }
+            }
+            ps = conn.prepareStatement(STUDENT_BY_ID_QUERY);
+            ps.setInt(new Integer(1), studentId);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                student = new Student(rs.getInt(1), rs.getString(2));
+            }
+        } catch (SQLException e) {
+            log.error("Exception during getting student :", e);
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (ps != null)
+                    ps.close();
+                disconnect();
+            } catch (SQLException e) {
+                log.error("Exception during closing connection after getting student");
+            }
+        }
+        return student;
+    }
+
+    public Collection<Node> getNodesByStudent(int studentId) {
+        log.info("Trying to get nodes of student " + studentId);
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Collection<Node> nodes = new ArrayList<Node>();
+        try {
+            if (conn == null) {
+                if (!connect()) {
+                    log.error("Cannot create connection");
+                    return nodes;
+                }
+            }
+            ps = conn.prepareStatement(NODES_BY_ST_ID_QUERY);
+            ps.setInt(new Integer(1), studentId);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                nodes.add(new Node(rs.getInt(1), rs.getString(2)));
+            }
+        } catch (SQLException e) {
+            log.error("Exception during getting nodes list :", e);
+        } finally {
+            try {
+                if (rs != null)
+                    rs.close();
+                if (ps != null)
+                    ps.close();
+                disconnect();
+            } catch (SQLException e) {
+                log.error("Exception during closing connection after getting nodes list");
+            }
+        }
+        return nodes;
     }
 
 

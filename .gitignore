@@ -70,3 +70,4 @@ target/StatisticsServer/WEB-INF/lib/log4j-api-2.0.2.jar
 target/StatisticsServer/WEB-INF/lib/log4j-core-2.0.2.jar
 target/StatisticsServer/WEB-INF/lib/postgresql-9.2-1003-jdbc4.jar
 target/StatisticsServer/WEB-INF/web.xml
+*.class
