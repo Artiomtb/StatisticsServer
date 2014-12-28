@@ -25,7 +25,6 @@ target/classes/items/Node.class
 target/classes/items/Pub.class
 target/classes/items/Student.class
 target/classes/JSON/JSONHandler.class
-src/main/webapp/WEB-INF/web.xml
 target/classes/JSON/JSONNodes$1.class
 target/classes/JSON/JSONNodes.class
 target/classes/JSON/JSONPubGeneral$1.class
