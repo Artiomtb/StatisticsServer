@@ -4,6 +4,7 @@ import items.Material;
 import items.Node;
 import items.Pub;
 import items.Student;
+import model.QueryParameter.ParameterType;
 import org.apache.log4j.Logger;
 
 import javax.naming.InitialContext;
@@ -315,5 +316,42 @@ public class DatabaseHandler {
         return nodes;
     }
 
+    //temp method to show how ConnectionsHandlers works
+    public Student getNodesByStudentTemp(final int studentId) {
+        Student student = null;
+        ConnectionsHandler connectionsHandler = null; //create handlers for all queries you need to execute
+        try {
+            if (conn == null) {
+                if (!connect()) {
+                    log.error("Cannot create connection");
+                    return student;
+                }
+            }
 
+            //initialize all handlers with constant Connection and their own SQL queries and params
+            connectionsHandler = new ConnectionsHandler(conn, "SELECT party_id, title FROM party_to_title WHERE party_id = ?", new ArrayList<QueryParameter>() {
+                {
+                    add(new QueryParameter(ParameterType.INT, studentId));
+                }
+            });
+
+            //process ResultSet from all handlers as you need
+            ResultSet rs = connectionsHandler.getResultSet();
+            while (rs.next()) {
+                student = new Student(rs.getInt(1), rs.getString(2));
+            }
+        } catch (SQLException e) {
+            log.error("Exception while getting list", e);
+        } finally {
+            try {
+                if (connectionsHandler != null) { //close all handlers via closeHandlerConnections() method
+                    connectionsHandler.closeHandlerConnections();
+                }
+                disconnect();
+            } catch (SQLException e) {
+                log.error("Exception while closing connections", e);
+            }
+        }
+        return student;
+    }
 }
