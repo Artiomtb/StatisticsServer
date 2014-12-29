@@ -75,3 +75,4 @@ src/main/resources/test.json
 target/classes/postgresDS.xml
 target/StatisticsServer/WEB-INF/classes/postgresDS.xml
 target/StatisticsServer/404.html
+target/StatisticsServer/index.html
