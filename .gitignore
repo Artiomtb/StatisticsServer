@@ -74,3 +74,4 @@ target/StatisticsServer/WEB-INF/web.xml
 src/main/resources/test.json
 target/classes/postgresDS.xml
 target/StatisticsServer/WEB-INF/classes/postgresDS.xml
+target/StatisticsServer/404.html
