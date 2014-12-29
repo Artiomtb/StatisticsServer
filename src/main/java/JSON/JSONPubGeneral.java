@@ -1,8 +1,6 @@
 package JSON;
 
-import items.Material;
-import items.Pub;
-import items.Student;
+import items.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -10,15 +8,25 @@ import java.util.Map;
 
 public class JSONPubGeneral implements JSONHandler {
     private Pub pub;
-    private Map<Material, Integer> materialAttendance;
+    private Map<Node, Integer> materialAttendance;
     private Map<Student, Integer> studentAttendance;
     private JSONObject jsonObject = new JSONObject();
 
-    public JSONPubGeneral(Pub pub, Map<Material, Integer> materialAttendance, Map<Student, Integer> studentAttendance) {
+    public JSONPubGeneral(Pub pub, Map<Node, Integer> materialAttendance, Map<Student, Integer> studentAttendance) {
         if (pub != null) {
             this.pub = pub;
             this.materialAttendance = materialAttendance;
             this.studentAttendance = studentAttendance;
+            setJSONObject();
+        }
+    }
+
+    public JSONPubGeneral(GeneralPubContainer generalPubContainer) {
+        Pub pub = generalPubContainer.getPub();
+        if(pub != null) {
+            this.pub = pub;
+            this.materialAttendance = generalPubContainer.getMaterialAttendance();
+            this.studentAttendance = generalPubContainer.getStudentAttendance();
             setJSONObject();
         }
     }
@@ -28,11 +36,11 @@ public class JSONPubGeneral implements JSONHandler {
         jsonObject.put("node_name", pub.getPubTitle());
         final JSONArray materialsArray = new JSONArray();
         for (final Map.Entry entry : materialAttendance.entrySet()) {
-            final Material material = (Material) entry.getKey();
+            final Node node = (Node) entry.getKey();
             materialsArray.add(new JSONObject() {
                 {
-                    put("material_id", material.getMaterialId());
-                    put("material_name", material.getMaterialTitle());
+                    put("material_id", node.getNodeId());
+                    put("material_name", node.getNodeTitle());
                     put("total_attendance", entry.getValue());
                 }
             });

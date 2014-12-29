@@ -1,9 +1,6 @@
 package model;
 
-import items.Material;
-import items.Node;
-import items.Pub;
-import items.Student;
+import items.*;
 import model.QueryParameter.ParameterType;
 import org.apache.log4j.Logger;
 
@@ -80,9 +77,7 @@ public class DatabaseHandler {
 
     public Collection<Node> getNodes(final int page) {
         log.info("Trying to get nodes from page " + page);
-        //PreparedStatement ps = null;
         ConnectionsHandler connectionsHandler = null;
-        //ResultSet rs = null;
         Collection<Node> nodes = new ArrayList<Node>();
         try {
             if (conn == null) {
@@ -92,9 +87,6 @@ public class DatabaseHandler {
                 }
             }
             connectionsHandler = new ConnectionsHandler(conn, NODES_QUERY, new QueryParameter(ParameterType.INT, ((page - 1) * NODES_PER_PAGE)));
-            //ps = conn.prepareStatement(NODES_QUERY);
-            //ps.setInt(new Integer(1), (page - 1) * NODES_PER_PAGE);
-            //rs = ps.executeQuery();
             ResultSet rs = connectionsHandler.getResultSet();
             while (rs.next()) {
                 nodes.add(new Node(rs.getInt(1), rs.getString(2)));
@@ -103,10 +95,6 @@ public class DatabaseHandler {
             log.error("Exception during getting nodes list :", e);
         } finally {
             try {
-                //if (rs != null)
-                //    rs.close();
-                //if (ps != null)
-                //    ps.close();
                 if (connectionsHandler != null)
                     connectionsHandler.closeHandlerConnections();
                 disconnect();
@@ -119,8 +107,6 @@ public class DatabaseHandler {
 
     public Collection<Student> getStudents(final int page) {
         log.info("Trying to get students from page " + page);
-        //PreparedStatement ps = null;
-        //ResultSet rs = null;
         ConnectionsHandler connectionsHandler = null;
         final Collection<Student> students = new ArrayList<Student>();
         try {
@@ -131,9 +117,6 @@ public class DatabaseHandler {
                 }
             }
             connectionsHandler = new ConnectionsHandler(conn, STUDENTS_QUERY, new QueryParameter(ParameterType.INT, ((page - 1) * STUDENTS_PER_PAGE)));
-            //ps = conn.prepareStatement(STUDENTS_QUERY);
-            //ps.setInt(new Integer(1), (page - 1) * STUDENTS_PER_PAGE);
-            //rs = ps.executeQuery();
             ResultSet rs = connectionsHandler.getResultSet();
             while (rs.next()) {
                 students.add(new Student(rs.getInt(1), rs.getString(2)));
@@ -142,10 +125,6 @@ public class DatabaseHandler {
             log.error("Exception during getting students list :", e);
         } finally {
             try {
-                //if (rs != null)
-                //    rs.close();
-                //if (ps != null)
-                //    ps.close();
                 if (connectionsHandler != null)
                     connectionsHandler.closeHandlerConnections();
                 disconnect();
@@ -190,9 +169,9 @@ public class DatabaseHandler {
         return pub;
     }
 
-    public Map<Material, Integer> getMaterialAttendanceByPub(int pubId) {
+    public Map<Node, Integer> getMaterialAttendanceByPub(int pubId) {
         log.info("Trying to get material attendance by pub = " + pubId);
-        Map<Material, Integer> materialAttendance = new HashMap<Material, Integer>();
+        Map<Node, Integer> materialAttendance = new HashMap<Node, Integer>();
         PreparedStatement ps = null;
         ResultSet rs = null;
         try {
@@ -206,7 +185,7 @@ public class DatabaseHandler {
             ps.setInt(new Integer(1), pubId);
             rs = ps.executeQuery();
             while (rs.next()) {
-                materialAttendance.put(new Material(rs.getInt(1), rs.getString(2)), rs.getInt(3));
+                materialAttendance.put(new Node(rs.getInt(1), rs.getString(2)), rs.getInt(3));
             }
         } catch (SQLException e) {
             log.error("Exception during getting material attendance :", e);
@@ -258,19 +237,20 @@ public class DatabaseHandler {
         return studentsAttendance;
     }
 
-    public void getPubGeneralTemp(final int pubId) {
+    public GeneralPubContainer getPubGeneralTemp(final int pubId) {
         log.info("Trying to get pub by pub_id = " + pubId);
         ConnectionsHandler pubConnectionHandler = null;
         ConnectionsHandler materialAttendanceConnectionHandler = null;
         ConnectionsHandler studentsAttendanceConnectionHandler = null;
+        GeneralPubContainer generalPubContainer = null;
         Pub pub = null;
-        Map<Material, Integer> materialAttendance = new HashMap<Material, Integer>();
+        Map<Node, Integer> materialAttendance = new HashMap<Node, Integer>();
         Map<Student, Integer> studentsAttendance = new HashMap<Student, Integer>();
         try {
             if (conn == null) {
                 if (!connect()) {
                     log.error("Cannot create connection");
-                    return;
+                    return generalPubContainer;
                 }
             }
             pubConnectionHandler = new ConnectionsHandler(conn, PUB_BY_ID_QUERY, new QueryParameter(ParameterType.INT, pubId));
@@ -282,12 +262,13 @@ public class DatabaseHandler {
             }
             ResultSet materialResultSet = materialAttendanceConnectionHandler.getResultSet();
             while (materialResultSet.next()) {
-                materialAttendance.put(new Material(materialResultSet.getInt(1), materialResultSet.getString(2)), materialResultSet.getInt(3));
+                materialAttendance.put(new Node(materialResultSet.getInt(1), materialResultSet.getString(2)), materialResultSet.getInt(3));
             }
             ResultSet studentsResultSet = studentsAttendanceConnectionHandler.getResultSet();
             while (studentsResultSet.next()) {
                 studentsAttendance.put(new Student(studentsResultSet.getInt(1), studentsResultSet.getString(2)), studentsResultSet.getInt(3));
             }
+            generalPubContainer = new GeneralPubContainer(pub, materialAttendance, studentsAttendance);
         } catch (SQLException e) {
             log.error("Exception while getting pub general information", e);
         } finally {
@@ -303,12 +284,11 @@ public class DatabaseHandler {
                 log.error("Exception while closing connection of general pub information");
             }
         }
+        return generalPubContainer;
     }
 
     public Student getStudentById(int studentId) {
         log.info("Trying to get student by id = " + studentId);
-        //PreparedStatement ps = null;
-        //ResultSet rs = null;
         Student student = null;
         ConnectionsHandler connectionsHandler = null;
         try {
@@ -319,9 +299,6 @@ public class DatabaseHandler {
                 }
             }
             connectionsHandler = new ConnectionsHandler(conn, STUDENT_BY_ID_QUERY, new QueryParameter(ParameterType.INT, studentId));
-            //ps = conn.prepareStatement(STUDENT_BY_ID_QUERY);
-            //ps.setInt(new Integer(1), studentId);
-            //rs = ps.executeQuery();
             ResultSet rs = connectionsHandler.getResultSet();
             if (rs.next()) {
                 student = new Student(rs.getInt(1), rs.getString(2));
@@ -330,10 +307,6 @@ public class DatabaseHandler {
             log.error("Exception during getting student :", e);
         } finally {
             try {
-                //if (rs != null)
-                //    rs.close();
-                //if (ps != null)
-                //    ps.close();
                 if (connectionsHandler != null)
                     connectionsHandler.closeHandlerConnections();
                 disconnect();
@@ -346,8 +319,6 @@ public class DatabaseHandler {
 
     public Collection<Node> getNodesByStudent(int studentId) {
         log.info("Trying to get nodes of student " + studentId);
-        //PreparedStatement ps = null;
-        //ResultSet rs = null;
         ConnectionsHandler connectionsHandler = null;
         Collection<Node> nodes = new ArrayList<Node>();
         try {
@@ -358,9 +329,6 @@ public class DatabaseHandler {
                 }
             }
             connectionsHandler = new ConnectionsHandler(conn, NODES_BY_ST_ID_QUERY, new QueryParameter(ParameterType.INT, studentId));
-            //ps = conn.prepareStatement(NODES_BY_ST_ID_QUERY);
-            //ps.setInt(new Integer(1), studentId);
-            //rs = ps.executeQuery();
             ResultSet rs = connectionsHandler.getResultSet();
             while (rs.next()) {
                 nodes.add(new Node(rs.getInt(1), rs.getString(2)));
@@ -369,10 +337,6 @@ public class DatabaseHandler {
             log.error("Exception during getting nodes list :", e);
         } finally {
             try {
-                //if (rs != null)
-                //    rs.close();
-                //if (ps != null)
-                //    ps.close();
                 if (connectionsHandler != null)
                     connectionsHandler.closeHandlerConnections();
                 disconnect();

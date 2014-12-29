@@ -28,7 +28,7 @@ public class PubServlet extends HttpServlet {
         resp.addHeader("Access-Control-Allow-Origin", "*");
         PrintWriter pw = resp.getWriter();
         DatabaseHandler databaseHandler = DatabaseHandler.initialize();
-        pw.println(new JSONPubGeneral(databaseHandler.getPubById(node), databaseHandler.getMaterialAttendanceByPub(node), databaseHandler.getStudentsAttendanceByPub(node)).getJSONString());
+        pw.println(new JSONPubGeneral(databaseHandler.getPubGeneralTemp(node)).getJSONString());
         pw.close();
     }
 }
