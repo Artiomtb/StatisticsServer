@@ -1,13 +1,12 @@
 package model;
 
 import java.sql.*;
-import java.util.Collection;
 
 public class ConnectionsHandler {
     private PreparedStatement preparedStatement;
     private ResultSet resultSet;
 
-    public ConnectionsHandler(Connection connection, String query, Collection<QueryParameter> params) throws SQLException {
+    public ConnectionsHandler(Connection connection, String query, QueryParameter[] params) throws SQLException {
         this.preparedStatement = connection.prepareStatement(query);
         setQueryParams(params);
         this.resultSet = this.preparedStatement.executeQuery();
@@ -24,7 +23,7 @@ public class ConnectionsHandler {
         this.resultSet = this.preparedStatement.executeQuery();
     }
 
-    private void setQueryParams(Collection<QueryParameter> params) throws SQLException {
+    private void setQueryParams(QueryParameter[] params) throws SQLException {
         int index = 1;
         for (QueryParameter parameter : params) {
             setQueryParam(parameter, index++);
