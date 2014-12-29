@@ -78,10 +78,11 @@ public class DatabaseHandler {
         }
     }
 
-    public Collection<Node> getNodes(int page) {
+    public Collection<Node> getNodes(final int page) {
         log.info("Trying to get nodes from page " + page);
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        //PreparedStatement ps = null;
+        ConnectionsHandler connectionsHandler = null;
+        //ResultSet rs = null;
         Collection<Node> nodes = new ArrayList<Node>();
         try {
             if (conn == null) {
@@ -90,9 +91,11 @@ public class DatabaseHandler {
                     return nodes;
                 }
             }
-            ps = conn.prepareStatement(NODES_QUERY);
-            ps.setInt(new Integer(1), (page - 1) * NODES_PER_PAGE);
-            rs = ps.executeQuery();
+            connectionsHandler = new ConnectionsHandler(conn, NODES_QUERY, new QueryParameter(ParameterType.INT, ((page - 1) * NODES_PER_PAGE)));
+            //ps = conn.prepareStatement(NODES_QUERY);
+            //ps.setInt(new Integer(1), (page - 1) * NODES_PER_PAGE);
+            //rs = ps.executeQuery();
+            ResultSet rs = connectionsHandler.getResultSet();
             while (rs.next()) {
                 nodes.add(new Node(rs.getInt(1), rs.getString(2)));
             }
@@ -100,10 +103,12 @@ public class DatabaseHandler {
             log.error("Exception during getting nodes list :", e);
         } finally {
             try {
-                if (rs != null)
-                    rs.close();
-                if (ps != null)
-                    ps.close();
+                //if (rs != null)
+                //    rs.close();
+                //if (ps != null)
+                //    ps.close();
+                if (connectionsHandler != null)
+                    connectionsHandler.closeHandlerConnections();
                 disconnect();
             } catch (SQLException e) {
                 log.error("Exception during closing connection after getting nodes list");
@@ -112,11 +117,12 @@ public class DatabaseHandler {
         return nodes;
     }
 
-    public Collection<Student> getStudents(int page) {
+    public Collection<Student> getStudents(final int page) {
         log.info("Trying to get students from page " + page);
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        Collection<Student> students = new ArrayList<Student>();
+        //PreparedStatement ps = null;
+        //ResultSet rs = null;
+        ConnectionsHandler connectionsHandler = null;
+        final Collection<Student> students = new ArrayList<Student>();
         try {
             if (conn == null) {
                 if (!connect()) {
@@ -124,9 +130,11 @@ public class DatabaseHandler {
                     return students;
                 }
             }
-            ps = conn.prepareStatement(STUDENTS_QUERY);
-            ps.setInt(new Integer(1), (page - 1) * STUDENTS_PER_PAGE);
-            rs = ps.executeQuery();
+            connectionsHandler = new ConnectionsHandler(conn, STUDENTS_QUERY, new QueryParameter(ParameterType.INT, ((page - 1) * STUDENTS_PER_PAGE)));
+            //ps = conn.prepareStatement(STUDENTS_QUERY);
+            //ps.setInt(new Integer(1), (page - 1) * STUDENTS_PER_PAGE);
+            //rs = ps.executeQuery();
+            ResultSet rs = connectionsHandler.getResultSet();
             while (rs.next()) {
                 students.add(new Student(rs.getInt(1), rs.getString(2)));
             }
@@ -134,10 +142,12 @@ public class DatabaseHandler {
             log.error("Exception during getting students list :", e);
         } finally {
             try {
-                if (rs != null)
-                    rs.close();
-                if (ps != null)
-                    ps.close();
+                //if (rs != null)
+                //    rs.close();
+                //if (ps != null)
+                //    ps.close();
+                if (connectionsHandler != null)
+                    connectionsHandler.closeHandlerConnections();
                 disconnect();
             } catch (SQLException e) {
                 log.error("Exception during closing connection after getting students list");
@@ -248,11 +258,59 @@ public class DatabaseHandler {
         return studentsAttendance;
     }
 
+    public void getPubGeneralTemp(final int pubId) {
+        log.info("Trying to get pub by pub_id = " + pubId);
+        ConnectionsHandler pubConnectionHandler = null;
+        ConnectionsHandler materialAttendanceConnectionHandler = null;
+        ConnectionsHandler studentsAttendanceConnectionHandler = null;
+        Pub pub = null;
+        Map<Material, Integer> materialAttendance = new HashMap<Material, Integer>();
+        Map<Student, Integer> studentsAttendance = new HashMap<Student, Integer>();
+        try {
+            if (conn == null) {
+                if (!connect()) {
+                    log.error("Cannot create connection");
+                    return;
+                }
+            }
+            pubConnectionHandler = new ConnectionsHandler(conn, PUB_BY_ID_QUERY, new QueryParameter(ParameterType.INT, pubId));
+            materialAttendanceConnectionHandler = new ConnectionsHandler(conn, MATERIALS_BY_PUB_ID_QUERY, new QueryParameter(ParameterType.INT, pubId));
+            studentsAttendanceConnectionHandler = new ConnectionsHandler(conn, STUDENTS_BY_PUB_ID_QUERY, new QueryParameter(ParameterType.INT, pubId));
+            ResultSet pubResultSet = pubConnectionHandler.getResultSet();
+            if (pubResultSet.next()) {
+                pub = new Pub(pubResultSet.getInt(1), pubResultSet.getString(2));
+            }
+            ResultSet materialResultSet = materialAttendanceConnectionHandler.getResultSet();
+            while (materialResultSet.next()) {
+                materialAttendance.put(new Material(materialResultSet.getInt(1), materialResultSet.getString(2)), materialResultSet.getInt(3));
+            }
+            ResultSet studentsResultSet = studentsAttendanceConnectionHandler.getResultSet();
+            while (studentsResultSet.next()) {
+                studentsAttendance.put(new Student(studentsResultSet.getInt(1), studentsResultSet.getString(2)), studentsResultSet.getInt(3));
+            }
+        } catch (SQLException e) {
+            log.error("Exception while getting pub general information", e);
+        } finally {
+            try {
+                if (pubConnectionHandler != null)
+                    pubConnectionHandler.closeHandlerConnections();
+                if (materialAttendanceConnectionHandler != null)
+                    materialAttendanceConnectionHandler.closeHandlerConnections();
+                if (studentsAttendanceConnectionHandler != null)
+                    studentsAttendanceConnectionHandler.closeHandlerConnections();
+                disconnect();
+            } catch (SQLException e) {
+                log.error("Exception while closing connection of general pub information");
+            }
+        }
+    }
+
     public Student getStudentById(int studentId) {
         log.info("Trying to get student by id = " + studentId);
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        //PreparedStatement ps = null;
+        //ResultSet rs = null;
         Student student = null;
+        ConnectionsHandler connectionsHandler = null;
         try {
             if (conn == null) {
                 if (!connect()) {
@@ -260,9 +318,11 @@ public class DatabaseHandler {
                     return student;
                 }
             }
-            ps = conn.prepareStatement(STUDENT_BY_ID_QUERY);
-            ps.setInt(new Integer(1), studentId);
-            rs = ps.executeQuery();
+            connectionsHandler = new ConnectionsHandler(conn, STUDENT_BY_ID_QUERY, new QueryParameter(ParameterType.INT, studentId));
+            //ps = conn.prepareStatement(STUDENT_BY_ID_QUERY);
+            //ps.setInt(new Integer(1), studentId);
+            //rs = ps.executeQuery();
+            ResultSet rs = connectionsHandler.getResultSet();
             if (rs.next()) {
                 student = new Student(rs.getInt(1), rs.getString(2));
             }
@@ -270,10 +330,12 @@ public class DatabaseHandler {
             log.error("Exception during getting student :", e);
         } finally {
             try {
-                if (rs != null)
-                    rs.close();
-                if (ps != null)
-                    ps.close();
+                //if (rs != null)
+                //    rs.close();
+                //if (ps != null)
+                //    ps.close();
+                if (connectionsHandler != null)
+                    connectionsHandler.closeHandlerConnections();
                 disconnect();
             } catch (SQLException e) {
                 log.error("Exception during closing connection after getting student");
@@ -284,8 +346,9 @@ public class DatabaseHandler {
 
     public Collection<Node> getNodesByStudent(int studentId) {
         log.info("Trying to get nodes of student " + studentId);
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+        //PreparedStatement ps = null;
+        //ResultSet rs = null;
+        ConnectionsHandler connectionsHandler = null;
         Collection<Node> nodes = new ArrayList<Node>();
         try {
             if (conn == null) {
@@ -294,9 +357,11 @@ public class DatabaseHandler {
                     return nodes;
                 }
             }
-            ps = conn.prepareStatement(NODES_BY_ST_ID_QUERY);
-            ps.setInt(new Integer(1), studentId);
-            rs = ps.executeQuery();
+            connectionsHandler = new ConnectionsHandler(conn, NODES_BY_ST_ID_QUERY, new QueryParameter(ParameterType.INT, studentId));
+            //ps = conn.prepareStatement(NODES_BY_ST_ID_QUERY);
+            //ps.setInt(new Integer(1), studentId);
+            //rs = ps.executeQuery();
+            ResultSet rs = connectionsHandler.getResultSet();
             while (rs.next()) {
                 nodes.add(new Node(rs.getInt(1), rs.getString(2)));
             }
@@ -304,54 +369,17 @@ public class DatabaseHandler {
             log.error("Exception during getting nodes list :", e);
         } finally {
             try {
-                if (rs != null)
-                    rs.close();
-                if (ps != null)
-                    ps.close();
+                //if (rs != null)
+                //    rs.close();
+                //if (ps != null)
+                //    ps.close();
+                if (connectionsHandler != null)
+                    connectionsHandler.closeHandlerConnections();
                 disconnect();
             } catch (SQLException e) {
                 log.error("Exception during closing connection after getting nodes list");
             }
         }
         return nodes;
-    }
-
-    //temp method to show how ConnectionsHandlers works
-    public Student getNodesByStudentTemp(final int studentId) {
-        Student student = null;
-        ConnectionsHandler connectionsHandler = null; //create handlers for all queries you need to execute
-        try {
-            if (conn == null) {
-                if (!connect()) {
-                    log.error("Cannot create connection");
-                    return student;
-                }
-            }
-
-            //initialize all handlers with constant Connection and their own SQL queries and params
-            connectionsHandler = new ConnectionsHandler(conn, "SELECT party_id, title FROM party_to_title WHERE party_id = ?", new ArrayList<QueryParameter>() {
-                {
-                    add(new QueryParameter(ParameterType.INT, studentId));
-                }
-            });
-
-            //process ResultSet from all handlers as you need
-            ResultSet rs = connectionsHandler.getResultSet();
-            while (rs.next()) {
-                student = new Student(rs.getInt(1), rs.getString(2));
-            }
-        } catch (SQLException e) {
-            log.error("Exception while getting list", e);
-        } finally {
-            try {
-                if (connectionsHandler != null) { //close all handlers via closeHandlerConnections() method
-                    connectionsHandler.closeHandlerConnections();
-                }
-                disconnect();
-            } catch (SQLException e) {
-                log.error("Exception while closing connections", e);
-            }
-        }
-        return student;
     }
 }
