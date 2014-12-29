@@ -9,6 +9,16 @@ public class ConnectionsHandler {
 
     public ConnectionsHandler(Connection connection, String query, ArrayList<QueryParameter> params) throws SQLException {
         this.preparedStatement = connection.prepareStatement(query);
+        setQueryParams(params);
+        this.resultSet = this.preparedStatement.executeQuery();
+    }
+
+    public ConnectionsHandler(Connection connection, String query) throws SQLException {
+        this.preparedStatement = connection.prepareStatement(query);
+        this.resultSet = this.preparedStatement.executeQuery();
+    }
+
+    private void setQueryParams(ArrayList<QueryParameter> params) throws SQLException {
         int index = 1;
         for (QueryParameter parameter : params) {
             QueryParameter.ParameterType currentType = parameter.getType();
@@ -26,7 +36,6 @@ public class ConnectionsHandler {
             }
             index++;
         }
-        this.resultSet = this.preparedStatement.executeQuery();
     }
 
     public void closeHandlerConnections() throws SQLException {
