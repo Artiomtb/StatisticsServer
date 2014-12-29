@@ -1,16 +1,19 @@
 package items;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class GeneralPubContainer {
     private Pub pub;
     private Map<Node, Integer> materialAttendance;
     private Map<Student, Integer> studentAttendance;
+    private Collection<Trend> trendAttendance;
 
-    public GeneralPubContainer(Pub pub, Map<Node, Integer> materialAttendance, Map<Student, Integer> studentAttendance) {
+    public GeneralPubContainer(Pub pub, Map<Node, Integer> materialAttendance, Map<Student, Integer> studentAttendance, Collection<Trend> trendAttendance) {
         this.pub = pub;
         this.materialAttendance = materialAttendance;
         this.studentAttendance = studentAttendance;
+        this.trendAttendance = trendAttendance;
     }
 
     public Pub getPub() {
@@ -35,5 +38,13 @@ public class GeneralPubContainer {
 
     public void setStudentAttendance(Map<Student, Integer> studentAttendance) {
         this.studentAttendance = studentAttendance;
+    }
+
+    public Collection<Trend> getTrendAttendance() {
+        return trendAttendance;
+    }
+
+    public void setTrendAttendance(Collection<Trend> trendAttendance) {
+        this.trendAttendance = trendAttendance;
     }
 }

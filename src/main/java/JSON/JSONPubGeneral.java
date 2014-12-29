@@ -4,19 +4,22 @@ import items.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.util.Collection;
 import java.util.Map;
 
 public class JSONPubGeneral implements JSONHandler {
     private Pub pub;
     private Map<Node, Integer> materialAttendance;
     private Map<Student, Integer> studentAttendance;
+    private Collection<Trend> trendAttendance;
     private JSONObject jsonObject = new JSONObject();
 
-    public JSONPubGeneral(Pub pub, Map<Node, Integer> materialAttendance, Map<Student, Integer> studentAttendance) {
+    public JSONPubGeneral(Pub pub, Map<Node, Integer> materialAttendance, Map<Student, Integer> studentAttendance, Collection<Trend> trendAttendance) {
         if (pub != null) {
             this.pub = pub;
             this.materialAttendance = materialAttendance;
             this.studentAttendance = studentAttendance;
+            this.trendAttendance = trendAttendance;
             setJSONObject();
         }
     }
@@ -27,6 +30,7 @@ public class JSONPubGeneral implements JSONHandler {
             this.pub = pub;
             this.materialAttendance = generalPubContainer.getMaterialAttendance();
             this.studentAttendance = generalPubContainer.getStudentAttendance();
+            this.trendAttendance = generalPubContainer.getTrendAttendance();
             setJSONObject();
         }
     }
@@ -58,6 +62,16 @@ public class JSONPubGeneral implements JSONHandler {
             });
         }
         jsonObject.put("students", studentArray);
+        JSONArray trendArray = new JSONArray();
+        for(final Trend trend : this.trendAttendance) {
+            trendArray.add(new JSONObject(){
+                {
+                    put("date", trend.getDate());
+                    put("time", trend.getAttendance());
+                }
+            });
+        }
+        jsonObject.put("trend", trendArray);
     }
 
     @Override

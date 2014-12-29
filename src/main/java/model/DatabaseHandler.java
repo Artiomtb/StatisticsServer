@@ -8,7 +8,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ public class DatabaseHandler {
     private static DatabaseHandler databaseHandler;
     private static final int NODES_PER_PAGE = 20;
     private static final int STUDENTS_PER_PAGE = 20;
+    private static final int DAYS_TO_PUB_TREND = 20;
     private static final String NODES_QUERY = "SELECT node_id, title FROM node_to_title LIMIT " + NODES_PER_PAGE + " OFFSET ?";
     private static final String STUDENTS_QUERY = "SELECT party_id, title FROM party_to_title LIMIT " + STUDENTS_PER_PAGE + "OFFSET ?";
     private static final String PUB_BY_ID_QUERY = "SELECT pub_id, title FROM pub_to_title WHERE pub_id = ?";
@@ -41,6 +41,14 @@ public class DatabaseHandler {
             "      WHERE pub_id = ?\n" +
             "      GROUP BY party_id) p, party_to_title pt\n" +
             "WHERE p.party_id = pt.party_id";
+    private static final String TREND_BY_PUB_ID_QUERY = "SELECT\n" +
+            "  date(updated_at),\n" +
+            "  sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
+            "FROM attendence\n" +
+            "WHERE pub_id = ?\n" +
+            "GROUP BY DATE(updated_at)\n" +
+            "ORDER BY date(updated_at) DESC\n" +
+            "LIMIT " + DAYS_TO_PUB_TREND;
     private static final String STUDENT_BY_ID_QUERY = "SELECT party_id, title FROM party_to_title WHERE party_id = ?";
     private static final String NODES_BY_ST_ID_QUERY = "SELECT DISTINCT nt.node_id, nt.title FROM attendence a, node_to_title nt WHERE a.party_id = ? AND a.node_id = nt.node_id";
 
@@ -135,117 +143,17 @@ public class DatabaseHandler {
         return students;
     }
 
-    public Pub getPubById(int pubId) {
-        log.info("Trying to get pub by id = " + pubId);
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        Pub pub = null;
-        try {
-            if (conn == null) {
-                if (!connect()) {
-                    log.error("Cannot create connection");
-                    return pub;
-                }
-            }
-            ps = conn.prepareStatement(PUB_BY_ID_QUERY);
-            ps.setInt(new Integer(1), pubId);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                pub = new Pub(rs.getInt(1), rs.getString(2));
-            }
-        } catch (SQLException e) {
-            log.error("Exception during getting pub :", e);
-        } finally {
-            try {
-                if (rs != null)
-                    rs.close();
-                if (ps != null)
-                    ps.close();
-                disconnect();
-            } catch (SQLException e) {
-                log.error("Exception during closing connection after getting pub");
-            }
-        }
-        return pub;
-    }
-
-    public Map<Node, Integer> getMaterialAttendanceByPub(int pubId) {
-        log.info("Trying to get material attendance by pub = " + pubId);
-        Map<Node, Integer> materialAttendance = new HashMap<Node, Integer>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            if (conn == null) {
-                if (!connect()) {
-                    log.error("Cannot create connection");
-                    return materialAttendance;
-                }
-            }
-            ps = conn.prepareStatement(MATERIALS_BY_PUB_ID_QUERY);
-            ps.setInt(new Integer(1), pubId);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                materialAttendance.put(new Node(rs.getInt(1), rs.getString(2)), rs.getInt(3));
-            }
-        } catch (SQLException e) {
-            log.error("Exception during getting material attendance :", e);
-        } finally {
-            try {
-                if (rs != null)
-                    rs.close();
-                if (ps != null)
-                    ps.close();
-                disconnect();
-            } catch (SQLException e) {
-                log.error("Exception during closing connection after getting material attendance");
-            }
-        }
-        return materialAttendance;
-    }
-
-    public Map<Student, Integer> getStudentsAttendanceByPub(int pubId) {
-        log.info("Trying to get students attendance by pub = " + pubId);
-        Map<Student, Integer> studentsAttendance = new HashMap<Student, Integer>();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        try {
-            if (conn == null) {
-                if (!connect()) {
-                    log.error("Cannot create connection");
-                    return studentsAttendance;
-                }
-            }
-            ps = conn.prepareStatement(STUDENTS_BY_PUB_ID_QUERY);
-            ps.setInt(new Integer(1), pubId);
-            rs = ps.executeQuery();
-            while (rs.next()) {
-                studentsAttendance.put(new Student(rs.getInt(1), rs.getString(2)), rs.getInt(3));
-            }
-        } catch (SQLException e) {
-            log.error("Exception during getting students attendance :", e);
-        } finally {
-            try {
-                if (rs != null)
-                    rs.close();
-                if (ps != null)
-                    ps.close();
-                disconnect();
-            } catch (SQLException e) {
-                log.error("Exception during closing connection after getting material attendance");
-            }
-        }
-        return studentsAttendance;
-    }
-
     public GeneralPubContainer getPubGeneralTemp(final int pubId) {
         log.info("Trying to get pub by pub_id = " + pubId);
         ConnectionsHandler pubConnectionHandler = null;
         ConnectionsHandler materialAttendanceConnectionHandler = null;
         ConnectionsHandler studentsAttendanceConnectionHandler = null;
+        ConnectionsHandler trendAttendanceConnectionHandler = null;
         GeneralPubContainer generalPubContainer = null;
         Pub pub = null;
         Map<Node, Integer> materialAttendance = new HashMap<Node, Integer>();
         Map<Student, Integer> studentsAttendance = new HashMap<Student, Integer>();
+        Collection<Trend> trendAttendance = new ArrayList<Trend>();
         try {
             if (conn == null) {
                 if (!connect()) {
@@ -256,6 +164,7 @@ public class DatabaseHandler {
             pubConnectionHandler = new ConnectionsHandler(conn, PUB_BY_ID_QUERY, new QueryParameter(ParameterType.INT, pubId));
             materialAttendanceConnectionHandler = new ConnectionsHandler(conn, MATERIALS_BY_PUB_ID_QUERY, new QueryParameter(ParameterType.INT, pubId));
             studentsAttendanceConnectionHandler = new ConnectionsHandler(conn, STUDENTS_BY_PUB_ID_QUERY, new QueryParameter(ParameterType.INT, pubId));
+            trendAttendanceConnectionHandler = new ConnectionsHandler(conn, TREND_BY_PUB_ID_QUERY, new QueryParameter(ParameterType.INT, pubId));
             ResultSet pubResultSet = pubConnectionHandler.getResultSet();
             if (pubResultSet.next()) {
                 pub = new Pub(pubResultSet.getInt(1), pubResultSet.getString(2));
@@ -268,7 +177,11 @@ public class DatabaseHandler {
             while (studentsResultSet.next()) {
                 studentsAttendance.put(new Student(studentsResultSet.getInt(1), studentsResultSet.getString(2)), studentsResultSet.getInt(3));
             }
-            generalPubContainer = new GeneralPubContainer(pub, materialAttendance, studentsAttendance);
+            ResultSet trendResultSet = trendAttendanceConnectionHandler.getResultSet();
+            while (trendResultSet.next()) {
+                trendAttendance.add(new Trend(trendResultSet.getDate(1), trendResultSet.getInt(2)));
+            }
+            generalPubContainer = new GeneralPubContainer(pub, materialAttendance, studentsAttendance, trendAttendance);
         } catch (SQLException e) {
             log.error("Exception while getting pub general information", e);
         } finally {
