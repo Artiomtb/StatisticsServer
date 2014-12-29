@@ -13,6 +13,12 @@ public class ConnectionsHandler {
         this.resultSet = this.preparedStatement.executeQuery();
     }
 
+    public ConnectionsHandler(Connection connection, String query, QueryParameter parameter) throws SQLException {
+        this.preparedStatement = connection.prepareStatement(query);
+        setQueryParam(parameter, 1);
+        this.resultSet = this.preparedStatement.executeQuery();
+    }
+
     public ConnectionsHandler(Connection connection, String query) throws SQLException {
         this.preparedStatement = connection.prepareStatement(query);
         this.resultSet = this.preparedStatement.executeQuery();
@@ -21,20 +27,23 @@ public class ConnectionsHandler {
     private void setQueryParams(ArrayList<QueryParameter> params) throws SQLException {
         int index = 1;
         for (QueryParameter parameter : params) {
-            QueryParameter.ParameterType currentType = parameter.getType();
-            Object currentValue = parameter.getValue();
-            switch (currentType) {
-                case VARCHAR:
-                    this.preparedStatement.setString(index, (String) currentValue);
-                    break;
-                case INT:
-                    this.preparedStatement.setInt(index, (Integer) currentValue);
-                    break;
-                case DATE:
-                    this.preparedStatement.setDate(index, (Date) currentValue);
-                    break;
-            }
-            index++;
+            setQueryParam(parameter, index++);
+        }
+    }
+
+    private void setQueryParam(QueryParameter parameter, int index) throws SQLException {
+        QueryParameter.ParameterType currentType = parameter.getType();
+        Object currentValue = parameter.getValue();
+        switch (currentType) {
+            case VARCHAR:
+                this.preparedStatement.setString(index, (String) currentValue);
+                break;
+            case INT:
+                this.preparedStatement.setInt(index, (Integer) currentValue);
+                break;
+            case DATE:
+                this.preparedStatement.setDate(index, (Date) currentValue);
+                break;
         }
     }
 
