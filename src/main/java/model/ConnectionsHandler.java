@@ -8,7 +8,10 @@ public class ConnectionsHandler {
 
     public ConnectionsHandler(Connection connection, String query, QueryParameter[] params) throws SQLException {
         this.preparedStatement = connection.prepareStatement(query);
-        setQueryParams(params);
+        int index = 1;
+        for (QueryParameter parameter : params) {
+            setQueryParam(parameter, index++);
+        }
         this.resultSet = this.preparedStatement.executeQuery();
     }
 
@@ -21,13 +24,6 @@ public class ConnectionsHandler {
     public ConnectionsHandler(Connection connection, String query) throws SQLException {
         this.preparedStatement = connection.prepareStatement(query);
         this.resultSet = this.preparedStatement.executeQuery();
-    }
-
-    private void setQueryParams(QueryParameter[] params) throws SQLException {
-        int index = 1;
-        for (QueryParameter parameter : params) {
-            setQueryParam(parameter, index++);
-        }
     }
 
     private void setQueryParam(QueryParameter parameter, int index) throws SQLException {
