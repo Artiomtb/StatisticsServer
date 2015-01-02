@@ -25,13 +25,15 @@ public class JSONPubGeneral implements JSONHandler {
     }
 
     public JSONPubGeneral(GeneralPubContainer generalPubContainer) {
-        Pub pub = generalPubContainer.getPub();
-        if(pub != null) {
-            this.pub = pub;
-            this.materialAttendance = generalPubContainer.getMaterialAttendance();
-            this.studentAttendance = generalPubContainer.getStudentAttendance();
-            this.trendAttendance = generalPubContainer.getTrendAttendance();
-            setJSONObject();
+        if (generalPubContainer != null) {
+            Pub pub = generalPubContainer.getPub();
+            if (pub != null) {
+                this.pub = pub;
+                this.materialAttendance = generalPubContainer.getMaterialAttendance();
+                this.studentAttendance = generalPubContainer.getStudentAttendance();
+                this.trendAttendance = generalPubContainer.getTrendAttendance();
+                setJSONObject();
+            }
         }
     }
 
