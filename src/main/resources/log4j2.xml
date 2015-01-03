@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration monitorInterval="3">
     <appenders>
-        <File name="E_FILE" fileName="logs/mylog.log">
+        <File name="E_FILE" fileName="${jboss.server.log.dir}/mylog.log">
             <PatternLayout pattern="%d{ISO8601} [%-5p] (%F:%L) - %m%n"/>
         </File>
         <Console name="STDOUT" target="SYSTEM_OUT">
