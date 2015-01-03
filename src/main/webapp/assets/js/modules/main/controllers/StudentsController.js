@@ -11,7 +11,7 @@ define(["require", "exports"], function (require, exports) {
             console.log("stud path " + $scope.student_path);
             $http.get(PATH_CONSTANTS.STUDENTS_PATH, { params: { page: $routeParams.page } }).success(function (students) {
                 _this.$scope.students = students.students;
-                _this.$scope.pages = students.pages;
+                _this.$scope.pages = 10;
             }).error(function () {
                 console.log("some error occured");
             });

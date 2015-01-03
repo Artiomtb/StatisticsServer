@@ -1,0 +1,4 @@
+{
+    "pages": 10,
+    "pubs": [{"pub_name": "test", "pub_id": 1},{"pub_name": "test", "pub_id": 2}]
+}

@@ -7,15 +7,15 @@ class NodesController {
         console.log("create nodes controller " + $scope.page_path);
         console.log("route_param" + $routeParams.page);
         $scope.page_path = PATH_CONSTANTS.NODES_PATH;
-        $scope.node_path = PATH_CONSTANTS.GENERAL_NODE_PATH;
+        $scope.pub_path = PATH_CONSTANTS.GENERAL_NODE_PATH;
         console.log("node path " + $scope.path );
         console.log("path in nodes controller " + $scope.page_path);
         $http.get (PATH_CONSTANTS.NODES_PATH,{params: {"page": $routeParams.page}})
-            .success ((nodes: INodes)=> {
-                console.log("nodes " + JSON.stringify(nodes));
-                this.$scope.pages=nodes.pages;
+            .success ((pubs: IPubs)=> {
+                console.log("nodes " + JSON.stringify(pubs));
+                this.$scope.pages = 5;
                 console.log("page " + this.$scope.pages);
-                this.$scope.nodes = nodes.nodes;
+                this.$scope.pubs = pubs.pubs;
             console.log(this.$scope.nodes);
         })
              .error(()=>{console.log("error")});

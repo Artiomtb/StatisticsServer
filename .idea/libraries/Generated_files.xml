@@ -1,0 +1,38 @@
+<component name="libraryTable">
+  <library name="Generated files" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/controllers/NodeStatistics.js" />
+        <item url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/controllers/MainController.js" />
+        <item url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/controllers/StudentsController.js" />
+        <item url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/controllers/StudentNodeStatistics.js" />
+        <item url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/controllers/NodesController.js" />
+        <item url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/main.js" />
+        <item url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/directives/students_bar_chart.js" />
+        <item url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/directives/materials_bar_chart.js" />
+        <item url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/directives/materials_trend.js" />
+        <item url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/directives/nodes.js" />
+        <item url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/directives/students.js" />
+        <item url="file://$PROJECT_DIR$/src/main/webapp/assets/js/shared/interfaces.js" />
+        <item url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/controllers/StudentStatistics.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/controllers/NodeStatistics.js" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/controllers/MainController.js" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/controllers/StudentsController.js" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/controllers/StudentNodeStatistics.js" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/controllers/NodesController.js" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/main.js" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/directives/students_bar_chart.js" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/directives/materials_bar_chart.js" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/directives/materials_trend.js" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/directives/nodes.js" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/directives/students.js" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/assets/js/shared/interfaces.js" />
+      <root url="file://$PROJECT_DIR$/src/main/webapp/assets/js/modules/main/controllers/StudentStatistics.js" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
