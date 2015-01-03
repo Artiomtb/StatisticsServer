@@ -17,11 +17,13 @@ public class JSONPubStudent implements JSONHandler {
     private JSONObject jsonObject = new JSONObject();
 
     public JSONPubStudent(PubStudentContainer pubStudentContainer) {
-        this.pub = pubStudentContainer.getPub();
-        if (pub != null) {
-            this.totalTrend = pubStudentContainer.getTotalTrend();
-            this.materialTrend = pubStudentContainer.getMaterialTrend();
-            setJSONObject();
+        if (pubStudentContainer != null) {
+            this.pub = pubStudentContainer.getPub();
+            if (pub != null) {
+                this.totalTrend = pubStudentContainer.getTotalTrend();
+                this.materialTrend = pubStudentContainer.getMaterialTrend();
+                setJSONObject();
+            }
         }
     }
 
