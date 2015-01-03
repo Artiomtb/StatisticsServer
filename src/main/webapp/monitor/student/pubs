@@ -1,0 +1,4 @@
+{
+    "student_name": "Some Cool Student",
+    "pubs": [{"pub_name": "First Material", "pub_id": 1},{"pub_name": "Second Stats", "pub_id": 2}]
+}

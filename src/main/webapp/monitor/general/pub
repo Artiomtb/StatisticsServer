@@ -1,0 +1,144 @@
+{
+    "pub_name": "Some Cool node",
+    "pub_id": 1,
+    "materials_trends":[
+        {
+            "material_name":"first trend",
+            "trend":  [
+                {
+                    "date": "2014-05-20",
+                    "time": 100
+                },
+                {
+                    "date": "2014-05-22",
+                    "time": 400
+                },
+                {
+                    "date": "2014-05-23",
+                    "time": 200
+                },
+                {
+                    "date": "2014-05-24",
+                    "time": 250
+                }
+            ]
+        },
+        {
+            "material_name":"second trend",
+            "trend":  [
+                {
+                    "date": "2014-05-20",
+                    "time": 230
+                },
+                {
+                    "date": "2014-05-22",
+                    "time": 12
+                },
+                {
+                    "date": "2014-05-23",
+                    "time": 200
+                },
+                {
+                    "date": "2014-05-24",
+                    "time": 250
+                }
+            ]
+        }
+    ],
+    "materials": [
+        {
+            "material_name": "one_material",
+            "material_id": 1,
+            "total_attendance": 20
+        },
+        {
+            "material_name": "second_material",
+            "material_id": 2,
+            "total_attendance": 30
+        },
+        {
+            "material_name": "one_material",
+            "material_id": 1,
+            "total_attendance": 20
+        },
+        {
+            "material_name": "second_material",
+            "material_id": 2,
+            "total_attendance": 30
+        },
+         {
+            "material_name": "one_material",
+            "material_id": 1,
+            "total_attendance": 20
+        },
+        {
+            "material_name": "second_material",
+            "material_id": 2,
+            "total_attendance": 30
+        }
+    ],
+    "students": [
+        {
+            "party_id": 12,
+            "party_name": "Петров",
+            "total_attendance": 20
+        },
+        {
+            "party_id": 12,
+            "party_name": "Сидоров",
+            "total_attendance": 10
+        },
+        {
+            "party_id": 12,
+            "party_name": "Крупцев",
+            "total_attendance": 60
+        },
+        {
+            "party_id": 12,
+            "party_name": "Писков",
+            "total_attendance": 30
+        }
+    ],
+    "trend": [
+        {
+            "date": "2014-05-20",
+            "time": 100
+        },
+        {
+            "date": "2014-05-22",
+            "time": 400
+        },
+        {
+            "date": "2014-05-23",
+            "time": 200
+        },
+        {
+            "date": "2014-05-24",
+            "time": 250
+        },
+        {
+            "date": "2014-05-25",
+            "time": 1
+        },
+        {
+            "date": "2014-05-26",
+            "time": 200
+        },
+        {
+            "date": "2014-05-27",
+            "time": 100
+        },
+        {
+            "date": "2014-05-28",
+            "time": 190
+        },
+        {
+            "date": "2014-05-29",
+            "time": 200
+        },
+        {
+            "date": "2014-05-30",
+            "time": 10
+        }
+    ]
+}

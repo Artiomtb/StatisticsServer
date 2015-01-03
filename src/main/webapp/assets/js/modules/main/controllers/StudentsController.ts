@@ -10,7 +10,7 @@ class StudentsController {
         $http.get(PATH_CONSTANTS.STUDENTS_PATH,{params: {page: $routeParams.page}})
             .success((students: IStudents) => {
                 this.$scope.students=students.students;
-                this.$scope.pages=students.pages;
+                this.$scope.pages=10;
             })
             .error(()=>{console.log("some error occured")});
     }
