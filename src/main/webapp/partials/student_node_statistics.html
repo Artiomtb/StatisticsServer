@@ -1,0 +1,17 @@
+<h1>{{node_stats.node_name}}</h1>
+<hr/>
+
+<div class="panel panel-default">
+    <div style = "cursor: pointer" ng-click = "generalStatistics = ! generalStatistics" class="panel-heading">Загальна статистика</div>
+    <div class="panel-body" collapse="generalStatistics">
+        <trend df="node_stats.node_stats"></trend>
+        <materials_bar_chart materials_stats="node_stats.materials"></materials_bar_chart>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div style = "cursor: pointer" ng-click = "materialStatistics = ! materialStatistics" class="panel-heading">Тенденція відвідування матеріалів</div>
+    <div class="panel-body" collapse="materialStatistics">
+        <trend header = "{{material.material_name}}" df="material.trend" ng-repeat="material in node_stats.materials"></trend>
+    </div>
+</div>

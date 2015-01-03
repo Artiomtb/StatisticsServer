@@ -1,0 +1,6 @@
+<div class="well" ng-repeat="material in materials_data">
+    <h4>{{material.name}}</h4>
+    <div id ="canvas-container">
+        <canvas style="margin:  0 auto" tc-chartjs-line chart-data="material.data" height="300px" width="800px"></canvas>
+    </div>
+</div>

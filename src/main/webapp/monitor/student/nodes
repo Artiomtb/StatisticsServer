@@ -1,0 +1,4 @@
+{
+    "student_name": "Some Cool Student",
+    "nodes": [{"node_name": "First Material", "node_id": 1},{"node_name": "Second Stats", "node_id": 2}]
+}

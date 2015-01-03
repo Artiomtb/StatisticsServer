@@ -1,15 +1,33 @@
+<!DOCTYPE html>
 <html>
-<title>Index</title>
+<head lang="en">
+    <script data-main="/assets/js/config" src="/assets/js/vendor/requirejs/require.js"></script>
+    <link rel="stylesheet" href="/assets/css/vendor/bootstrap/dist/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/assets/css/custom.css"/>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
 <body>
-<h2>Summary</h2>
-</body>
-<ul>
-    <li><a href="monitor/nodes?page=22">List of nodes. Parameter page.</a></li>
-    <li><a href="monitor/students?page=50">List of students. Parameter page.</a></li>
-    <li><a href="monitor/general/node?node_id=21627">General information about pub. Parameter node_id.</a></li>
-    <li><a href="monitor/student/nodes?party_id=88">Information about node learning by student. Parameter party_id.</a></li>
-    <li><a href="monitor/students/node?party_id=88">Information about nodes(pubs) via student. Parameter party_id.</a>
-    </li>
-</ul>
-</html>
 
+    <div class="container">
+        <div class="row " ng-controller="MainContoller" >
+            <div class="col-lg-1"></div>
+            <div class="col-lg-10">
+                <nav class="navbar navbar-default navbar-static-top" role="navigation">
+                    <div class="container">
+                        <a class="navbar-brand" href="#">СумДу</a>
+                        <div class="navbar-collapse collapse">
+                            <ul class="navbar-nav nav">
+                                <li ng-click="students()" ng-class="{active: students}"><a href="#/monitor/students/1">Студенти</a></li>
+                                <li ng-click="nodes()" ng-class="{active: !students}"><a href="#/monitor/nodes/1">Предмети</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
+                <ng-view></ng-view>
+            </div>
+            <div class="col-lg-1"></div>
+        </div>
+    </div>
+</body>
+</html>

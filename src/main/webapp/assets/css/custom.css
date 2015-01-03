@@ -1,0 +1,16 @@
+body {
+    background-image: url("/assets/images/p6.png");
+}
+
+.center {
+    text-align: center;
+}
+
+#canvas-container {
+    width: 100%;
+    text-align:center;
+}
+
+canvas {
+    display: inline;
+}
