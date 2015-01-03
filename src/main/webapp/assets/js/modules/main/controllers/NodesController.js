@@ -12,12 +12,12 @@ define(["require", "exports"], function (require, exports) {
             $scope.node_path = PATH_CONSTANTS.GENERAL_NODE_PATH;
             console.log("node path " + $scope.path);
             console.log("path in nodes controller " + $scope.page_path);
-            $http.get(PATH_CONSTANTS.NODES_PATH, { params: { "page": $routeParams.page } }).success(function (nodes) {
-                console.log("nodes " + JSON.stringify(nodes));
-                _this.$scope.pages = nodes.pages;
+            $http.get(PATH_CONSTANTS.NODES_PATH, { params: { "page": $routeParams.page } }).success(function (pubs) {
+                console.log("pubs " + JSON.stringify(pubs));
+                _this.$scope.pages = 10;
                 console.log("page " + _this.$scope.pages);
-                _this.$scope.nodes = nodes.nodes;
-                console.log(_this.$scope.nodes);
+                _this.$scope.nodes = pubs.pubs;
+                console.log(_this.$scope.pubs);
             }).error(function () {
                 console.log("error");
             });
@@ -27,4 +27,3 @@ define(["require", "exports"], function (require, exports) {
     })();
     return NodesController;
 });
-//# sourceMappingURL=NodesController.js.map
