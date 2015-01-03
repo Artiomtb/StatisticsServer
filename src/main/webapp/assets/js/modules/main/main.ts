@@ -30,12 +30,12 @@ angular.module('app',['ngRoute','tc.chartjs','ui.bootstrap']);
 angular.module('app')
     .constant(
         "PATH_CONSTANTS",{
-        "NODES_PATH": "/monitor/nodes",
-        "GENERAL_NODE_PATH": "/monitor/general/node",
+        "NODES_PATH": "/monitor/pubs",
+        "GENERAL_NODE_PATH": "/monitor/general/pub",
         "GENERAL_MATERIAL_PATH": "/monitor/general/material",
         "STUDENTS_PATH": "/monitor/students",
-        "STUDENT": "/monitor/student/nodes",
-        "STUDENT_NODE_MATERIALS": "/monitor/student/node",
+        "STUDENT": "/monitor/student/pubs",
+        "STUDENT_NODE_MATERIALS": "/monitor/student/pub",
         "STUDENT_MATERIAL": "/monitor/student/material"});
 
 angular.module("app").config(($routeProvider, PATH_CONSTANTS)=>{

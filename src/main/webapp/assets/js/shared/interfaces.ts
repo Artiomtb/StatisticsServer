@@ -1,10 +1,10 @@
-interface INode {
+interface IPub {
     node_name: string;
     node_id: number;
 }
 
-interface INodes {
-    nodes: Array<INode>;
+interface IPubs {
+    pubs: Array<IPub>;
     pages: number;
 }
 
@@ -14,7 +14,7 @@ interface IMaterial {
     total_attendance: number;
 }
 
-interface INodeStats {
+interface IPubStats {
     materials: Array<IMaterial>;
     students: Array<IStudentStatistic>;
     trend: Array<number>;
@@ -28,7 +28,7 @@ interface IStudentStatistic {
 
 interface IStudentStatistics {
     student: string;
-    nodes: INode;
+    nodes: IPub;
 }
 
 interface IStudent {
