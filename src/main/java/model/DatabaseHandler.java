@@ -23,11 +23,11 @@ public class DatabaseHandler {
     private static DataSource dataSource;
     private Connection conn;
     private static DatabaseHandler databaseHandler;
-    private static final int NODES_PER_PAGE = 20;
+    private static final int PUBS_PER_PAGE = 20;
     private static final int STUDENTS_PER_PAGE = 20;
     private static final int DAYS_TO_PUB_TREND = 20;
     private static final int DAYS_TO_PUB_MATERIAL_TREND = 5;
-    private static final String NODES_QUERY = "SELECT node_id, title FROM node_to_title LIMIT " + NODES_PER_PAGE + " OFFSET ?";
+    private static final String PUBS_QUERY = "SELECT pub_id, title FROM pub_to_title LIMIT " + PUBS_PER_PAGE + " OFFSET ?";
     private static final String STUDENTS_QUERY = "SELECT party_id, title FROM party_to_title LIMIT " + STUDENTS_PER_PAGE + "OFFSET ?";
     private static final String PUB_BY_ID_QUERY = "SELECT pub_id, title FROM pub_to_title WHERE pub_id = ?";
     private static final String MATERIALS_BY_PUB_ID_QUERY = "SELECT nt.node_id, nt.title, n.attendance\n" +
@@ -94,21 +94,21 @@ public class DatabaseHandler {
         }
     }
 
-    public Collection<Node> getNodes(final int page) {
+    public Collection<Pub> getPubs(final int page) {
         log.info("Trying to get nodes from page " + page);
         ConnectionsHandler connectionsHandler = null;
-        Collection<Node> nodes = new ArrayList<Node>();
+        Collection<Pub> pubs = new ArrayList<Pub>();
         try {
             if (conn == null) {
                 if (!connect()) {
                     log.error("Cannot create connection");
-                    return nodes;
+                    return pubs;
                 }
             }
-            connectionsHandler = new ConnectionsHandler(conn, NODES_QUERY, new QueryParameter(ParameterType.INT, ((page - 1) * NODES_PER_PAGE)));
+            connectionsHandler = new ConnectionsHandler(conn, PUBS_QUERY, new QueryParameter(ParameterType.INT, ((page - 1) * PUBS_PER_PAGE)));
             ResultSet rs = connectionsHandler.getResultSet();
             while (rs.next()) {
-                nodes.add(new Node(rs.getInt(1), rs.getString(2)));
+                pubs.add(new Pub(rs.getInt(1), rs.getString(2)));
             }
         } catch (SQLException e) {
             log.error("Exception during getting nodes list :", e);
@@ -121,7 +121,7 @@ public class DatabaseHandler {
                 log.error("Exception during closing connection after getting nodes list");
             }
         }
-        return nodes;
+        return pubs;
     }
 
     public Collection<Student> getStudents(final int page) {

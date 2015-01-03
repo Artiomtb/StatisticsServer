@@ -5,8 +5,8 @@
 <web-app>
     <display-name>Archetype Created Web Application</display-name>
     <servlet>
-        <servlet-name>Nodes</servlet-name>
-        <servlet-class>servlet.NodesServlet</servlet-class>
+        <servlet-name>Pubs</servlet-name>
+        <servlet-class>servlet.PubsServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>Pub</servlet-name>
@@ -25,8 +25,8 @@
         <servlet-class>servlet.StudentsNodeServlet</servlet-class>
     </servlet>
     <servlet-mapping>
-        <servlet-name>Nodes</servlet-name>
-        <url-pattern>/monitor/nodes</url-pattern>
+        <servlet-name>Pubs</servlet-name>
+        <url-pattern>/monitor/pubs</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Pub</servlet-name>

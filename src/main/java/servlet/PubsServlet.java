@@ -1,6 +1,6 @@
 package servlet;
 
-import JSON.JSONNodes;
+import JSON.JSONPubs;
 import model.DatabaseHandler;
 import org.apache.log4j.Logger;
 
@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class NodesServlet extends HttpServlet {
+public class PubsServlet extends HttpServlet {
 
-    private static final Logger log = Logger.getLogger("NodesServlet.class");
+    private static final Logger log = Logger.getLogger("PubsServlet.class");
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,7 +29,7 @@ public class NodesServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.addHeader("Access-Control-Allow-Origin", "*");
         PrintWriter pw = resp.getWriter();
-        pw.println(new JSONNodes(DatabaseHandler.initialize().getNodes(page), page).getJSONString());
+        pw.println(new JSONPubs(DatabaseHandler.initialize().getPubs(page), page).getJSONString());
         pw.close();
     }
 }
