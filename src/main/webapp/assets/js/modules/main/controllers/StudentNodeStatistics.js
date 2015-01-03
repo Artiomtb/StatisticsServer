@@ -7,7 +7,7 @@ define(["require", "exports"], function (require, exports) {
             this.$http = $http;
             this.PATH_CONSTANTS = PATH_CONSTANTS;
             this.$routeParams = $routeParams;
-            $http.get(PATH_CONSTANTS.STUDENT_NODE_MATERIALS, { params: { party_id: $routeParams.party_id, node_id: $routeParams.node_id } }).success(function (node_stats) {
+            $http.get(PATH_CONSTANTS.STUDENT_NODE_MATERIALS, { params: { party_id: $routeParams.party_id, pub_id: $routeParams.node_id } }).success(function (node_stats) {
                 _this.$scope.node_stats = node_stats;
                 console.log("node stats " + node_stats);
             }).error(function () {

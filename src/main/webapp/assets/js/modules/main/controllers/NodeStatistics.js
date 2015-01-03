@@ -8,7 +8,7 @@ define(["require", "exports"], function (require, exports) {
             this.$routeParams = $routeParams;
             this.PATH_CONSTANTS = PATH_CONSTANTS;
             $scope.material_path = PATH_CONSTANTS.GENERAL_MATERIAL_PATH;
-            $http.get(PATH_CONSTANTS.GENERAL_NODE_PATH, { params: { node_id: $routeParams.node_id } }).success(function (pub) {
+            $http.get(PATH_CONSTANTS.GENERAL_NODE_PATH, { params: { pub_id: $routeParams.node_id } }).success(function (pub) {
                 _this.$scope.node_stats = pub;
                 _this.$scope.df = pub.trend;
                 _this.$scope.trend = pub.students;

@@ -5,7 +5,7 @@ class NodeStatistics {
 
     constructor(private $scope, private $http, private $routeParams, private PATH_CONSTANTS){
         $scope.material_path=PATH_CONSTANTS.GENERAL_MATERIAL_PATH;
-        $http.get(PATH_CONSTANTS.GENERAL_NODE_PATH,{params: {node_id: $routeParams.node_id }})
+        $http.get(PATH_CONSTANTS.GENERAL_NODE_PATH,{params: {pub_id: $routeParams.node_id }})
             .success ((pub: IPubStats)=>{
                 this.$scope.node_stats = pub;
                 this.$scope.df = pub.trend;
