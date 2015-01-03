@@ -21,8 +21,8 @@
         <servlet-class>servlet.StudentNodesServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>StudentsNode</servlet-name>
-        <servlet-class>servlet.StudentsNodeServlet</servlet-class>
+        <servlet-name>StudentsPub</servlet-name>
+        <servlet-class>servlet.StudentsPubServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Pubs</servlet-name>
@@ -41,8 +41,8 @@
         <url-pattern>/monitor/student/nodes</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>StudentsNode</servlet-name>
-        <url-pattern>/monitor/students/node</url-pattern>
+        <servlet-name>StudentsPub</servlet-name>
+        <url-pattern>/monitor/students/pub</url-pattern>
     </servlet-mapping>
     <error-page>
         <error-code>404</error-code>
