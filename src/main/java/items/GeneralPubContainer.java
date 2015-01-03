@@ -8,12 +8,14 @@ public class GeneralPubContainer {
     private Map<Node, Integer> materialAttendance;
     private Map<Student, Integer> studentAttendance;
     private Collection<Trend> trendAttendance;
+    private Map<Node, Collection<Trend>> materialTrendAttendance;
 
-    public GeneralPubContainer(Pub pub, Map<Node, Integer> materialAttendance, Map<Student, Integer> studentAttendance, Collection<Trend> trendAttendance) {
+    public GeneralPubContainer(Pub pub, Map<Node, Integer> materialAttendance, Map<Student, Integer> studentAttendance, Collection<Trend> trendAttendance, Map<Node, Collection<Trend>> materialTrendAttendance) {
         this.pub = pub;
         this.materialAttendance = materialAttendance;
         this.studentAttendance = studentAttendance;
         this.trendAttendance = trendAttendance;
+        this.materialTrendAttendance = materialTrendAttendance;
     }
 
     public Pub getPub() {
@@ -46,5 +48,13 @@ public class GeneralPubContainer {
 
     public void setTrendAttendance(Collection<Trend> trendAttendance) {
         this.trendAttendance = trendAttendance;
+    }
+
+    public Map<Node, Collection<Trend>> getMaterialTrendAttendance() {
+        return materialTrendAttendance;
+    }
+
+    public void setMaterialTrendAttendance(Map<Node, Collection<Trend>> materialTrendAttendance) {
+        this.materialTrendAttendance = materialTrendAttendance;
     }
 }

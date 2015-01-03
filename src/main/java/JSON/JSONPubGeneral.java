@@ -13,13 +13,15 @@ public class JSONPubGeneral implements JSONHandler {
     private Map<Student, Integer> studentAttendance;
     private Collection<Trend> trendAttendance;
     private JSONObject jsonObject = new JSONObject();
+    private Map<Node, Collection<Trend>> materialTrendAttendance;
 
-    public JSONPubGeneral(Pub pub, Map<Node, Integer> materialAttendance, Map<Student, Integer> studentAttendance, Collection<Trend> trendAttendance) {
+    public JSONPubGeneral(Pub pub, Map<Node, Integer> materialAttendance, Map<Student, Integer> studentAttendance, Collection<Trend> trendAttendance, Map<Node, Collection<Trend>> materialTrendAttendance) {
         if (pub != null) {
             this.pub = pub;
             this.materialAttendance = materialAttendance;
             this.studentAttendance = studentAttendance;
             this.trendAttendance = trendAttendance;
+            this.materialTrendAttendance = materialTrendAttendance;
             setJSONObject();
         }
     }
@@ -32,6 +34,7 @@ public class JSONPubGeneral implements JSONHandler {
                 this.materialAttendance = generalPubContainer.getMaterialAttendance();
                 this.studentAttendance = generalPubContainer.getStudentAttendance();
                 this.trendAttendance = generalPubContainer.getTrendAttendance();
+                this.materialTrendAttendance = generalPubContainer.getMaterialTrendAttendance();
                 setJSONObject();
             }
         }
@@ -65,8 +68,8 @@ public class JSONPubGeneral implements JSONHandler {
         }
         jsonObject.put("students", studentArray);
         JSONArray trendArray = new JSONArray();
-        for(final Trend trend : this.trendAttendance) {
-            trendArray.add(new JSONObject(){
+        for (final Trend trend : this.trendAttendance) {
+            trendArray.add(new JSONObject() {
                 {
                     put("date", trend.getDate());
                     put("time", trend.getAttendance());
@@ -74,6 +77,28 @@ public class JSONPubGeneral implements JSONHandler {
             });
         }
         jsonObject.put("trend", trendArray);
+        JSONArray materialTrendArray = new JSONArray();
+        for (final Map.Entry entry : materialTrendAttendance.entrySet()) {
+            final Node currentNode = (Node) entry.getKey();
+            final Collection<Trend> currentMaterialTrend = (Collection<Trend>) entry.getValue();
+            final JSONArray currentMaterialArray = new JSONArray();
+            for (final Trend trend : currentMaterialTrend) {
+                currentMaterialArray.add(new JSONObject() {
+                    {
+                        put("date", trend.getDate());
+                        put("time", trend.getAttendance());
+                    }
+                });
+            }
+            materialTrendArray.add(new JSONObject() {
+                {
+                    put("material_name", currentNode.getNodeTitle());
+                    put("trend", currentMaterialArray);
+                }
+            });
+
+        }
+        jsonObject.put("materials_trends", materialTrendArray);
     }
 
     @Override
