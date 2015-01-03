@@ -30,7 +30,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Pub</servlet-name>
-        <url-pattern>/monitor/general/node</url-pattern>
+        <url-pattern>/monitor/general/pub</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>Students</servlet-name>

@@ -16,19 +16,19 @@ public class PubServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String nodeParameter = req.getParameter("node_id");
-        int node = 0;
+        String pubParameter = req.getParameter("pub_id");
+        int pub = 0;
         try {
-            node = Integer.valueOf(nodeParameter);
+            pub = Integer.valueOf(pubParameter);
         } catch (NumberFormatException e) {
-            log.warn("Incorrect parameter \"page\" (expected integer got " + nodeParameter + "). Set to 0");
+            log.warn("Incorrect parameter \"pub_id\" (expected integer got " + pubParameter + "). Set to 0");
         }
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.addHeader("Access-Control-Allow-Origin", "*");
         PrintWriter pw = resp.getWriter();
         DatabaseHandler databaseHandler = DatabaseHandler.initialize();
-        pw.println(new JSONPubGeneral(databaseHandler.getPubGeneral(node)).getJSONString());
+        pw.println(new JSONPubGeneral(databaseHandler.getPubGeneral(pub)).getJSONString());
         pw.close();
     }
 }

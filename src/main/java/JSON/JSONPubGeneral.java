@@ -41,8 +41,8 @@ public class JSONPubGeneral implements JSONHandler {
     }
 
     private void setJSONObject() {
-        jsonObject.put("node_id", pub.getPubId());
-        jsonObject.put("node_name", pub.getPubTitle());
+        jsonObject.put("pub_id", pub.getPubId());
+        jsonObject.put("pub_name", pub.getPubTitle());
         final JSONArray materialsArray = new JSONArray();
         for (final Map.Entry entry : materialAttendance.entrySet()) {
             final Node node = (Node) entry.getKey();
