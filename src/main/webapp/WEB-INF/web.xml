@@ -18,7 +18,7 @@
     </servlet>
     <servlet>
         <servlet-name>StudentNodes</servlet-name>
-        <servlet-class>servlet.StudentNodesServlet</servlet-class>
+        <servlet-class>servlet.StudentPubsServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>StudentsPub</servlet-name>
@@ -38,7 +38,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>StudentNodes</servlet-name>
-        <url-pattern>/monitor/student/nodes</url-pattern>
+        <url-pattern>/monitor/student/pubs</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>StudentsPub</servlet-name>

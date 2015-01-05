@@ -29,7 +29,8 @@ public class DatabaseHandler {
     private static final int DAYS_TO_PUB_MATERIAL_TREND = 5;
     private static final int DAYS_TO_PUB_STUDENT_TREND = 10;
     private static final int DAYS_TO_PUB_NODE_STUDENT_TREND = 12;
-    private static final String PUBS_QUERY = "SELECT pub_id, title FROM pub_to_title LIMIT " + PUBS_PER_PAGE + " OFFSET ?";
+    //private static final String PUBS_QUERY = "SELECT pub_id, title FROM pub_to_title LIMIT " + PUBS_PER_PAGE + " OFFSET ?";
+    private static final String PUBS_QUERY = "SELECT DISTINCT pt.pub_id, pt.title FROM attendence a, pub_to_title pt where a.pub_id = pt.pub_id LIMIT " + PUBS_PER_PAGE + " OFFSET ?";
     private static final String STUDENTS_QUERY = "SELECT party_id, title FROM party_to_title LIMIT " + STUDENTS_PER_PAGE + "OFFSET ?";
     private static final String PUB_BY_ID_QUERY = "SELECT pub_id, title FROM pub_to_title WHERE pub_id = ?";
     private static final String MATERIALS_BY_PUB_ID_QUERY = "SELECT nt.node_id, nt.title, n.attendance\n" +
@@ -53,7 +54,7 @@ public class DatabaseHandler {
             "ORDER BY date(updated_at) DESC\n" +
             "LIMIT " + DAYS_TO_PUB_TREND;
     private static final String STUDENT_BY_ID_QUERY = "SELECT party_id, title FROM party_to_title WHERE party_id = ?";
-    private static final String NODES_BY_ST_ID_QUERY = "SELECT DISTINCT nt.node_id, nt.title FROM attendence a, node_to_title nt WHERE a.party_id = ? AND a.node_id = nt.node_id";
+    private static final String PUBS_BY_ST_ID_QUERY = "SELECT DISTINCT pt.pub_id, pt.title FROM attendence a, pub_to_title pt WHERE a.party_id = ? AND a.pub_id = pt.pub_id";
     private static final String NODES_BY_PUB_ID_QUERY = "SELECT DISTINCT nt.node_id, nt.title FROM attendence a, node_to_title nt WHERE pub_id = ? AND a.node_id = nt.node_id";
     private static final String TREND_BY_PUB_ID_AND_NODE_ID_QUERY = "SELECT\n" +
             "  date(updated_at),\n" +
@@ -292,21 +293,21 @@ public class DatabaseHandler {
         return student;
     }
 
-    public Collection<Node> getNodesByStudent(int studentId) {
-        log.info("Trying to get nodes of student " + studentId);
+    public Collection<Pub> getPubsByStudent(int studentId) {
+        log.info("Trying to get pubs of student " + studentId);
         ConnectionsHandler connectionsHandler = null;
-        Collection<Node> nodes = new ArrayList<Node>();
+        Collection<Pub> pubs = new ArrayList<Pub>();
         try {
             if (conn == null) {
                 if (!connect()) {
                     log.error("Cannot create connection");
-                    return nodes;
+                    return pubs;
                 }
             }
-            connectionsHandler = new ConnectionsHandler(conn, NODES_BY_ST_ID_QUERY, new QueryParameter(ParameterType.INT, studentId));
+            connectionsHandler = new ConnectionsHandler(conn, PUBS_BY_ST_ID_QUERY, new QueryParameter(ParameterType.INT, studentId));
             ResultSet rs = connectionsHandler.getResultSet();
             while (rs.next()) {
-                nodes.add(new Node(rs.getInt(1), rs.getString(2)));
+                pubs.add(new Pub(rs.getInt(1), rs.getString(2)));
             }
         } catch (SQLException e) {
             log.error("Exception during getting nodes list :", e);
@@ -319,7 +320,7 @@ public class DatabaseHandler {
                 log.error("Exception during closing connection after getting nodes list");
             }
         }
-        return nodes;
+        return pubs;
     }
 
     public PubStudentContainer getStudentPub(int partyId, int pubId) {

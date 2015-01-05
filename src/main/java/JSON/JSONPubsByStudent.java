@@ -1,22 +1,23 @@
 package JSON;
 
 import items.Node;
+import items.Pub;
 import items.Student;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.Collection;
 
-public class JSONNodesByStudent implements JSONHandler {
+public class JSONPubsByStudent implements JSONHandler {
 
     private Student student;
-    private Collection<Node> nodes;
+    private Collection<Pub> pubs;
     private JSONObject jsonObject = new JSONObject();
 
-    public JSONNodesByStudent(Student student, Collection<Node> nodes) {
+    public JSONPubsByStudent(Student student, Collection<Pub> pubs) {
         if (student != null) {
             this.student = student;
-            this.nodes = nodes;
+            this.pubs = pubs;
             setJSONObject();
         }
     }
@@ -24,15 +25,15 @@ public class JSONNodesByStudent implements JSONHandler {
     private void setJSONObject() {
         jsonObject.put("student_name", this.student.getStudentTitle());
         JSONArray nodesArray = new JSONArray();
-        for (final Node node : nodes) {
+        for (final Pub pub : pubs) {
             nodesArray.add(new JSONObject() {
                 {
-                    put("node_id", node.getNodeId());
-                    put("node_name", node.getNodeTitle());
+                    put("pub_id", pub.getPubId());
+                    put("pub_name", pub.getPubTitle());
                 }
             });
         }
-        jsonObject.put("nodes", nodesArray);
+        jsonObject.put("pubs", nodesArray);
     }
 
     @Override

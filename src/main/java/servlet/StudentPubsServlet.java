@@ -1,6 +1,6 @@
 package servlet;
 
-import JSON.JSONNodesByStudent;
+import JSON.JSONPubsByStudent;
 import model.DatabaseHandler;
 import org.apache.log4j.Logger;
 
@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class StudentNodesServlet extends HttpServlet {
+public class StudentPubsServlet extends HttpServlet {
 
-    private static final Logger log = Logger.getLogger("StudentNodesServlet.class");
+    private static final Logger log = Logger.getLogger("StudentPubsServlet.class");
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -29,7 +29,7 @@ public class StudentNodesServlet extends HttpServlet {
         resp.addHeader("Access-Control-Allow-Origin", "*");
         PrintWriter pw = resp.getWriter();
         DatabaseHandler databaseHandler = DatabaseHandler.initialize();
-        pw.println(new JSONNodesByStudent(databaseHandler.getStudentById(partyId), databaseHandler.getNodesByStudent(partyId)).getJSONString());
+        pw.println(new JSONPubsByStudent(databaseHandler.getStudentById(partyId), databaseHandler.getPubsByStudent(partyId)).getJSONString());
         pw.close();
     }
 }
