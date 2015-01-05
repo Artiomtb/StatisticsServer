@@ -33,7 +33,7 @@ public class JSONPubStudent implements JSONHandler {
         for (final Trend trend : totalTrend) {
             totalTrendArray.add(new JSONObject() {
                 {
-                    put("date", trend.getDate());
+                    put("date", "\"" + trend.getDate() + "\"");
                     put("time", trend.getAttendance());
                 }
             });
@@ -45,7 +45,7 @@ public class JSONPubStudent implements JSONHandler {
             for (final Trend trend : materialStatContainer.getTrend()) {
                 currentMaterialTrend.add(new JSONObject() {
                     {
-                        put("date", trend.getDate());
+                        put("date", "\"" + trend.getDate() + "\"");
                         put("time", trend.getAttendance());
                     }
                 });
