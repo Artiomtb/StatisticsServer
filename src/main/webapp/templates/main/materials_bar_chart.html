@@ -1,6 +1,11 @@
 <div class="well">
     <h4>Матеріали:</h4>
-    <div id ="canvas-container">
-        <canvas style="margin:  0 auto" tc-chartjs-bar chart-data="data" height="300px" width="800px"></canvas>
+    <div ng-repeat = "material in data">
+        <h4>{{material.label}}</h4>
+        <div class="progress" >
+            <div class="progress-bar" role="progressbar" aria-valuenow="{{material.attendance}}" aria-valuemin="0" aria-valuemax="100" style="width: {{material.attendance}}%;">
+                {{material.attendance}}%
+            </div>
+        </div>
     </div>
 </div>

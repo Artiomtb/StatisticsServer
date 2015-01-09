@@ -1,6 +1,11 @@
 <div class="well">
     <h4>Відвідування студентами:</h4>
-    <div id ="canvas-container">
-        <canvas style="margin:  0 auto" tc-chartjs-bar chart-data="data" height="300px" width="800px"></canvas>
+    <div ng-repeat = "student in data">
+        <h4>{{student.label}}</h4>
+        <div class="progress" >
+            <div class="progress-bar" role="progressbar" aria-valuenow="{{student.attendance}}" aria-valuemin="0" aria-valuemax="100" style="width: {{student.attendance}}%;">
+                {{student.attendance}}%
+            </div>
+        </div>
     </div>
 </div>
