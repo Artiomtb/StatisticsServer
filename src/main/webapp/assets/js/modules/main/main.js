@@ -6,12 +6,11 @@
 /// <amd-dependency path="shared/directives/trend" />
 /// <amd-dependency path="chartjs" />
 /// <amd-dependency path="directives/students_bar_chart" />
-/// <amd-dependency path="directives/materials_trend" />
+/// <amd-dependency path="directives/trend" />
 /// <amd-dependency path="directives/materials_bar_chart" />
 /// <amd-dependency path="angular-bootstrap" />
-define(["require", "exports", "controllers/MainController", "controllers/NodesController", "controllers/StudentsController", "controllers/NodeStatistics", "controllers/StudentStatistics", "controllers/StudentNodeStatistics", "directives/nodes", "directives/materials_trend", "directives/students", "angular", "angular_route", "shared/directives/pagination", "shared/directives/trend", "chartjs", "directives/students_bar_chart", "directives/materials_trend", "directives/materials_bar_chart", "angular-bootstrap"], function (require, exports, MainCotroller, NodesController, StudentsController, NodeStatistics, StudentStatistics, StudentNodeStatistics, nodes, materialsTrend, students) {
+define(["require", "exports", "controllers/MainController", "controllers/NodesController", "controllers/StudentsController", "controllers/NodeStatistics", "controllers/StudentStatistics", "controllers/StudentNodeStatistics", "directives/nodes", "directives/trend", "directives/students", "angular", "angular_route", "shared/directives/pagination", "shared/directives/trend", "chartjs", "directives/students_bar_chart", "directives/trend", "directives/materials_bar_chart", "angular-bootstrap"], function (require, exports, MainCotroller, NodesController, StudentsController, NodeStatistics, StudentStatistics, StudentNodeStatistics, nodes, trend, students) {
     var pagination = require("shared/directives/pagination");
-    var trend = require("shared/directives/trend");
     var barChart = require("directives/students_bar_chart");
     var materialsBarChart = require("directives/materials_bar_chart");
     angular.module('app', ['ngRoute', 'tc.chartjs', 'ui.bootstrap']);
@@ -38,7 +37,6 @@ define(["require", "exports", "controllers/MainController", "controllers/NodesCo
     angular.module("app").directive("pageNumbers", pagination);
     angular.module("app").directive("trend", trend);
     angular.module("app").directive("barChart", barChart);
-    angular.module("app").directive("materialsTrend", materialsTrend);
     angular.module("app").directive("materialsBarChart", materialsBarChart);
     angular.bootstrap(document, ["app"]);
     console.log("succesful loading");

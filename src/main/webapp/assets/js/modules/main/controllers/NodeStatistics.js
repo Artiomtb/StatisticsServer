@@ -12,11 +12,12 @@ define(["require", "exports"], function (require, exports) {
                 _this.$scope.node_stats = pub;
                 _this.$scope.df = pub.trend;
                 _this.$scope.trend = pub.students;
+                console.log("trend studentss" + _this.$scope.df.length);
                 _this.$scope.materials_stats = pub.materials;
                 _this.$scope.materials_trends = pub.materials_trends;
                 console.log("materials trend " + _this.$scope.materials_trends);
             }).error(function () {
-                console.log("somethid went wrong");
+                console.log("something went wrong");
             });
         }
         NodeStatistics.$inject = ["$scope", "$http", "$routeParams", "PATH_CONSTANTS"];

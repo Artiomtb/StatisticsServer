@@ -79,3 +79,4 @@ target/StatisticsServer/404.html
 target/StatisticsServer/index.html
 /src/main/webapp/.idea/
 /target/
+/src/main/webapp/monitor

@@ -6,15 +6,15 @@ class NodeStatistics {
     constructor(private $scope, private $http, private $routeParams, private PATH_CONSTANTS){
         $scope.material_path=PATH_CONSTANTS.GENERAL_MATERIAL_PATH;
         $http.get(PATH_CONSTANTS.GENERAL_NODE_PATH,{params: {pub_id: $routeParams.node_id }})
-
             .success ((pub: IPubStats)=>{
                 this.$scope.node_stats = pub;
                 this.$scope.df = pub.trend;
                 this.$scope.trend = pub.students;
+                console.log("trend studentss" + this.$scope.df.length);
                 this.$scope.materials_stats = pub.materials;
                 this.$scope.materials_trends = pub.materials_trends;
             console.log("materials trend "+ this.$scope.materials_trends);
-        }).error(()=>{console.log("somethid went wrong")});
+        }).error(()=>{console.log("something went wrong")});
     }
 }
 

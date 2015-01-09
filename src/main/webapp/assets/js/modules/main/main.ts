@@ -6,7 +6,7 @@
 /// <amd-dependency path="shared/directives/trend" />
 /// <amd-dependency path="chartjs" />
 /// <amd-dependency path="directives/students_bar_chart" />
-/// <amd-dependency path="directives/materials_trend" />
+/// <amd-dependency path="directives/trend" />
 /// <amd-dependency path="directives/materials_bar_chart" />
 /// <amd-dependency path="angular-bootstrap" />
 
@@ -18,10 +18,9 @@ import StudentStatistics = require("controllers/StudentStatistics");
 import StudentNodeStatistics = require("controllers/StudentNodeStatistics");
 
 import nodes = require("directives/nodes");
-import materialsTrend = require("directives/materials_trend");
+import trend = require("directives/trend");
 import students = require ("directives/students");
 var pagination = require("shared/directives/pagination");
-var trend = require("shared/directives/trend");
 var barChart = require("directives/students_bar_chart");
 var materialsBarChart = require("directives/materials_bar_chart");
 
@@ -63,7 +62,6 @@ angular.module("app").directive("students",["PATH_CONSTANTS", students]);
 angular.module("app").directive("pageNumbers", pagination);
 angular.module("app").directive("trend", trend);
 angular.module("app").directive("barChart", barChart);
-angular.module("app").directive("materialsTrend", materialsTrend);
 angular.module("app").directive("materialsBarChart", materialsBarChart);
 
 angular.bootstrap(document,["app"]);
