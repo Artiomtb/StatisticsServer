@@ -18,7 +18,7 @@ public class Node {
     }
 
     public String getNodeTitle() {
-        return nodeTitle;
+        return nodeTitle;;
     }
 
     public void setNodeTitle(String nodeTitle) {
