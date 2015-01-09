@@ -1,5 +1,6 @@
-<div class="well">
-    <h4>Матеріали:</h4>
+<div class="well" ng-if="data.length > 0">
+    <h1>Матеріали:</h1>
+    <hr/>
     <div ng-repeat = "material in data">
         <h4>{{material.label}}</h4>
         <div class="progress" >

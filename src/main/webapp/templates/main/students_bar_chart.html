@@ -1,7 +1,9 @@
-<div class="well">
-    <h4>Відвідування студентами:</h4>
+<div class="well" ng-if="data.length > 0">
+    <h1>Відвідування студентами:</h1>
+    <hr/>
     <div ng-repeat = "student in data">
         <h4>{{student.label}}</h4>
+
         <div class="progress" >
             <div class="progress-bar" role="progressbar" aria-valuenow="{{student.attendance}}" aria-valuemin="0" aria-valuemax="100" style="width: {{student.attendance}}%;">
                 {{student.attendance}}%
