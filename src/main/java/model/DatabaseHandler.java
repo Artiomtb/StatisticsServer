@@ -45,34 +45,43 @@ public class DatabaseHandler {
             "      WHERE pub_id = ?\n" +
             "      GROUP BY party_id) p, party_to_title pt\n" +
             "WHERE p.party_id = pt.party_id";
-    private static final String TREND_BY_PUB_ID_QUERY = "SELECT\n" +
-            "  date(updated_at),\n" +
+    private static final String TREND_BY_PUB_ID_QUERY = "SELECT *\n" +
+            "FROM (\n" +
+            "  SELECT\n" +
+            "  DATE (updated_at) AS upd,\n" +
             "  sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
-            "FROM attendence\n" +
-            "WHERE pub_id = ?\n" +
-            "GROUP BY DATE(updated_at)\n" +
-            "ORDER BY date(updated_at) DESC\n" +
-            "LIMIT " + DAYS_TO_PUB_TREND;
+            "  FROM attendence\n" +
+            "  WHERE pub_id = ?\n" +
+            "  GROUP BY DATE(updated_at)\n" +
+            "  ORDER BY DATE(updated_at) DESC\n" +
+            "  LIMIT " + DAYS_TO_PUB_TREND + ")\n" +
+            "ORDER BY upd";
     private static final String STUDENT_BY_ID_QUERY = "SELECT party_id, title FROM party_to_title WHERE party_id = ?";
     private static final String PUBS_BY_ST_ID_QUERY = "SELECT DISTINCT pt.pub_id, pt.title FROM attendence a, pub_to_title pt WHERE a.party_id = ? AND a.pub_id = pt.pub_id";
     private static final String NODES_BY_PUB_ID_QUERY = "SELECT DISTINCT nt.node_id, nt.title FROM attendence a, node_to_title nt WHERE pub_id = ? AND a.node_id = nt.node_id";
-    private static final String TREND_BY_PUB_ID_AND_NODE_ID_QUERY = "SELECT\n" +
-            "  date(updated_at),\n" +
+    private static final String TREND_BY_PUB_ID_AND_NODE_ID_QUERY = "SELECT *\n" +
+            "FROM\n" +
+            "  (SELECT\n" +
+            "   DATE (updated_at) AS upd,\n" +
             "  sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
-            "FROM attendence\n" +
-            "WHERE pub_id = ?\n" +
-            "      AND node_id = ?\n" +
-            "GROUP BY DATE(updated_at)\n" +
-            "ORDER BY date(updated_at) DESC\n" +
-            "LIMIT " + DAYS_TO_PUB_MATERIAL_TREND;
-    private static final String TREND_BY_PUB_ID_AND_STUDENT_QUERY = "SELECT\n" +
-            "  date(updated_at),\n" +
+            "   FROM attendence\n" +
+            "   WHERE pub_id = ?\n" +
+            "   AND node_id = ?\n" +
+            "   GROUP BY DATE(updated_at)\n" +
+            "   ORDER BY DATE(updated_at) DESC\n" +
+            "   LIMIT " + DAYS_TO_PUB_MATERIAL_TREND + ")\n" +
+            "ORDER BY upd";
+    private static final String TREND_BY_PUB_ID_AND_STUDENT_QUERY = "SELECT *\n" +
+            "FROM (\n" +
+            "  SELECT\n" +
+            "  DATE (updated_at) AS upd,\n" +
             "  sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
-            "FROM attendence\n" +
-            "WHERE party_id = ? AND pub_id = ?\n" +
-            "GROUP BY DATE(updated_at)\n" +
-            "ORDER BY date(updated_at) DESC\n" +
-            "LIMIT " + DAYS_TO_PUB_STUDENT_TREND;
+            "  FROM attendence\n" +
+            "  WHERE party_id = ? AND pub_id = ?\n" +
+            "  GROUP BY DATE(updated_at)\n" +
+            "  ORDER BY DATE(updated_at) DESC\n" +
+            "  LIMIT " + DAYS_TO_PUB_STUDENT_TREND + ")\n" +
+            "ORDER BY upd";
     private static final String NODE_TOTAL_BY_PUB_ID_AND_STUDENT_QUERY = "SELECT\n" +
             "  nt.node_id,\n" +
             "  nt.title,\n" +
@@ -85,15 +94,16 @@ public class DatabaseHandler {
             "       WHERE party_id = ? AND pub_id = ?\n" +
             "       GROUP BY node_id) nodes, node_to_title nt\n" +
             "WHERE nodes.node_id = nt.node_id";
-    private static final String TREND_BY_PUB_ID_AND_NODE_ID_AND_STUDENT_QUERY = "SELECT\n" +
-            "  date(updated_at),\n" +
-            "  sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
-            "FROM attendence\n" +
-            "WHERE party_id = ? AND pub_id = ? AND node_id = ?\n" +
-            "GROUP BY DATE(updated_at)\n" +
-            "ORDER BY date(updated_at) DESC\n" +
-            "LIMIT " + DAYS_TO_PUB_NODE_STUDENT_TREND;
-
+    private static final String TREND_BY_PUB_ID_AND_NODE_ID_AND_STUDENT_QUERY = "SELECT *\n" +
+            "FROM (SELECT\n" +
+            "      DATE (updated_at) AS upd,\n" +
+            "sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
+            "      FROM attendence\n" +
+            "      WHERE party_id = ? AND pub_id = ? AND node_id = ?\n" +
+            "      GROUP BY DATE(updated_at)\n" +
+            "      ORDER BY DATE(updated_at) DESC\n" +
+            "      LIMIT " + DAYS_TO_PUB_NODE_STUDENT_TREND + ")\n" +
+            "ORDER BY upd";
 
     private DatabaseHandler() {
         try {
