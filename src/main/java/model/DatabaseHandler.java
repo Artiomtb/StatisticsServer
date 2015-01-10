@@ -54,8 +54,8 @@ public class DatabaseHandler {
             "  WHERE pub_id = ?\n" +
             "  GROUP BY DATE(updated_at)\n" +
             "  ORDER BY DATE(updated_at) DESC\n" +
-            "  LIMIT " + DAYS_TO_PUB_TREND + ")\n" +
-            "ORDER BY upd";
+            "  LIMIT " + DAYS_TO_PUB_TREND + ") trend\n" +
+            "ORDER BY trend.upd";
     private static final String STUDENT_BY_ID_QUERY = "SELECT party_id, title FROM party_to_title WHERE party_id = ?";
     private static final String PUBS_BY_ST_ID_QUERY = "SELECT DISTINCT pt.pub_id, pt.title FROM attendence a, pub_to_title pt WHERE a.party_id = ? AND a.pub_id = pt.pub_id";
     private static final String NODES_BY_PUB_ID_QUERY = "SELECT DISTINCT nt.node_id, nt.title FROM attendence a, node_to_title nt WHERE pub_id = ? AND a.node_id = nt.node_id";
@@ -69,8 +69,8 @@ public class DatabaseHandler {
             "   AND node_id = ?\n" +
             "   GROUP BY DATE(updated_at)\n" +
             "   ORDER BY DATE(updated_at) DESC\n" +
-            "   LIMIT " + DAYS_TO_PUB_MATERIAL_TREND + ")\n" +
-            "ORDER BY upd";
+            "   LIMIT " + DAYS_TO_PUB_MATERIAL_TREND + ") trend\n" +
+            "ORDER BY trend.upd";
     private static final String TREND_BY_PUB_ID_AND_STUDENT_QUERY = "SELECT *\n" +
             "FROM (\n" +
             "  SELECT\n" +
@@ -80,8 +80,8 @@ public class DatabaseHandler {
             "  WHERE party_id = ? AND pub_id = ?\n" +
             "  GROUP BY DATE(updated_at)\n" +
             "  ORDER BY DATE(updated_at) DESC\n" +
-            "  LIMIT " + DAYS_TO_PUB_STUDENT_TREND + ")\n" +
-            "ORDER BY upd";
+            "  LIMIT " + DAYS_TO_PUB_STUDENT_TREND + ") trend\n" +
+            "ORDER BY trend.upd";
     private static final String NODE_TOTAL_BY_PUB_ID_AND_STUDENT_QUERY = "SELECT\n" +
             "  nt.node_id,\n" +
             "  nt.title,\n" +
@@ -102,8 +102,8 @@ public class DatabaseHandler {
             "      WHERE party_id = ? AND pub_id = ? AND node_id = ?\n" +
             "      GROUP BY DATE(updated_at)\n" +
             "      ORDER BY DATE(updated_at) DESC\n" +
-            "      LIMIT " + DAYS_TO_PUB_NODE_STUDENT_TREND + ")\n" +
-            "ORDER BY upd";
+            "      LIMIT " + DAYS_TO_PUB_NODE_STUDENT_TREND + ") trend\n" +
+            "ORDER BY trend.upd";
 
     private DatabaseHandler() {
         try {
