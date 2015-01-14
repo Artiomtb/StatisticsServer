@@ -1,4 +1,4 @@
-<div class="well">
+<div class="well" ng-if="trend.length > 1">
     <h4>{{name}}</h4>
     <div id ="canvas-container">
         <canvas style="margin:  0 auto" tc-chartjs-line chart-data="trend_data.data" height="300px" width="800px"></canvas>

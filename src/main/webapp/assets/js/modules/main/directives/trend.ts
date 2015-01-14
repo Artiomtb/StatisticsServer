@@ -11,7 +11,6 @@ function Trend () {
                 if (scope.trend != undefined){
                     console.log("in trend directive " + JSON.stringify(scope.trend));
                     scope.trend_data={};
-                    console.log("trend_nameassadfasdfasdfasdf " + scope.name);
                     scope.trend_data.name = scope.trendName;
                     scope.trend_data.data = {
                         labels: [],

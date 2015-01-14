@@ -2,8 +2,8 @@
     <h1>Матеріали:</h1>
     <hr/>
     <div ng-repeat = "material in data">
-        <h4>{{material.label}}</h4>
-        <div class="progress" >
+        <h4>{{material.label}} <small ng-if="material.attendance < 1" style="color: red">  Відвідування &lt 1% </small>></h4>
+        <div class="progress" ng-if ="material.attendance > 1">
             <div class="progress-bar" role="progressbar" aria-valuenow="{{material.attendance}}" aria-valuemin="0" aria-valuemax="100" style="width: {{material.attendance}}%;">
                 {{material.attendance}}%
             </div>
