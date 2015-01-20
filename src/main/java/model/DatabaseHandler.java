@@ -10,10 +10,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DatabaseHandler {
 
@@ -29,7 +26,7 @@ public class DatabaseHandler {
     private static final int DAYS_TO_PUB_MATERIAL_TREND = 5;
     private static final int DAYS_TO_PUB_STUDENT_TREND = 10;
     private static final int DAYS_TO_PUB_NODE_STUDENT_TREND = 12;
-    //private static final String PUBS_QUERY = "SELECT pub_id, title FROM pub_to_title LIMIT " + PUBS_PER_PAGE + " OFFSET ?";
+    private static final int MINUTES_TO_NODES_LINK = 10;
     private static final String PUBS_QUERY = "SELECT DISTINCT pt.pub_id, pt.title FROM attendence a, pub_to_title pt where a.pub_id = pt.pub_id LIMIT " + PUBS_PER_PAGE + " OFFSET ?";
     private static final String STUDENTS_QUERY = "SELECT party_id, title FROM party_to_title LIMIT " + STUDENTS_PER_PAGE + "OFFSET ?";
     private static final String PUB_BY_ID_QUERY = "SELECT pub_id, title FROM pub_to_title WHERE pub_id = ?";
@@ -39,7 +36,7 @@ public class DatabaseHandler {
             "      WHERE pub_id = ?\n" +
             "      GROUP BY node_id) n, node_to_title nt\n" +
             "WHERE n.node_id = nt.node_id";
-    private static final String STUDENTS_BY_PUB_ID_QUERY = "SELECT pt.party_id, pt.title, p.attendance\n" +
+    private static final String STUDENTS_TREND_BY_PUB_ID_QUERY = "SELECT pt.party_id, pt.title, p.attendance\n" +
             "FROM (SELECT party_id, sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
             "      FROM attendence\n" +
             "      WHERE pub_id = ?\n" +
@@ -58,7 +55,7 @@ public class DatabaseHandler {
             "ORDER BY trend.upd";
     private static final String STUDENT_BY_ID_QUERY = "SELECT party_id, title FROM party_to_title WHERE party_id = ?";
     private static final String PUBS_BY_ST_ID_QUERY = "SELECT DISTINCT pt.pub_id, pt.title FROM attendence a, pub_to_title pt WHERE a.party_id = ? AND a.pub_id = pt.pub_id";
-    private static final String NODES_BY_PUB_ID_QUERY = "SELECT DISTINCT nt.node_id, nt.title FROM attendence a, node_to_title nt WHERE pub_id = ? AND a.node_id = nt.node_id";
+    private static final String NODES_BY_PUB_ID_QUERY = "SELECT DISTINCT nt.node_id, nt.title FROM attendence a, node_to_title nt WHERE pub_id = ? AND a.node_id = nt.node_id ORDER BY node_id";
     private static final String TREND_BY_PUB_ID_AND_NODE_ID_QUERY = "SELECT *\n" +
             "FROM\n" +
             "  (SELECT\n" +
@@ -104,6 +101,58 @@ public class DatabaseHandler {
             "      ORDER BY DATE(updated_at) DESC\n" +
             "      LIMIT " + DAYS_TO_PUB_NODE_STUDENT_TREND + ") trend\n" +
             "ORDER BY trend.upd";
+    private static final String NODES_SUBSCRIBE_LINK_IN_PUB_QUERY = "SELECT DISTINCT\n" +
+            "  link.node_a,\n" +
+            "  num_a.num,\n" +
+            "  link.node_b,\n" +
+            "  num_b.num\n" +
+            "FROM (\n" +
+            "       SELECT\n" +
+            "         y.node_id AS node_a,\n" +
+            "         t.node_id AS node_b\n" +
+            "       FROM\n" +
+            "         (SELECT\n" +
+            "            row_number()\n" +
+            "            OVER (\n" +
+            "              ORDER BY created_at DESC) num,\n" +
+            "            a.*\n" +
+            "          FROM attendence a\n" +
+            "          WHERE pub_id = ?\n" +
+            "          ORDER BY created_at DESC) t,\n" +
+            "         (SELECT\n" +
+            "            row_number()\n" +
+            "            OVER (\n" +
+            "              ORDER BY created_at DESC) - 1 num,\n" +
+            "            a.*\n" +
+            "          FROM attendence a\n" +
+            "          WHERE pub_id = ?\n" +
+            "          ORDER BY created_at DESC) y\n" +
+            "       WHERE y.num = t.num AND y.node_id != t.node_id AND y.party_id = t.party_id AND\n" +
+            "             floor(extract(EPOCH FROM (t.created_at - y.updated_at)) / 60) < " + MINUTES_TO_NODES_LINK + ") link,\n" +
+            "  (SELECT\n" +
+            "     row_number()\n" +
+            "     OVER (\n" +
+            "       ORDER BY node_id) num,\n" +
+            "     node_id\n" +
+            "   FROM (SELECT DISTINCT\n" +
+            "           nt.node_id,\n" +
+            "           nt.title\n" +
+            "         FROM attendence a, node_to_title nt\n" +
+            "         WHERE pub_id = ? AND a.node_id = nt.node_id\n" +
+            "         ORDER BY node_id) a) num_a,\n" +
+            "  (SELECT\n" +
+            "     row_number()\n" +
+            "     OVER (\n" +
+            "       ORDER BY node_id) num,\n" +
+            "     node_id\n" +
+            "   FROM (SELECT DISTINCT\n" +
+            "           nt.node_id,\n" +
+            "           nt.title\n" +
+            "         FROM attendence a, node_to_title nt\n" +
+            "         WHERE pub_id = ? AND a.node_id = nt.node_id\n" +
+            "         ORDER BY node_id) a) num_b\n" +
+            "WHERE link.node_a = num_a.node_id AND link.node_b = num_b.node_id\n" +
+            "ORDER BY num_a.num, num_b.num";
 
     private DatabaseHandler() {
         try {
@@ -202,14 +251,17 @@ public class DatabaseHandler {
         ConnectionsHandler materialAttendanceConnectionHandler = null;
         ConnectionsHandler studentsAttendanceConnectionHandler = null;
         ConnectionsHandler trendAttendanceConnectionHandler = null;
-        ConnectionsHandler materialList = null;
+        ConnectionsHandler materialListConnectionHandler = null;
         ConnectionsHandler trendMaterialConnectionHandler = null;
+        ConnectionsHandler studentsPubConnectionHandler = null;
+        ConnectionsHandler nodesLinksConnectionHandler = null;
         GeneralPubContainer generalPubContainer = null;
         Pub pub = null;
         Map<Node, Integer> materialAttendance = new HashMap<Node, Integer>();
         Map<Student, Integer> studentsAttendance = new HashMap<Student, Integer>();
         Collection<Trend> trendAttendance = new ArrayList<Trend>();
         Map<Node, Collection<Trend>> materialsAttendance = new HashMap<Node, Collection<Trend>>();
+        ArrayList<Node> nodes = new ArrayList<Node>();
         try {
             if (conn == null) {
                 if (!connect()) {
@@ -217,10 +269,11 @@ public class DatabaseHandler {
                     return generalPubContainer;
                 }
             }
-            pubConnectionHandler = new ConnectionsHandler(conn, PUB_BY_ID_QUERY, new QueryParameter(ParameterType.INT, pubId));
-            materialAttendanceConnectionHandler = new ConnectionsHandler(conn, MATERIALS_BY_PUB_ID_QUERY, new QueryParameter(ParameterType.INT, pubId));
-            studentsAttendanceConnectionHandler = new ConnectionsHandler(conn, STUDENTS_BY_PUB_ID_QUERY, new QueryParameter(ParameterType.INT, pubId));
-            trendAttendanceConnectionHandler = new ConnectionsHandler(conn, TREND_BY_PUB_ID_QUERY, new QueryParameter(ParameterType.INT, pubId));
+            QueryParameter pubQP = new QueryParameter(ParameterType.INT, pubId);
+            pubConnectionHandler = new ConnectionsHandler(conn, PUB_BY_ID_QUERY, pubQP);
+            materialAttendanceConnectionHandler = new ConnectionsHandler(conn, MATERIALS_BY_PUB_ID_QUERY, pubQP);
+            studentsAttendanceConnectionHandler = new ConnectionsHandler(conn, STUDENTS_TREND_BY_PUB_ID_QUERY, pubQP);
+            trendAttendanceConnectionHandler = new ConnectionsHandler(conn, TREND_BY_PUB_ID_QUERY, pubQP);
             ResultSet pubResultSet = pubConnectionHandler.getResultSet();
             if (pubResultSet.next()) {
                 pub = new Pub(pubResultSet.getInt(1), pubResultSet.getString(2));
@@ -237,20 +290,44 @@ public class DatabaseHandler {
             while (trendResultSet.next()) {
                 trendAttendance.add(new Trend(trendResultSet.getDate(1), trendResultSet.getInt(2)));
             }
-            materialList = new ConnectionsHandler(conn, NODES_BY_PUB_ID_QUERY, new QueryParameter(ParameterType.INT, pubId));
-            ResultSet materialResultS = materialList.getResultSet();
-            while (materialResultS.next()) {
+            materialListConnectionHandler = new ConnectionsHandler(conn, NODES_BY_PUB_ID_QUERY, pubQP);
+            ResultSet materialResults = materialListConnectionHandler.getResultSet();
+            while (materialResults.next()) {
                 Collection<Trend> materialTrendAttendance = new ArrayList<Trend>();
-                Node currentNode = new Node(materialResultS.getInt(1), materialResultS.getString(2));
-                trendMaterialConnectionHandler = new ConnectionsHandler(conn, TREND_BY_PUB_ID_AND_NODE_ID_QUERY, new QueryParameter[]{new QueryParameter(ParameterType.INT, pubId), new QueryParameter(ParameterType.INT, currentNode.getNodeId())});
+                Node currentNode = new Node(materialResults.getInt(1), materialResults.getString(2));
+                nodes.add(currentNode);
+                trendMaterialConnectionHandler = new ConnectionsHandler(conn, TREND_BY_PUB_ID_AND_NODE_ID_QUERY, new QueryParameter[]{pubQP, new QueryParameter(ParameterType.INT, currentNode.getNodeId())});
                 ResultSet trendResultS = trendMaterialConnectionHandler.getResultSet();
                 while (trendResultS.next()) {
                     materialTrendAttendance.add(new Trend(trendResultS.getDate(1), trendResultS.getInt(2)));
                 }
                 materialsAttendance.put(currentNode, materialTrendAttendance);
-                trendAttendanceConnectionHandler.closeHandlerConnections();
+                trendMaterialConnectionHandler.closeHandlerConnections();
             }
-            generalPubContainer = new GeneralPubContainer(pub, materialAttendance, studentsAttendance, trendAttendance, materialsAttendance);
+            Map<Integer, Set<Integer>> nodeLinks = new HashMap<Integer, Set<Integer>>();
+            log.info("Starting getting links...");
+            QueryParameter[] params = new QueryParameter[]{pubQP, pubQP, pubQP, pubQP};
+            nodesLinksConnectionHandler = new ConnectionsHandler(conn, NODES_SUBSCRIBE_LINK_IN_PUB_QUERY, params);
+            ResultSet links = nodesLinksConnectionHandler.getResultSet();
+            while (links.next()) {
+                int nodeA = links.getInt(2);
+                int nodeB = links.getInt(4);
+                if (nodeLinks.containsKey(nodeA)) {
+                    nodeLinks.get(nodeA).add(nodeB);
+                } else {
+                    Set<Integer> nodeASet = new HashSet<Integer>();
+                    nodeASet.add(nodeB);
+                    nodeLinks.put(nodeA, nodeASet);
+                }
+            }
+            log.info("Getting links finished");
+            for (Map.Entry e : nodeLinks.entrySet()) {
+                Set s = (Set) e.getValue();
+                Integer k = (Integer) e.getKey();
+                log.info(k + " " + s);
+
+            }
+            generalPubContainer = new GeneralPubContainer(pub, materialAttendance, studentsAttendance, trendAttendance, materialsAttendance, nodes, nodeLinks);
         } catch (SQLException e) {
             log.error("Exception while getting pub general information", e);
         } finally {
@@ -262,9 +339,15 @@ public class DatabaseHandler {
                 if (studentsAttendanceConnectionHandler != null)
                     studentsAttendanceConnectionHandler.closeHandlerConnections();
                 if (trendMaterialConnectionHandler != null)
-                    trendAttendanceConnectionHandler.closeHandlerConnections();
+                    trendMaterialConnectionHandler.closeHandlerConnections();
                 if (trendAttendanceConnectionHandler != null)
                     trendAttendanceConnectionHandler.closeHandlerConnections();
+                if (materialListConnectionHandler != null)
+                    materialListConnectionHandler.closeHandlerConnections();
+                if (studentsPubConnectionHandler != null)
+                    studentsPubConnectionHandler.closeHandlerConnections();
+                if (nodesLinksConnectionHandler != null)
+                    nodesLinksConnectionHandler.closeHandlerConnections();
                 disconnect();
             } catch (SQLException e) {
                 log.error("Exception while closing connection of general pub information");

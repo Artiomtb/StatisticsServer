@@ -4,8 +4,10 @@ import items.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 public class JSONPubGeneral implements JSONHandler {
     private Pub pub;
@@ -14,17 +16,8 @@ public class JSONPubGeneral implements JSONHandler {
     private Collection<Trend> trendAttendance;
     private JSONObject jsonObject = new JSONObject();
     private Map<Node, Collection<Trend>> materialTrendAttendance;
-
-    public JSONPubGeneral(Pub pub, Map<Node, Integer> materialAttendance, Map<Student, Integer> studentAttendance, Collection<Trend> trendAttendance, Map<Node, Collection<Trend>> materialTrendAttendance) {
-        if (pub != null) {
-            this.pub = pub;
-            this.materialAttendance = materialAttendance;
-            this.studentAttendance = studentAttendance;
-            this.trendAttendance = trendAttendance;
-            this.materialTrendAttendance = materialTrendAttendance;
-            setJSONObject();
-        }
-    }
+    private ArrayList<Node> nodes;
+    private Map<Integer, Set<Integer>> nodeLinks;
 
     public JSONPubGeneral(GeneralPubContainer generalPubContainer) {
         if (generalPubContainer != null) {
@@ -35,6 +28,8 @@ public class JSONPubGeneral implements JSONHandler {
                 this.studentAttendance = generalPubContainer.getStudentAttendance();
                 this.trendAttendance = generalPubContainer.getTrendAttendance();
                 this.materialTrendAttendance = generalPubContainer.getMaterialTrendAttendance();
+                this.nodes = generalPubContainer.getNodes();
+                this.nodeLinks = generalPubContainer.getNodeLinks();
                 setJSONObject();
             }
         }
@@ -99,6 +94,34 @@ public class JSONPubGeneral implements JSONHandler {
 
         }
         jsonObject.put("materials_trends", materialTrendArray);
+        final JSONArray nodesArray = new JSONArray();
+        for (final Node node : nodes) {
+            nodesArray.add(new JSONObject() {
+                {
+                    put("name", node.getNodeTitle());
+                    put("group", 1);
+                }
+            });
+        }
+        final JSONArray linksArray = new JSONArray();
+        for (Map.Entry entry : nodeLinks.entrySet()) {
+            final int nodeA = (Integer) entry.getKey();
+            Set<Integer> nodesB = (Set<Integer>) entry.getValue();
+            for (final int nodeB : nodesB) {
+                linksArray.add(new JSONObject() {
+                    {
+                        put("source", nodeA);
+                        put("target", nodeB);
+                    }
+                });
+            }
+        }
+        jsonObject.put("transitions", new JSONObject() {
+            {
+                put("nodes", nodesArray);
+                put("links", linksArray);
+            }
+        });
     }
 
     @Override
