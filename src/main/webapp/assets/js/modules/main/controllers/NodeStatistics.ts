@@ -1,4 +1,5 @@
 /// <reference path="../../../shared/interfaces.ts" />
+///<amd-dependency path = 'd3_chart'>
 
 class NodeStatistics {
     static $inject = ["$scope", "$http","$routeParams" ,"PATH_CONSTANTS"];
@@ -13,7 +14,12 @@ class NodeStatistics {
                 console.log("trend studentss" + this.$scope.df.length);
                 this.$scope.materials_stats = pub.materials;
                 this.$scope.materials_trends = pub.materials_trends;
-            console.log("materials trend "+ this.$scope.materials_trends);
+                console.log("materials trend "+ this.$scope.materials_trends);
+                this.$scope.transitions = pub.transitions;
+                var jsonEvent  = document.createEvent('CustomEvent');
+                jsonEvent.initCustomEvent('json',true,true, pub.transitions);
+                document.dispatchEvent(jsonEvent);
+                console.log("asdfasdfasdfasd" + this.$scope.transitions);
         }).error(()=>{console.log("something went wrong")});
     }
 }

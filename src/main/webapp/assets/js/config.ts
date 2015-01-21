@@ -1,6 +1,6 @@
 /// <reference path="../typings/requirejs/requirejs.d.ts" />
 
-loc = "main";
+var loc = "main";
 require.config({
         baseURL: "/assets/js",
         paths: {
@@ -11,7 +11,8 @@ require.config({
             'module': 'js/modules',
             'controllers': 'modules/' + loc +'/controllers',
             'services': 'modules/' + loc +'/services',
-            'directives': 'modules/' + loc +'/directives'
+            'directives': 'modules/' + loc +'/directives',
+            'd3_chart': 'vendor/d3chart'
         },
         shim: {
             'angular': {
@@ -24,6 +25,8 @@ require.config({
             },
             'angular-bootstrap': {
                 deps: ['angular']
+            },
+            'd3_chart': {
             }
         }
     }

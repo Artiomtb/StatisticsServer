@@ -2,7 +2,7 @@
     <h1>Відвідування студентами:</h1>
     <hr/>
     <div ng-repeat = "student in data">
-        <h4>{{student.label}}<small ng-if="student.attendance < 1" style="color: red">  Відвідування &lt 1% </small>></h4>
+        <h4>{{student.label}}<small ng-if="student.attendance < 1" style="color: red">  Відвідування &lt 1% </small></h4>
 
         <div class="progress"  ng-if ="student.attendance > 1">
             <div class="progress-bar" role="progressbar" aria-valuenow="{{student.attendance}}" aria-valuemin="0" aria-valuemax="100" style="width: {{student.attendance}}%;">

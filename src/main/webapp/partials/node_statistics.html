@@ -4,6 +4,7 @@
         <div style = "cursor: pointer" ng-click = "generalStatistics = ! generalStatistics" class="panel-heading">Загальна статистика</div>
         <div class="panel-body" collapse="generalStatistics">
             <trend trend="df" name="Загальна статистика:"></trend>
+            <div ng-if="transitions.links.length > 0" id = "transition_graph"></div>
             <bar-chart trend = "trend" ></bar-chart>
         </div>
 </div>
@@ -14,3 +15,4 @@
         <trend ng-if="trend.trend.length > 2" trend = "trend.trend" name="{{trend.material_name}}" ng-repeat="trend in materials_trends"></trend>
     </div>
 </div>
+

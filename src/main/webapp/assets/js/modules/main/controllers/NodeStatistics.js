@@ -1,5 +1,6 @@
 /// <reference path="../../../shared/interfaces.ts" />
-define(["require", "exports"], function (require, exports) {
+///<amd-dependency path = 'd3_chart'>
+define(["require", "exports", "d3_chart"], function (require, exports) {
     var NodeStatistics = (function () {
         function NodeStatistics($scope, $http, $routeParams, PATH_CONSTANTS) {
             var _this = this;
@@ -16,6 +17,11 @@ define(["require", "exports"], function (require, exports) {
                 _this.$scope.materials_stats = pub.materials;
                 _this.$scope.materials_trends = pub.materials_trends;
                 console.log("materials trend " + _this.$scope.materials_trends);
+                _this.$scope.transitions = pub.transitions;
+                var jsonEvent = document.createEvent('CustomEvent');
+                jsonEvent.initCustomEvent('json', true, true, pub.transitions);
+                document.dispatchEvent(jsonEvent);
+                console.log("asdfasdfasdfasd" + _this.$scope.transitions);
             }).error(function () {
                 console.log("something went wrong");
             });

@@ -1,6 +1,7 @@
 interface IPub {
     node_name: string;
     node_id: number;
+
 }
 
 interface IPubs {
@@ -19,6 +20,7 @@ interface IPubStats {
     students: Array<IStudentStatistic>;
     trend: Array<number>;
     materials_trends: Array<ITrend>;
+    transitions: Array<any>;
 }
 
 interface IStudentStatistic {

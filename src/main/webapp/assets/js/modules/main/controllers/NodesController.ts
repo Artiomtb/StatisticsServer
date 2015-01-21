@@ -1,5 +1,7 @@
 /// <reference path="../../../shared/interfaces.ts" />
 
+declare var jsonEvent;
+
 class NodesController {
     static $inject = ['PATH_CONSTANTS','$scope','$http',"$routeParams"];
 
@@ -12,10 +14,12 @@ class NodesController {
         console.log("path in nodes controller " + $scope.page_path);
         $http.get (PATH_CONSTANTS.NODES_PATH,{params: {"page": $routeParams.page}})
             .success ((pubs: IPubs)=> {
+
                 console.log("nodes " + JSON.stringify(pubs));
                 this.$scope.pages = 5;
                 console.log("page " + this.$scope.pages);
                 this.$scope.pubs = pubs.pubs;
+
             console.log(this.$scope.nodes);
         })
              .error(()=>{console.log("error")});
