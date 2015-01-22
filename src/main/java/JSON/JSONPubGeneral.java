@@ -66,7 +66,7 @@ public class JSONPubGeneral implements JSONHandler {
         for (final Trend trend : this.trendAttendance) {
             trendArray.add(new JSONObject() {
                 {
-                    put("date", "\"" + trend.getDate() + "\"");
+                    put("date", trend.getDate().toString());
                     put("time", trend.getAttendance());
                 }
             });
@@ -80,7 +80,7 @@ public class JSONPubGeneral implements JSONHandler {
             for (final Trend trend : currentMaterialTrend) {
                 currentMaterialArray.add(new JSONObject() {
                     {
-                        put("date", "\"" + trend.getDate() + "\"");
+                        put("date", trend.getDate().toString());
                         put("time", trend.getAttendance());
                     }
                 });
