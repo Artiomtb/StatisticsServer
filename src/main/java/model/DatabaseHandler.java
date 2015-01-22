@@ -103,9 +103,9 @@ public class DatabaseHandler {
             "ORDER BY trend.upd";
     private static final String NODES_SUBSCRIBE_LINK_IN_PUB_QUERY = "SELECT DISTINCT\n" +
             "  link.node_a,\n" +
-            "  num_a.num,\n" +
+            "  num_a.num - 1 as num_a,\n" +
             "  link.node_b,\n" +
-            "  num_b.num\n" +
+            "  num_b.num - 1 as num_b\n" +
             "FROM (\n" +
             "       SELECT\n" +
             "         y.node_id AS node_a,\n" +
@@ -152,7 +152,7 @@ public class DatabaseHandler {
             "         WHERE pub_id = ? AND a.node_id = nt.node_id\n" +
             "         ORDER BY node_id) a) num_b\n" +
             "WHERE link.node_a = num_a.node_id AND link.node_b = num_b.node_id\n" +
-            "ORDER BY num_a.num, num_b.num";
+            "ORDER BY num_a, num_b";
 
     private DatabaseHandler() {
         try {
