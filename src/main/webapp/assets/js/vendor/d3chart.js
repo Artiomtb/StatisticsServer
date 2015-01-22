@@ -8,7 +8,6 @@ var vis = d3.select("#transition_graph").append("svg:svg")
     .attr("height", h);
 
  document.addEventListener('json', function(json) {
-     alert(json);
     var force = self.force = d3.layout.force()
         .nodes(json.nodes)
         .links(json.links)
