@@ -17,18 +17,25 @@ public class PubServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String pubParameter = req.getParameter("pub_id");
+        String linkTimeParameter = req.getParameter("link_time");
         int pub = 0;
+        int linkTime = 10;
         try {
             pub = Integer.valueOf(pubParameter);
         } catch (NumberFormatException e) {
             log.warn("Incorrect parameter \"pub_id\" (expected integer got " + pubParameter + "). Set to 0");
+        }
+        try {
+            linkTime = Integer.valueOf(linkTimeParameter);
+        } catch (NumberFormatException e) {
+            log.warn("Incorrect parameter \"link_time\" (expected integer got " + linkTimeParameter + "). Set to 10");
         }
         resp.setContentType("application/json");
         resp.setCharacterEncoding("UTF-8");
         resp.addHeader("Access-Control-Allow-Origin", "*");
         PrintWriter pw = resp.getWriter();
         DatabaseHandler databaseHandler = DatabaseHandler.initialize();
-        pw.println(new JSONPubGeneral(databaseHandler.getPubGeneral(pub)).getJSONString());
+        pw.println(new JSONPubGeneral(databaseHandler.getPubGeneral(pub, linkTime)).getJSONString());
         pw.close();
     }
 }

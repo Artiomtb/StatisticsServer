@@ -26,7 +26,6 @@ public class DatabaseHandler {
     private static final int DAYS_TO_PUB_MATERIAL_TREND = 5;
     private static final int DAYS_TO_PUB_STUDENT_TREND = 10;
     private static final int DAYS_TO_PUB_NODE_STUDENT_TREND = 12;
-    private static final int MINUTES_TO_NODES_LINK = 10;
     private static final String PUBS_QUERY = "SELECT DISTINCT pt.pub_id, pt.title FROM attendence a, pub_to_title pt where a.pub_id = pt.pub_id LIMIT " + PUBS_PER_PAGE + " OFFSET ?";
     private static final String STUDENTS_QUERY = "SELECT party_id, title FROM party_to_title LIMIT " + STUDENTS_PER_PAGE + "OFFSET ?";
     private static final String PUB_BY_ID_QUERY = "SELECT pub_id, title FROM pub_to_title WHERE pub_id = ?";
@@ -128,7 +127,7 @@ public class DatabaseHandler {
             "          WHERE pub_id = ?\n" +
             "          ORDER BY created_at DESC) y\n" +
             "       WHERE y.num = t.num AND y.node_id != t.node_id AND y.party_id = t.party_id AND\n" +
-            "             floor(extract(EPOCH FROM (t.created_at - y.updated_at)) / 60) < " + MINUTES_TO_NODES_LINK + ") link,\n" +
+            "             floor(extract(EPOCH FROM (t.created_at - y.updated_at)) / 60) < ?) link,\n" +
             "  (SELECT\n" +
             "     row_number()\n" +
             "     OVER (\n" +
@@ -275,7 +274,7 @@ public class DatabaseHandler {
         return students;
     }
 
-    public GeneralPubContainer getPubGeneral(final int pubId) {
+    public GeneralPubContainer getPubGeneral(final int pubId, int linkTime) {
         log.info("Trying to get pub by pub_id = " + pubId);
         ConnectionsHandler pubConnectionHandler = null;
         ConnectionsHandler materialAttendanceConnectionHandler = null;
@@ -336,7 +335,7 @@ public class DatabaseHandler {
             }
             Map<Integer, Set<Integer>> nodeLinks = new HashMap<Integer, Set<Integer>>();
             log.info("Starting getting links...");
-            QueryParameter[] params = new QueryParameter[]{pubQP, pubQP, pubQP, pubQP};
+            QueryParameter[] params = new QueryParameter[]{pubQP, pubQP, new QueryParameter(ParameterType.INT, linkTime), pubQP, pubQP};
             nodesLinksConnectionHandler = new ConnectionsHandler(conn, NODES_SUBSCRIBE_LINK_IN_PUB_QUERY, params);
             ResultSet links = nodesLinksConnectionHandler.getResultSet();
             while (links.next()) {
