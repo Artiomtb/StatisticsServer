@@ -1,4 +1,4 @@
-var w = 960,
+var w = 860,
     h = 500
 
  document.addEventListener('jsonEvent', function(e){
@@ -10,9 +10,9 @@ var w = 960,
     var force = self.force = d3.layout.force()
         .nodes(json.nodes)
         .links(json.links)
-        .gravity(.05)
+        .gravity(0.05)
         .distance(100)
-        .charge(-100)
+        .charge(-500)
         .size([w, h])
         .start();
 
