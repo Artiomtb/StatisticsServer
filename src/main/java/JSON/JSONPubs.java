@@ -1,6 +1,7 @@
 package JSON;
 
 import items.Pub;
+import items.Pubs;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -8,18 +9,21 @@ import java.util.Collection;
 
 public class JSONPubs implements JSONHandler {
     private Collection<Pub> pubs;
-    private int page;
+    private int currentPage;
+    private int totalPages;
     private JSONObject jsonObject = new JSONObject();
 
 
-    public JSONPubs(Collection<Pub> pubs, int page) {
-        this.pubs = pubs;
-        this.page = page;
+    public JSONPubs(Pubs pubs) {
+        this.pubs = pubs.getPubs();
+        this.currentPage = pubs.getCurrentPage();
+        this.totalPages = pubs.getTotalPages();
         setJSONObject();
     }
 
     private void setJSONObject() {
-        jsonObject.put("pages", this.page);
+        jsonObject.put("current_page", this.currentPage);
+        jsonObject.put("pages", this.totalPages);
         JSONArray nodesArray = new JSONArray();
         for (final Pub pub : this.pubs) {
             nodesArray.add(new JSONObject() {

@@ -153,6 +153,12 @@ public class DatabaseHandler {
             "         ORDER BY node_id) a) num_b\n" +
             "WHERE link.node_a = num_a.node_id AND link.node_b = num_b.node_id\n" +
             "ORDER BY num_a, num_b";
+    private static final String PUB_PAGES_QUERY = "SELECT ceil(count(DISTINCT pt.pub_id) :: DOUBLE PRECISION / " + PUBS_PER_PAGE + ") AS pages\n" +
+            "FROM attendence a, pub_to_title pt\n" +
+            "WHERE a.pub_id = pt.pub_id";
+    private static final String STUDENT_PAGES_QUERY = "SELECT ceil(count(party_id) :: DOUBLE PRECISION / " + STUDENTS_PER_PAGE + ")\n" +
+            "FROM party_to_title";
+
 
     private DatabaseHandler() {
         try {
@@ -185,10 +191,13 @@ public class DatabaseHandler {
         }
     }
 
-    public Collection<Pub> getPubs(final int page) {
+    public Pubs getPubs(final int page) {
         log.info("Trying to get nodes from page " + page);
+        Pubs pubs = new Pubs();
         ConnectionsHandler connectionsHandler = null;
-        Collection<Pub> pubs = new ArrayList<Pub>();
+        ConnectionsHandler connectionsHandlerPages = null;
+        Collection<Pub> pubsCollection = new ArrayList<Pub>();
+        int totalPages = 0;
         try {
             if (conn == null) {
                 if (!connect()) {
@@ -199,14 +208,24 @@ public class DatabaseHandler {
             connectionsHandler = new ConnectionsHandler(conn, PUBS_QUERY, new QueryParameter(ParameterType.INT, ((page - 1) * PUBS_PER_PAGE)));
             ResultSet rs = connectionsHandler.getResultSet();
             while (rs.next()) {
-                pubs.add(new Pub(rs.getInt(1), rs.getString(2)));
+                pubsCollection.add(new Pub(rs.getInt(1), rs.getString(2)));
             }
+            connectionsHandlerPages = new ConnectionsHandler(conn, PUB_PAGES_QUERY);
+            ResultSet rsPages = connectionsHandlerPages.getResultSet();
+            if (rsPages.next()) {
+                totalPages = rsPages.getInt(1);
+            }
+            pubs.setPubs(pubsCollection);
+            pubs.setCurrentPage(page);
+            pubs.setTotalPages(totalPages);
         } catch (SQLException e) {
             log.error("Exception during getting nodes list :", e);
         } finally {
             try {
                 if (connectionsHandler != null)
                     connectionsHandler.closeHandlerConnections();
+                if (connectionsHandlerPages != null)
+                    connectionsHandlerPages.closeHandlerConnections();
                 disconnect();
             } catch (SQLException e) {
                 log.error("Exception during closing connection after getting nodes list");
@@ -215,10 +234,13 @@ public class DatabaseHandler {
         return pubs;
     }
 
-    public Collection<Student> getStudents(final int page) {
+    public Students getStudents(final int page) {
         log.info("Trying to get students from page " + page);
+        Students students = new Students();
         ConnectionsHandler connectionsHandler = null;
-        final Collection<Student> students = new ArrayList<Student>();
+        ConnectionsHandler connectionsHandlerPages = null;
+        int totalPages = 0;
+        final Collection<Student> studentsCollection = new ArrayList<Student>();
         try {
             if (conn == null) {
                 if (!connect()) {
@@ -229,8 +251,16 @@ public class DatabaseHandler {
             connectionsHandler = new ConnectionsHandler(conn, STUDENTS_QUERY, new QueryParameter(ParameterType.INT, ((page - 1) * STUDENTS_PER_PAGE)));
             ResultSet rs = connectionsHandler.getResultSet();
             while (rs.next()) {
-                students.add(new Student(rs.getInt(1), rs.getString(2)));
+                studentsCollection.add(new Student(rs.getInt(1), rs.getString(2)));
             }
+            connectionsHandlerPages = new ConnectionsHandler(conn, STUDENT_PAGES_QUERY);
+            ResultSet rsPages = connectionsHandlerPages.getResultSet();
+            if (rsPages.next()) {
+                totalPages = rsPages.getInt(1);
+            }
+            students.setStudents(studentsCollection);
+            students.setCurrentPage(page);
+            students.setTotalPages(totalPages);
         } catch (SQLException e) {
             log.error("Exception during getting students list :", e);
         } finally {

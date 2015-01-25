@@ -29,7 +29,7 @@ public class PubsServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.addHeader("Access-Control-Allow-Origin", "*");
         PrintWriter pw = resp.getWriter();
-        pw.println(new JSONPubs(DatabaseHandler.initialize().getPubs(page), page).getJSONString());
+        pw.println(new JSONPubs(DatabaseHandler.initialize().getPubs(page)).getJSONString());
         pw.close();
     }
 }

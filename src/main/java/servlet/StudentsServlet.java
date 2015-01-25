@@ -29,7 +29,7 @@ public class StudentsServlet extends HttpServlet {
         resp.setCharacterEncoding("UTF-8");
         resp.addHeader("Access-Control-Allow-Origin", "*");
         PrintWriter pw = resp.getWriter();
-        pw.println(new JSONStudents(DatabaseHandler.initialize().getStudents(page), page).getJSONString());
+        pw.println(new JSONStudents(DatabaseHandler.initialize().getStudents(page)).getJSONString());
         pw.close();
     }
 }
