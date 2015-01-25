@@ -8,7 +8,8 @@ class NodesController {
         $scope.pub_path = PATH_CONSTANTS.GENERAL_NODE_PATH;
         $http.get (PATH_CONSTANTS.NODES_PATH,{params: {"page": $routeParams.page}})
             .success ((pubs: IPubs)=> {
-                this.$scope.pages = 5;
+                this.$scope.pages = pubs.pages;
+                this.$scope.currentPage = pubs.current_page;
                 this.$scope.pubs = pubs.pubs;
         })
              .error(()=>{console.log("error")});

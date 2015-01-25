@@ -9,7 +9,8 @@ define(["require", "exports"], function (require, exports) {
             $scope.page_path = PATH_CONSTANTS.NODES_PATH;
             $scope.pub_path = PATH_CONSTANTS.GENERAL_NODE_PATH;
             $http.get(PATH_CONSTANTS.NODES_PATH, { params: { "page": $routeParams.page } }).success(function (pubs) {
-                _this.$scope.pages = 5;
+                _this.$scope.pages = pubs.pages;
+                _this.$scope.currentPage = pubs.current_page;
                 _this.$scope.pubs = pubs.pubs;
             }).error(function () {
                 console.log("error");

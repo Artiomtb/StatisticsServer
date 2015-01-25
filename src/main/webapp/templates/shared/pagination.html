@@ -1,5 +1,7 @@
 <nav class="center">
     <ul class="pagination">
+        <li ng-if="backLink"><a href="#{{path}}/{{backLink}}">&lt;&lt;</a></li>
         <li ng-repeat="page in pagesArray"><a href="#{{path}}/{{page}}">{{page}}</a></li>
+        <li ng-if="forwardLink"><a href="#{{path}}/{{forwardLink}}">&gt;&gt;</a></li>
     </ul>
 </nav>
