@@ -9,7 +9,6 @@ class StudentNodeStatistics {
                 console.log("node stats " + node_stats);
             })
             .error(()=> {
-                console.log("some error occured");
             });
     }
 }

@@ -1,13 +1,12 @@
-
-
 var w = 960,
     h = 500
 
-var vis = d3.select("#transition_graph").append("svg:svg")
-    .attr("width", w)
-    .attr("height", h);
-
- document.addEventListener('json', function(json) {
+ document.addEventListener('jsonEvent', function(e){
+     var vis = d3.select(".graph")
+         .append("svg:svg")
+         .attr("width", w)
+         .attr("height", h);
+     var json = document.json;
     var force = self.force = d3.layout.force()
         .nodes(json.nodes)
         .links(json.links)
@@ -58,7 +57,7 @@ var vis = d3.select("#transition_graph").append("svg:svg")
 
     node.append("svg:image")
         .attr("class", "circle")
-        .attr("xlink:href", "https://github.com/favicon.ico")
+        .attr("xlink:href", "http://www.jonjanitor.com/wp-content/themes/imaids-theme/img/icon-blue-dot.png")
         .attr("x", "-8px")
         .attr("y", "-8px")
         .attr("width", "16px")

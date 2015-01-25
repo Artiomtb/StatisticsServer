@@ -10,18 +10,15 @@ define(["require", "exports", "d3_chart"], function (require, exports) {
             this.PATH_CONSTANTS = PATH_CONSTANTS;
             $scope.material_path = PATH_CONSTANTS.GENERAL_MATERIAL_PATH;
             $http.get(PATH_CONSTANTS.GENERAL_NODE_PATH, { params: { pub_id: $routeParams.node_id } }).success(function (pub) {
+                _this.$scope.transitions = pub.transitions;
                 _this.$scope.node_stats = pub;
                 _this.$scope.df = pub.trend;
                 _this.$scope.trend = pub.students;
-                console.log("trend studentss" + _this.$scope.df.length);
                 _this.$scope.materials_stats = pub.materials;
                 _this.$scope.materials_trends = pub.materials_trends;
-                console.log("materials trend " + _this.$scope.materials_trends);
-                _this.$scope.transitions = pub.transitions;
-                var jsonEvent = document.createEvent('CustomEvent');
-                jsonEvent.initCustomEvent('json', true, true, pub.transitions);
+                document.json = pub.transitions;
+                var jsonEvent = new CustomEvent("jsonEvent", { detail: pub.transitions });
                 document.dispatchEvent(jsonEvent);
-                console.log("asdfasdfasdfasd" + _this.$scope.transitions);
             }).error(function () {
                 console.log("something went wrong");
             });

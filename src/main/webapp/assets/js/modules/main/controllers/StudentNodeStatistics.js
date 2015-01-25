@@ -11,7 +11,6 @@ define(["require", "exports"], function (require, exports) {
                 _this.$scope.node_stats = node_stats;
                 console.log("node stats " + node_stats);
             }).error(function () {
-                console.log("some error occured");
             });
         }
         StudentNodeStatistics.$injcet = ['$scope', '$http', 'PATH_CONSTANTS', '$routeParams'];

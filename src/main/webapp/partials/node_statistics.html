@@ -3,8 +3,10 @@
 <div class="panel panel-default">
         <div style = "cursor: pointer" ng-click = "generalStatistics = ! generalStatistics" class="panel-heading">Загальна статистика</div>
         <div class="panel-body" collapse="generalStatistics">
+            <div class = "graph well">
+                <h4>Граф переходів:</h4>
+            </div>
             <trend trend="df" name="Загальна статистика:"></trend>
-            <div ng-if="transitions.links.length > 0" id = "transition_graph"></div>
             <bar-chart trend = "trend" ></bar-chart>
         </div>
 </div>
