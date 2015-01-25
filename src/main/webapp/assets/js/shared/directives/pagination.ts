@@ -4,11 +4,10 @@ function pegination(){
         scope: {
             pages: "=",
             currentPage: "=",
-            path: "="
+            path: "@"
         },
         link: function (scope,element, attrs){
             scope.$watch(attrs.pages,()=> {
-                console.log("current page " + scope.currentPage);
                 if(scope.currentPage + 10 < scope.pages) {
                     scope.forwardLink = scope.currentPage + 10;
                 }

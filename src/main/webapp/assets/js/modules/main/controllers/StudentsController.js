@@ -8,10 +8,10 @@ define(["require", "exports"], function (require, exports) {
             this.$http = $http;
             $scope.page_path = PATH_CONSTANTS.STUDENTS_PATH;
             $scope.student_path = PATH_CONSTANTS.STUDENT;
-            console.log("stud path " + $scope.student_path);
             $http.get(PATH_CONSTANTS.STUDENTS_PATH, { params: { page: $routeParams.page } }).success(function (students) {
                 _this.$scope.students = students.students;
-                _this.$scope.pages = 10;
+                _this.$scope.pages = students.pages;
+                _this.$scope.currentPage = students.current_page;
             }).error(function () {
                 console.log("some error occured");
             });

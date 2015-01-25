@@ -53,6 +53,7 @@ interface INodeStatistics {
 interface IStudents {
     pages: number;
     students: Array<IStudent>;
+    current_page: number;
 }
 
 interface IStudentMaterial {
