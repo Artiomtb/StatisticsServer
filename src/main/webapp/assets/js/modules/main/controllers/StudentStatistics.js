@@ -7,12 +7,10 @@ define(["require", "exports"], function (require, exports) {
             this.$http = $http;
             this.PATH_CONSTANTS = PATH_CONSTANTS;
             this.$routeParams = $routeParams;
-            console.log("in student statistics");
             $scope.pub_path = PATH_CONSTANTS.STUDENT_NODE_MATERIALS + "/" + $routeParams.party_id;
             $http.get(PATH_CONSTANTS.STUDENT, { params: { party_id: $routeParams.party_id } }).success(function (nodes) {
                 _this.$scope.nodes = nodes;
             }).error(function () {
-                console.log("someting bad happend");
             });
         }
         StudentStatistics.$inject = ['$scope', '$http', 'PATH_CONSTANTS', '$routeParams'];

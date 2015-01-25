@@ -7,8 +7,7 @@ function nodes(PATH_CONSTANTS) {
         },
         templateUrl: "/templates/main/nodes.html",
         link: function (scope) {
-            console.log("directivess " + scope.nodePath);
-            console.log("directive " + nodes);
+
         }
     }
 }

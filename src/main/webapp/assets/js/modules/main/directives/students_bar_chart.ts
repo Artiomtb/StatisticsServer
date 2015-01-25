@@ -14,13 +14,11 @@ function studentsBarChart() {
                             max = scope.trend[i].total_attendance;
                         }
                     }
-                    console.log("material stats " + JSON.stringify(scope.trend));
                     for (var i = 0; i < scope.trend.length; i++) {
                         scope.data.push({});
                         scope.data[i].label = scope.trend[i].party_name;
                         scope.data[i].attendance = Math.round(scope.trend[i].total_attendance*100/max);
                     }
-                    console.log("data in " + JSON.stringify(scope.data));
                 }
             })
         },

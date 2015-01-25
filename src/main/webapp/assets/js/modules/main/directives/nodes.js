@@ -8,8 +8,6 @@ define(["require", "exports"], function (require, exports) {
             },
             templateUrl: "/templates/main/nodes.html",
             link: function (scope) {
-                console.log("directivess " + scope.nodePath);
-                console.log("directive " + nodes);
             }
         };
     }

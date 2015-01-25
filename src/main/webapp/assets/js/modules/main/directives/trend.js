@@ -10,7 +10,6 @@ define(["require", "exports"], function (require, exports) {
             link: function (scope, elementm, attrs) {
                 scope.$watch('trend', function () {
                     if (scope.trend != undefined) {
-                        console.log("in trend directive " + JSON.stringify(scope.trend));
                         scope.trend_data = {};
                         scope.trend_data.name = scope.trendName;
                         scope.trend_data.data = {
@@ -26,7 +25,6 @@ define(["require", "exports"], function (require, exports) {
                                 }
                             ]
                         };
-                        console.log("materials trend " + JSON.stringify(scope.materials));
                         for (var trend_idx = 0; trend_idx < scope.trend.length; trend_idx++) {
                             scope.trend_data.data.labels[trend_idx] = scope.trend[trend_idx].date;
                             scope.trend_data.data.datasets[0].data[trend_idx] = scope.trend[trend_idx].time;
