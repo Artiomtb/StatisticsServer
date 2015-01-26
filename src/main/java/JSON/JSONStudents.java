@@ -39,4 +39,9 @@ public class JSONStudents implements JSONHandler {
     public String getJSONString() {
         return this.jsonObject.toJSONString();
     }
+
+    @Override
+    public JSONObject getJSONObject() {
+        return this.jsonObject;
+    }
 }

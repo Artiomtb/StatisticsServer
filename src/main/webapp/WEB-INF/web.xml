@@ -24,6 +24,10 @@
         <servlet-name>StudentsPub</servlet-name>
         <servlet-class>servlet.StudentsPubServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>LinksServlet</servlet-name>
+        <servlet-class>servlet.LinksServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>Pubs</servlet-name>
         <url-pattern>/monitor/pubs</url-pattern>
@@ -43,6 +47,10 @@
     <servlet-mapping>
         <servlet-name>StudentsPub</servlet-name>
         <url-pattern>/monitor/student/pub</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>LinksServlet</servlet-name>
+        <url-pattern>/monitor/general/pub/links</url-pattern>
     </servlet-mapping>
     <error-page>
         <error-code>404</error-code>

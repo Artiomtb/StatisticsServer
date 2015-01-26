@@ -1,6 +1,5 @@
 package JSON;
 
-import items.Node;
 import items.Pub;
 import items.Student;
 import org.json.simple.JSONArray;
@@ -39,5 +38,10 @@ public class JSONPubsByStudent implements JSONHandler {
     @Override
     public String getJSONString() {
         return this.jsonObject.toJSONString();
+    }
+
+    @Override
+    public JSONObject getJSONObject() {
+        return this.jsonObject;
     }
 }
