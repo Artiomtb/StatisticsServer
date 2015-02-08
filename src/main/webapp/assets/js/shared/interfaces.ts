@@ -7,7 +7,7 @@ interface IPub {
 interface IPubs {
     pubs: Array<IPub>;
     pages: number;
-    current_page: nember;
+    current_page: number;
 }
 
 interface IMaterial {

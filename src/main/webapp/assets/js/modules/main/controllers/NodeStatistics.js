@@ -1,6 +1,5 @@
-/// <reference path="../../../shared/interfaces.ts" />
-///<amd-dependency path = 'd3_chart'>
-define(["require", "exports", "d3_chart"], function (require, exports) {
+define(["require", "exports", "d3_chart", "ng-slider"], function (require, exports) {
+    /// <reference path="../../../shared/interfaces.ts" />
     var NodeStatistics = (function () {
         function NodeStatistics($scope, $http, $routeParams, PATH_CONSTANTS) {
             var _this = this;
@@ -9,7 +8,27 @@ define(["require", "exports", "d3_chart"], function (require, exports) {
             this.$routeParams = $routeParams;
             this.PATH_CONSTANTS = PATH_CONSTANTS;
             $scope.material_path = PATH_CONSTANTS.GENERAL_MATERIAL_PATH;
-            $http.get(PATH_CONSTANTS.GENERAL_NODE_PATH, { params: { pub_id: $routeParams.node_id } }).success(function (pub) {
+            $scope.value = "5";
+            $scope.options = {
+                from: 1,
+                to: 30,
+                step: 1,
+                dimension: " min",
+                css: {
+                    pointer: {
+                        "background-color": "#337ab7",
+                        "border-radius": "50%"
+                    },
+                    before: { "background-color": "#C6D8E1" },
+                    after: { "background-color": "#C6D8E1" }
+                }
+            };
+            var isSlideMouseDown = false;
+            $scope.updateGraph = function () {
+                console.log("down");
+                isSlideMouseDown = true;
+            };
+            var graphDataCallback = function (pub) {
                 _this.$scope.transitions = pub.transitions;
                 _this.$scope.node_stats = pub;
                 _this.$scope.df = pub.trend;
@@ -19,7 +38,19 @@ define(["require", "exports", "d3_chart"], function (require, exports) {
                 document.json = pub.transitions;
                 var jsonEvent = new CustomEvent("jsonEvent", { detail: pub.transitions });
                 document.dispatchEvent(jsonEvent);
-            }).error(function () {
+                $scope.loadGraph = false;
+            };
+            angular.element(document).bind("mouseup", function () {
+                $scope.loadGraph = true;
+                if (isSlideMouseDown) {
+                    isSlideMouseDown = false;
+                    console.log(PATH_CONSTANTS.UPDATE_GRAPH);
+                    $http.get(PATH_CONSTANTS.UPDATE_GRAPH, { params: { pub_id: $routeParams.node_id, link_time: $scope.value } }).success(graphDataCallback).error(function () {
+                        console.log("something went wrong");
+                    });
+                }
+            });
+            $http.get(PATH_CONSTANTS.GENERAL_NODE_PATH, { params: { pub_id: $routeParams.node_id } }).success(graphDataCallback).error(function () {
                 console.log("something went wrong");
             });
         }

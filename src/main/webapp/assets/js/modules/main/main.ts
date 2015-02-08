@@ -24,7 +24,7 @@ var pagination = require("shared/directives/pagination");
 var barChart = require("directives/students_bar_chart");
 var materialsBarChart = require("directives/materials_bar_chart");
 
-angular.module('app',['ngRoute','tc.chartjs','ui.bootstrap']);
+angular.module('app',['ngRoute','tc.chartjs','ui.bootstrap', 'ngSlider']);
 
 angular.module('app')
     .constant(
@@ -35,7 +35,9 @@ angular.module('app')
         "STUDENTS_PATH": "/monitor/students",
         "STUDENT": "/monitor/student/pubs",
         "STUDENT_NODE_MATERIALS": "/monitor/student/pub",
-        "STUDENT_MATERIAL": "/monitor/student/material"});
+        "STUDENT_MATERIAL": "/monitor/student/material",
+        "UPDATE_GRAPH": "/monitor/general/pub/links"}
+);
 
 angular.module("app").config(($routeProvider, PATH_CONSTANTS)=>{
     $routeProvider

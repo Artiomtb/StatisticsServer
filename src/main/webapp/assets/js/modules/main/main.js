@@ -13,7 +13,7 @@ define(["require", "exports", "controllers/MainController", "controllers/NodesCo
     var pagination = require("shared/directives/pagination");
     var barChart = require("directives/students_bar_chart");
     var materialsBarChart = require("directives/materials_bar_chart");
-    angular.module('app', ['ngRoute', 'tc.chartjs', 'ui.bootstrap']);
+    angular.module('app', ['ngRoute', 'tc.chartjs', 'ui.bootstrap', 'ngSlider']);
     angular.module('app').constant("PATH_CONSTANTS", {
         "NODES_PATH": "/monitor/pubs",
         "GENERAL_NODE_PATH": "/monitor/general/pub",
@@ -21,7 +21,8 @@ define(["require", "exports", "controllers/MainController", "controllers/NodesCo
         "STUDENTS_PATH": "/monitor/students",
         "STUDENT": "/monitor/student/pubs",
         "STUDENT_NODE_MATERIALS": "/monitor/student/pub",
-        "STUDENT_MATERIAL": "/monitor/student/material"
+        "STUDENT_MATERIAL": "/monitor/student/material",
+        "UPDATE_GRAPH": "/monitor/general/pub/links"
     });
     angular.module("app").config(function ($routeProvider, PATH_CONSTANTS) {
         $routeProvider.when(PATH_CONSTANTS.NODES_PATH + "/:page", { controller: "NodesController", templateUrl: "/partials/nodes.html" }).when(PATH_CONSTANTS.GENERAL_NODE_PATH + "/:node_id", { controller: "NodeStatistics", templateUrl: "/partials/node_statistics.html" }).when(PATH_CONSTANTS.GENERAL_MATERIAL_PATH + "/:material_id", { controller: "MaterialStatistics", templateUrl: "/partials/material_statistics.html" }).when(PATH_CONSTANTS.STUDENTS_PATH + "/:page", { controller: "StudentsController", templateUrl: "/partials/students.html" }).when(PATH_CONSTANTS.STUDENT + "/:party_id", { controller: "StudentStatistics", templateUrl: "/partials/student_statistics.html" }).when(PATH_CONSTANTS.STUDENT_NODE_MATERIALS + "/:party_id/:node_id", { controller: "StudentNodeStatistics", templateUrl: "/partials/student_node_statistics.html" }).when(PATH_CONSTANTS.STUDENT_MATERIAL + "/:party_id/:material_id", { controller: "StudentMaterial", templateUrl: "/partials/student_material.html" }).otherwise({ redirectTo: PATH_CONSTANTS.NODES_PATH + "/1" });

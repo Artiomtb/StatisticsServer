@@ -12,7 +12,8 @@ require.config({
             'controllers': 'modules/' + loc +'/controllers',
             'services': 'modules/' + loc +'/services',
             'directives': 'modules/' + loc +'/directives',
-            'd3_chart': 'vendor/d3chart'
+            'd3_chart': 'vendor/d3chart',
+            'ng-slider' : 'vendor/ng-slider/dist/ng-slider.min'
         },
         shim: {
             'angular': {
@@ -27,6 +28,9 @@ require.config({
                 deps: ['angular']
             },
             'd3_chart': {
+            },
+            'ng-slider': {
+                deps: ['angular']
             }
         }
     }
