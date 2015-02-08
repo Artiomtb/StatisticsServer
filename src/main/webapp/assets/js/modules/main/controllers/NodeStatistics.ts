@@ -3,9 +3,9 @@
 ///<amd-dependency path="ng-slider">
 declare var angular;
 class NodeStatistics {
-    static $inject = ["$scope", "$http","$routeParams" ,"PATH_CONSTANTS"];
+    static $inject = ["$scope", "$http","$routeParams" ,"PATH_CONSTANTS", "$timeout"];
 
-    constructor(private $scope, private $http, private $routeParams, private PATH_CONSTANTS){
+    constructor(private $scope, private $http, private $routeParams, private PATH_CONSTANTS, $timeout){
         $scope.material_path=PATH_CONSTANTS.GENERAL_MATERIAL_PATH;
 
         $scope.value = "5";
@@ -51,23 +51,26 @@ class NodeStatistics {
 
 
         angular.element(document).bind("mouseup", ()=> {
-            $scope.loadGraph = true;
-            if (isSlideMouseDown) {
-                isSlideMouseDown = false;
-                console.log(PATH_CONSTANTS.UPDATE_GRAPH);
-                $http.get(PATH_CONSTANTS.UPDATE_GRAPH, {params: {pub_id: $routeParams.node_id, link_time: $scope.value}})
-                .success(function (data) {
-                        if(angular.element(document.getElementsByTagName("svg"))) {
-                            angular.element(document.getElementsByTagName("svg")).remove();
-                            console.log("remove svg");
-                        }
-                        document.json = data;
-                        $scope.loadGraph = false;
-                        var jsonEvent  = new CustomEvent("jsonEvent", {detail: data});
-                        document.dispatchEvent(jsonEvent);
-                    })
-                .error(()=>{console.log("something went wrong")});
-            }
+            $timeout(()=>{
+                $scope.loadGraph = true;
+                console.log($scope.value);
+                if (isSlideMouseDown) {
+                    isSlideMouseDown = false;
+                    console.log(PATH_CONSTANTS.UPDATE_GRAPH);
+                    $http.get(PATH_CONSTANTS.UPDATE_GRAPH, {params: {pub_id: $routeParams.node_id, link_time: $scope.value}})
+                        .success(function (data) {
+                            if(angular.element(document.getElementsByTagName("svg"))) {
+                                angular.element(document.getElementsByTagName("svg")).remove();
+                                console.log("remove svg");
+                            }
+                            document.json = data;
+                            $scope.loadGraph = false;
+                            var jsonEvent  = new CustomEvent("jsonEvent", {detail: data});
+                            document.dispatchEvent(jsonEvent);
+                        })
+                        .error(()=>{console.log("something went wrong")});
+                }
+            }, 500);
         });
 
         $http.get(PATH_CONSTANTS.GENERAL_NODE_PATH,{params: {pub_id: $routeParams.node_id }})

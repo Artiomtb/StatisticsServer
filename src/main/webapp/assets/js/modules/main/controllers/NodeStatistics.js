@@ -1,7 +1,7 @@
 define(["require", "exports", "d3_chart", "ng-slider"], function (require, exports) {
     /// <reference path="../../../shared/interfaces.ts" />
     var NodeStatistics = (function () {
-        function NodeStatistics($scope, $http, $routeParams, PATH_CONSTANTS) {
+        function NodeStatistics($scope, $http, $routeParams, PATH_CONSTANTS, $timeout) {
             var _this = this;
             this.$scope = $scope;
             this.$http = $http;
@@ -45,29 +45,32 @@ define(["require", "exports", "d3_chart", "ng-slider"], function (require, expor
                 $scope.loadGraph = false;
             };
             angular.element(document).bind("mouseup", function () {
-                $scope.loadGraph = true;
-                if (isSlideMouseDown) {
-                    isSlideMouseDown = false;
-                    console.log(PATH_CONSTANTS.UPDATE_GRAPH);
-                    $http.get(PATH_CONSTANTS.UPDATE_GRAPH, { params: { pub_id: $routeParams.node_id, link_time: $scope.value } }).success(function (data) {
-                        if (angular.element(document.getElementsByTagName("svg"))) {
-                            angular.element(document.getElementsByTagName("svg")).remove();
-                            console.log("remove svg");
-                        }
-                        document.json = data;
-                        $scope.loadGraph = false;
-                        var jsonEvent = new CustomEvent("jsonEvent", { detail: data });
-                        document.dispatchEvent(jsonEvent);
-                    }).error(function () {
-                        console.log("something went wrong");
-                    });
-                }
+                $timeout(function () {
+                    $scope.loadGraph = true;
+                    console.log($scope.value);
+                    if (isSlideMouseDown) {
+                        isSlideMouseDown = false;
+                        console.log(PATH_CONSTANTS.UPDATE_GRAPH);
+                        $http.get(PATH_CONSTANTS.UPDATE_GRAPH, { params: { pub_id: $routeParams.node_id, link_time: $scope.value } }).success(function (data) {
+                            if (angular.element(document.getElementsByTagName("svg"))) {
+                                angular.element(document.getElementsByTagName("svg")).remove();
+                                console.log("remove svg");
+                            }
+                            document.json = data;
+                            $scope.loadGraph = false;
+                            var jsonEvent = new CustomEvent("jsonEvent", { detail: data });
+                            document.dispatchEvent(jsonEvent);
+                        }).error(function () {
+                            console.log("something went wrong");
+                        });
+                    }
+                }, 500);
             });
             $http.get(PATH_CONSTANTS.GENERAL_NODE_PATH, { params: { pub_id: $routeParams.node_id } }).success(graphDataCallback).error(function () {
                 console.log("something went wrong");
             });
         }
-        NodeStatistics.$inject = ["$scope", "$http", "$routeParams", "PATH_CONSTANTS"];
+        NodeStatistics.$inject = ["$scope", "$http", "$routeParams", "PATH_CONSTANTS", "$timeout"];
         return NodeStatistics;
     })();
     return NodeStatistics;
