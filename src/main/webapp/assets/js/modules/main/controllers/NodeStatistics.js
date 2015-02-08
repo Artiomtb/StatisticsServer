@@ -29,6 +29,10 @@ define(["require", "exports", "d3_chart", "ng-slider"], function (require, expor
                 isSlideMouseDown = true;
             };
             var graphDataCallback = function (pub) {
+                if (angular.element(document.getElementsByTagName("svg"))) {
+                    angular.element(document.getElementsByTagName("svg")).remove();
+                    console.log("remove svg");
+                }
                 _this.$scope.transitions = pub.transitions;
                 _this.$scope.node_stats = pub;
                 _this.$scope.df = pub.trend;
@@ -45,7 +49,16 @@ define(["require", "exports", "d3_chart", "ng-slider"], function (require, expor
                 if (isSlideMouseDown) {
                     isSlideMouseDown = false;
                     console.log(PATH_CONSTANTS.UPDATE_GRAPH);
-                    $http.get(PATH_CONSTANTS.UPDATE_GRAPH, { params: { pub_id: $routeParams.node_id, link_time: $scope.value } }).success(graphDataCallback).error(function () {
+                    $http.get(PATH_CONSTANTS.UPDATE_GRAPH, { params: { pub_id: $routeParams.node_id, link_time: $scope.value } }).success(function (data) {
+                        if (angular.element(document.getElementsByTagName("svg"))) {
+                            angular.element(document.getElementsByTagName("svg")).remove();
+                            console.log("remove svg");
+                        }
+                        document.json = data;
+                        $scope.loadGraph = false;
+                        var jsonEvent = new CustomEvent("jsonEvent", { detail: data });
+                        document.dispatchEvent(jsonEvent);
+                    }).error(function () {
                         console.log("something went wrong");
                     });
                 }

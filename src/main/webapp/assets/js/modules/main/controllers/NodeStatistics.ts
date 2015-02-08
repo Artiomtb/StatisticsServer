@@ -33,6 +33,10 @@ class NodeStatistics {
         }
 
         var graphDataCallback = (pub: IPubStats)=>{
+            if(angular.element(document.getElementsByTagName("svg"))) {
+                angular.element(document.getElementsByTagName("svg")).remove();
+                console.log("remove svg");
+            }
             this.$scope.transitions = pub.transitions;
             this.$scope.node_stats = pub;
             this.$scope.df = pub.trend;
@@ -45,13 +49,23 @@ class NodeStatistics {
             $scope.loadGraph = false;
         };
 
+
         angular.element(document).bind("mouseup", ()=> {
             $scope.loadGraph = true;
             if (isSlideMouseDown) {
                 isSlideMouseDown = false;
                 console.log(PATH_CONSTANTS.UPDATE_GRAPH);
                 $http.get(PATH_CONSTANTS.UPDATE_GRAPH, {params: {pub_id: $routeParams.node_id, link_time: $scope.value}})
-                .success(graphDataCallback)
+                .success(function (data) {
+                        if(angular.element(document.getElementsByTagName("svg"))) {
+                            angular.element(document.getElementsByTagName("svg")).remove();
+                            console.log("remove svg");
+                        }
+                        document.json = data;
+                        $scope.loadGraph = false;
+                        var jsonEvent  = new CustomEvent("jsonEvent", {detail: data});
+                        document.dispatchEvent(jsonEvent);
+                    })
                 .error(()=>{console.log("something went wrong")});
             }
         });
