@@ -26,7 +26,6 @@ public class DatabaseHandler {
     private static final int DAYS_TO_PUB_MATERIAL_TREND = 5;
     private static final int DAYS_TO_PUB_STUDENT_TREND = 10;
     private static final int DAYS_TO_PUB_NODE_STUDENT_TREND = 12;
-    private static final int MINUTES_TO_NODES_LINK = 10;
     private static final String PUBS_QUERY = "SELECT DISTINCT pt.pub_id, pt.title FROM attendence a, pub_to_title pt where a.pub_id = pt.pub_id LIMIT " + PUBS_PER_PAGE + " OFFSET ?";
     private static final String STUDENTS_QUERY = "SELECT party_id, title FROM party_to_title LIMIT " + STUDENTS_PER_PAGE + "OFFSET ?";
     private static final String PUB_BY_ID_QUERY = "SELECT pub_id, title FROM pub_to_title WHERE pub_id = ?";
@@ -128,7 +127,7 @@ public class DatabaseHandler {
             "          WHERE pub_id = ?\n" +
             "          ORDER BY created_at DESC) y\n" +
             "       WHERE y.num = t.num AND y.node_id != t.node_id AND y.party_id = t.party_id AND\n" +
-            "             floor(extract(EPOCH FROM (t.created_at - y.updated_at)) / 60) < " + MINUTES_TO_NODES_LINK + ") link,\n" +
+            "             floor(extract(EPOCH FROM (t.created_at - y.updated_at)) / 60) < ?) link,\n" +
             "  (SELECT\n" +
             "     row_number()\n" +
             "     OVER (\n" +
@@ -275,7 +274,7 @@ public class DatabaseHandler {
         return students;
     }
 
-    public GeneralPubContainer getPubGeneral(final int pubId) {
+    public GeneralPubContainer getPubGeneral(final int pubId, int linkTime) {
         log.info("Trying to get pub by pub_id = " + pubId);
         ConnectionsHandler pubConnectionHandler = null;
         ConnectionsHandler materialAttendanceConnectionHandler = null;
@@ -334,30 +333,8 @@ public class DatabaseHandler {
                 materialsAttendance.put(currentNode, materialTrendAttendance);
                 trendMaterialConnectionHandler.closeHandlerConnections();
             }
-            Map<Integer, Set<Integer>> nodeLinks = new HashMap<Integer, Set<Integer>>();
-            log.info("Starting getting links...");
-            QueryParameter[] params = new QueryParameter[]{pubQP, pubQP, pubQP, pubQP};
-            nodesLinksConnectionHandler = new ConnectionsHandler(conn, NODES_SUBSCRIBE_LINK_IN_PUB_QUERY, params);
-            ResultSet links = nodesLinksConnectionHandler.getResultSet();
-            while (links.next()) {
-                int nodeA = links.getInt(2);
-                int nodeB = links.getInt(4);
-                if (nodeLinks.containsKey(nodeA)) {
-                    nodeLinks.get(nodeA).add(nodeB);
-                } else {
-                    Set<Integer> nodeASet = new HashSet<Integer>();
-                    nodeASet.add(nodeB);
-                    nodeLinks.put(nodeA, nodeASet);
-                }
-            }
-            log.info("Getting links finished");
-            for (Map.Entry e : nodeLinks.entrySet()) {
-                Set s = (Set) e.getValue();
-                Integer k = (Integer) e.getKey();
-                log.info(k + " " + s);
-
-            }
-            generalPubContainer = new GeneralPubContainer(pub, materialAttendance, studentsAttendance, trendAttendance, materialsAttendance, nodes, nodeLinks);
+            Map<Integer, Set<Integer>> nodeLinks = calculateLinks(conn, pubId, linkTime);
+            generalPubContainer = new GeneralPubContainer(pub, materialAttendance, studentsAttendance, trendAttendance, materialsAttendance, new LinkContainer(nodes, nodeLinks, linkTime));
         } catch (SQLException e) {
             log.error("Exception while getting pub general information", e);
         } finally {
@@ -507,5 +484,72 @@ public class DatabaseHandler {
             }
         }
         return pubStudentContainer;
+    }
+
+    public LinkContainer getLinks(int pubId, int linkTime) {
+        LinkContainer linkContainer = null;
+        Map<Integer, Set<Integer>> nodeLinks = new HashMap<Integer, Set<Integer>>();
+        ArrayList<Node> nodes = new ArrayList<Node>();
+        ConnectionsHandler materialListConnectionHandler = null;
+        try {
+            if (conn == null) {
+                if (!connect()) {
+                    log.error("Cannot create connection");
+                    return linkContainer;
+                }
+            }
+            materialListConnectionHandler = new ConnectionsHandler(conn, NODES_BY_PUB_ID_QUERY, new QueryParameter(ParameterType.INT, pubId));
+            ResultSet materialResults = materialListConnectionHandler.getResultSet();
+            while (materialResults.next()) {
+                nodes.add(new Node(materialResults.getInt(1), materialResults.getString(2)));
+            }
+            nodeLinks = calculateLinks(conn, pubId, linkTime);
+            linkContainer = new LinkContainer(nodes, nodeLinks, linkTime);
+        } catch (SQLException e) {
+            log.error("Exception during getting links list :", e);
+        } finally {
+            try {
+                disconnect();
+                if (materialListConnectionHandler != null)
+                    materialListConnectionHandler.closeHandlerConnections();
+            } catch (SQLException e) {
+                log.error("Exception during closing connection after getting links list");
+            }
+        }
+        return linkContainer;
+    }
+
+    private Map<Integer, Set<Integer>> calculateLinks(Connection conn, int pubId, int linkTime) throws SQLException {
+        Map<Integer, Set<Integer>> nodeLinks = new HashMap<Integer, Set<Integer>>();
+        log.info("Starting getting links for pub_id=" + pubId + " and link_time=" + linkTime + "...");
+        ConnectionsHandler nodesLinksConnectionHandler = null;
+        QueryParameter pubQP = new QueryParameter(ParameterType.INT, pubId);
+        QueryParameter[] params = new QueryParameter[]{pubQP, pubQP, new QueryParameter(ParameterType.INT, linkTime), pubQP, pubQP};
+        try {
+            nodesLinksConnectionHandler = new ConnectionsHandler(conn, NODES_SUBSCRIBE_LINK_IN_PUB_QUERY, params);
+            ResultSet links = nodesLinksConnectionHandler.getResultSet();
+            while (links.next()) {
+                int nodeA = links.getInt(2);
+                int nodeB = links.getInt(4);
+                if (nodeLinks.containsKey(nodeA)) {
+                    nodeLinks.get(nodeA).add(nodeB);
+                } else {
+                    Set<Integer> nodeASet = new HashSet<Integer>();
+                    nodeASet.add(nodeB);
+                    nodeLinks.put(nodeA, nodeASet);
+                }
+            }
+            log.info("Getting links finished");
+            for (Map.Entry e : nodeLinks.entrySet()) {
+                Set s = (Set) e.getValue();
+                Integer k = (Integer) e.getKey();
+                log.info(k + " " + s);
+
+            }
+        } finally {
+            if (nodesLinksConnectionHandler != null)
+                nodesLinksConnectionHandler.closeHandlerConnections();
+        }
+        return nodeLinks;
     }
 }

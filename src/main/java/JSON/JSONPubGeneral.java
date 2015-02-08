@@ -4,7 +4,6 @@ import items.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -16,8 +15,7 @@ public class JSONPubGeneral implements JSONHandler {
     private Collection<Trend> trendAttendance;
     private JSONObject jsonObject = new JSONObject();
     private Map<Node, Collection<Trend>> materialTrendAttendance;
-    private ArrayList<Node> nodes;
-    private Map<Integer, Set<Integer>> nodeLinks;
+    private LinkContainer linkContainer;
 
     public JSONPubGeneral(GeneralPubContainer generalPubContainer) {
         if (generalPubContainer != null) {
@@ -28,8 +26,7 @@ public class JSONPubGeneral implements JSONHandler {
                 this.studentAttendance = generalPubContainer.getStudentAttendance();
                 this.trendAttendance = generalPubContainer.getTrendAttendance();
                 this.materialTrendAttendance = generalPubContainer.getMaterialTrendAttendance();
-                this.nodes = generalPubContainer.getNodes();
-                this.nodeLinks = generalPubContainer.getNodeLinks();
+                this.linkContainer = generalPubContainer.getLinkContainer();
                 setJSONObject();
             }
         }
@@ -95,7 +92,7 @@ public class JSONPubGeneral implements JSONHandler {
         }
         jsonObject.put("materials_trends", materialTrendArray);
         final JSONArray nodesArray = new JSONArray();
-        for (final Node node : nodes) {
+        for (final Node node : linkContainer.getNodes()) {
             nodesArray.add(new JSONObject() {
                 {
                     put("name", node.getNodeTitle());
@@ -104,7 +101,7 @@ public class JSONPubGeneral implements JSONHandler {
             });
         }
         final JSONArray linksArray = new JSONArray();
-        for (Map.Entry entry : nodeLinks.entrySet()) {
+        for (Map.Entry entry : linkContainer.getNodeLinks().entrySet()) {
             final int nodeA = (Integer) entry.getKey();
             Set<Integer> nodesB = (Set<Integer>) entry.getValue();
             for (final int nodeB : nodesB) {
@@ -116,16 +113,16 @@ public class JSONPubGeneral implements JSONHandler {
                 });
             }
         }
-        jsonObject.put("transitions", new JSONObject() {
-            {
-                put("nodes", nodesArray);
-                put("links", linksArray);
-            }
-        });
+        jsonObject.put("transitions", new JSONLinks(linkContainer).getJSONObject());
     }
 
     @Override
     public String getJSONString() {
         return this.jsonObject.toJSONString();
+    }
+
+    @Override
+    public JSONObject getJSONObject() {
+        return this.jsonObject;
     }
 }

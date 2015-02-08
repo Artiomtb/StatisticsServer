@@ -1,6 +1,6 @@
 package servlet;
 
-import JSON.JSONPubGeneral;
+import JSON.JSONLinks;
 import model.DatabaseHandler;
 import org.apache.log4j.Logger;
 
@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-public class PubServlet extends HttpServlet {
-    private static final Logger log = Logger.getLogger("PubServlet.class");
+public class LinksServlet extends HttpServlet {
+    private static final Logger log = Logger.getLogger("LinksServlet.class");
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -35,7 +35,7 @@ public class PubServlet extends HttpServlet {
         resp.addHeader("Access-Control-Allow-Origin", "*");
         PrintWriter pw = resp.getWriter();
         DatabaseHandler databaseHandler = DatabaseHandler.initialize();
-        pw.println(new JSONPubGeneral(databaseHandler.getPubGeneral(pub, linkTime)).getJSONString());
+        pw.println(new JSONLinks(databaseHandler.getLinks(pub, linkTime)).getJSONString());
         pw.close();
     }
 }
