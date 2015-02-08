@@ -43,6 +43,7 @@ class NodeStatistics {
             this.$scope.trend = pub.students;
             this.$scope.materials_stats = pub.materials;
             this.$scope.materials_trends = pub.materials_trends;
+            $scope.value = pub.transitions.link_time;
             document.json = pub.transitions;
             var jsonEvent  = new CustomEvent("jsonEvent", {detail: pub.transitions});
             document.dispatchEvent(jsonEvent);

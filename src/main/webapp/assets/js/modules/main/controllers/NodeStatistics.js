@@ -39,6 +39,7 @@ define(["require", "exports", "d3_chart", "ng-slider"], function (require, expor
                 _this.$scope.trend = pub.students;
                 _this.$scope.materials_stats = pub.materials;
                 _this.$scope.materials_trends = pub.materials_trends;
+                $scope.value = pub.transitions.link_time;
                 document.json = pub.transitions;
                 var jsonEvent = new CustomEvent("jsonEvent", { detail: pub.transitions });
                 document.dispatchEvent(jsonEvent);
