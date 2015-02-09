@@ -22,6 +22,7 @@ interface IPubStats {
     trend: Array<number>;
     materials_trends: Array<ITrend>;
     transitions: Array<any>;
+    link_time: number;
 }
 
 interface IStudentStatistic {
