@@ -44,7 +44,7 @@ define(["require", "exports", "d3_chart", "ng-slider"], function (require, expor
                 if (newValue === oldValue) {
                     return;
                 }
-                $http.get(PATH_CONSTANTS.UPDATE_GRAPH, { params: { pub_id: $routeParams.node_id, link_time: $scope.newValue } }).success(function (data) {
+                $http.get(PATH_CONSTANTS.UPDATE_GRAPH, { params: { pub_id: $routeParams.node_id, link_time: newValue } }).success(function (data) {
                     if (angular.element(document.getElementsByTagName("svg"))) {
                         angular.element(document.getElementsByTagName("svg")).remove();
                         console.log("remove svg");

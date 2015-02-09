@@ -48,7 +48,7 @@ class NodeStatistics {
             if(newValue === oldValue){
                 return;
             }
-            $http.get(PATH_CONSTANTS.UPDATE_GRAPH, {params: {pub_id: $routeParams.node_id, link_time: $scope.newValue}})
+            $http.get(PATH_CONSTANTS.UPDATE_GRAPH, {params: {pub_id: $routeParams.node_id, link_time: newValue}})
                 .success(function (data) {
                     if (angular.element(document.getElementsByTagName("svg"))) {
                         angular.element(document.getElementsByTagName("svg")).remove();
