@@ -8,7 +8,7 @@ class NodeStatistics {
     constructor(private $scope, private $http, private $routeParams, private PATH_CONSTANTS, $timeout){
         $scope.material_path=PATH_CONSTANTS.GENERAL_MATERIAL_PATH;
 
-        $scope.value = "5";
+        $scope.value = "0";
         $scope.options = {
             from: 1,
             to: 30,
@@ -24,13 +24,6 @@ class NodeStatistics {
 
             }
         };
-
-        var isSlideMouseDown = false;
-
-        $scope.updateGraph = function () {
-            console.log("down");
-            isSlideMouseDown = true;
-        }
 
         var graphDataCallback = (pub: IPubStats)=>{
             if(angular.element(document.getElementsByTagName("svg"))) {
@@ -51,28 +44,26 @@ class NodeStatistics {
         };
 
 
-        angular.element(document).bind("mouseup", ()=> {
-            $timeout(()=>{
-                $scope.loadGraph = true;
-                console.log($scope.value);
-                if (isSlideMouseDown) {
-                    isSlideMouseDown = false;
-                    console.log(PATH_CONSTANTS.UPDATE_GRAPH);
-                    $http.get(PATH_CONSTANTS.UPDATE_GRAPH, {params: {pub_id: $routeParams.node_id, link_time: $scope.value}})
-                        .success(function (data) {
-                            if(angular.element(document.getElementsByTagName("svg"))) {
-                                angular.element(document.getElementsByTagName("svg")).remove();
-                                console.log("remove svg");
-                            }
-                            document.json = data;
-                            $scope.loadGraph = false;
-                            var jsonEvent  = new CustomEvent("jsonEvent", {detail: data});
-                            document.dispatchEvent(jsonEvent);
-                        })
-                        .error(()=>{console.log("something went wrong")});
-                }
-            }, 500);
+        $scope.$watch("value", function (newValue, oldValue) {
+            if(newValue === oldValue){
+                return;
+            }
+            $http.get(PATH_CONSTANTS.UPDATE_GRAPH, {params: {pub_id: $routeParams.node_id, link_time: newValue}})
+                .success(function (data) {
+                    if (angular.element(document.getElementsByTagName("svg"))) {
+                        angular.element(document.getElementsByTagName("svg")).remove();
+                        console.log("remove svg");
+                    }
+                    document.json = data;
+                    $scope.loadGraph = false;
+                    var jsonEvent = new CustomEvent("jsonEvent", {detail: data});
+                    document.dispatchEvent(jsonEvent);
+                })
+                .error(()=> {
+                    console.log("something went wrong")
+                });
         });
+
 
         $http.get(PATH_CONSTANTS.GENERAL_NODE_PATH,{params: {pub_id: $routeParams.node_id }})
             .success (graphDataCallback)
