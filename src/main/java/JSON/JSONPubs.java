@@ -28,8 +28,8 @@ public class JSONPubs implements JSONHandler {
         for (final Pub pub : this.pubs) {
             nodesArray.add(new JSONObject() {
                 {
-                    put("pub_name", pub.getPubTitle());
-                    put("pub_id", pub.getPubId());
+                    put("pub_name", pub.getTitle());
+                    put("pub_id", pub.getId());
                 }
             });
         }

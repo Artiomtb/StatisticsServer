@@ -28,7 +28,7 @@ public class JSONPubStudent implements JSONHandler {
     }
 
     private void setJSONObject() {
-        jsonObject.put("pub_name", this.pub.getPubTitle());
+        jsonObject.put("pub_name", this.pub.getTitle());
         JSONArray totalTrendArray = new JSONArray();
         for (final Trend trend : totalTrend) {
             totalTrendArray.add(new JSONObject() {

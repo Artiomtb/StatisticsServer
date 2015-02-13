@@ -27,8 +27,8 @@ public class JSONStudents implements JSONHandler {
         for (final Student student : this.students) {
             studentsArray.add(new JSONObject() {
                 {
-                    put("party_name", student.getStudentTitle());
-                    put("party_id", student.getStudentId());
+                    put("party_name", student.getTitle());
+                    put("party_id", student.getId());
                 }
             });
         }

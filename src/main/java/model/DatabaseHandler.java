@@ -157,7 +157,12 @@ public class DatabaseHandler {
             "WHERE a.pub_id = pt.pub_id";
     private static final String STUDENT_PAGES_QUERY = "SELECT ceil(count(party_id) :: DOUBLE PRECISION / " + STUDENTS_PER_PAGE + ")\n" +
             "FROM party_to_title";
-
+    private static final int pubAutocompleteLimit = 10;
+    private static final String PUBS_AUTOCOMPLETE_EQUALS_QUERY = "SELECT pub_id, title FROM pub_to_title WHERE lower(title) = ? LIMIT " + pubAutocompleteLimit;
+    private static final String PUBS_AUTOCOMPLETE_LIKE_QUERY = "SELECT pub_id, title FROM pub_to_title WHERE lower(title) LIKE ? LIMIT " + pubAutocompleteLimit;
+    private static final int studentAutocompleteLimit = 10;
+    private static final String STUDENTS_AUTOCOMPLETE_EQUALS_QUERY = "SELECT party_id, title FROM party_to_title WHERE lower(title) = ? LIMIT " + studentAutocompleteLimit;
+    private static final String STUDENTS_AUTOCOMPLETE_LIKE_QUERY = "SELECT party_id, title FROM party_to_title WHERE lower(title) like ? LIMIT " + studentAutocompleteLimit;
 
     private DatabaseHandler() {
         try {
@@ -551,5 +556,131 @@ public class DatabaseHandler {
                 nodesLinksConnectionHandler.closeHandlerConnections();
         }
         return nodeLinks;
+    }
+
+    public ArrayList<Searchable> autoCompleteStudentsList(String text) {
+        ArrayList<Searchable> students = new ArrayList<Searchable>();
+        ConnectionsHandler studentsEqualsConnectionHandler = null;
+        ConnectionsHandler studetnsStartsConnectionHandler = null;
+        ConnectionsHandler studentsContainsConnectionHandler = null;
+        try {
+            if (conn == null) {
+                if (!connect()) {
+                    log.error("Cannot create connection");
+                    return students;
+                }
+            }
+            text = text.toLowerCase();
+            studentsEqualsConnectionHandler = new ConnectionsHandler(conn, STUDENTS_AUTOCOMPLETE_EQUALS_QUERY, new QueryParameter(ParameterType.VARCHAR, text));
+            ResultSet equalsRs = studentsEqualsConnectionHandler.getResultSet();
+            int countResults = 0;
+            while (equalsRs.next() && countResults < pubAutocompleteLimit) {
+                students.add(new Student(equalsRs.getInt(1), equalsRs.getString(2)));
+                countResults++;
+            }
+            if (countResults < pubAutocompleteLimit) {
+                studetnsStartsConnectionHandler = new ConnectionsHandler(conn, STUDENTS_AUTOCOMPLETE_LIKE_QUERY, new QueryParameter(ParameterType.VARCHAR, text + "%"));
+                ResultSet startsRs = studetnsStartsConnectionHandler.getResultSet();
+                while (startsRs.next() && countResults < pubAutocompleteLimit) {
+                    Student student = new Student(startsRs.getInt(1), startsRs.getString(2));
+                    if (!students.contains(student)) {
+                        students.add(student);
+                        countResults++;
+                    }
+                }
+                if (countResults < pubAutocompleteLimit) {
+                    studentsContainsConnectionHandler = new ConnectionsHandler(conn, STUDENTS_AUTOCOMPLETE_LIKE_QUERY, new QueryParameter(ParameterType.VARCHAR, "%" + text + "%"));
+                    ResultSet containsRs = studentsContainsConnectionHandler.getResultSet();
+                    while (containsRs.next() && countResults < studentAutocompleteLimit) {
+                        Student student = new Student(containsRs.getInt(1), containsRs.getString(2));
+                        if (!students.contains(student)) {
+                            students.add(student);
+                            countResults++;
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Exception during autocomplete pubs:", e);
+        } finally {
+            try {
+                if (studentsContainsConnectionHandler != null) {
+                    studentsContainsConnectionHandler.closeHandlerConnections();
+                }
+                if (studetnsStartsConnectionHandler != null) {
+                    studetnsStartsConnectionHandler.closeHandlerConnections();
+                }
+                if (studentsEqualsConnectionHandler != null) {
+                    studentsEqualsConnectionHandler.closeHandlerConnections();
+                }
+                disconnect();
+            } catch (SQLException e) {
+                log.error("Exception during autocomplete pubs");
+            }
+        }
+        return students;
+    }
+
+    public ArrayList<Searchable> autocompletePubsList(String text) {
+        ArrayList<Searchable> pubs = new ArrayList<Searchable>();
+        ConnectionsHandler pubsEqualsConnectionHandler = null;
+        ConnectionsHandler pubsStartsConnectionHandler = null;
+        ConnectionsHandler pubsContainsConnectionHandler = null;
+        try {
+            if (conn == null) {
+                if (!connect()) {
+                    log.error("Cannot create connection");
+                    return pubs;
+                }
+            }
+            text = text.toLowerCase();
+            pubsEqualsConnectionHandler = new ConnectionsHandler(conn, PUBS_AUTOCOMPLETE_EQUALS_QUERY, new QueryParameter(ParameterType.VARCHAR, text));
+            ResultSet equalsRs = pubsEqualsConnectionHandler.getResultSet();
+            int countResults = 0;
+            while (equalsRs.next() && countResults < pubAutocompleteLimit) {
+                pubs.add(new Pub(equalsRs.getInt(1), equalsRs.getString(2)));
+                countResults++;
+            }
+            if (countResults < pubAutocompleteLimit) {
+                pubsStartsConnectionHandler = new ConnectionsHandler(conn, PUBS_AUTOCOMPLETE_LIKE_QUERY, new QueryParameter(ParameterType.VARCHAR, text + "%"));
+                ResultSet startsRs = pubsStartsConnectionHandler.getResultSet();
+                while (startsRs.next() && countResults < pubAutocompleteLimit) {
+                    Pub pub = new Pub(startsRs.getInt(1), startsRs.getString(2));
+                    if (!pubs.contains(pub)) {
+                        pubs.add(pub);
+                        countResults++;
+                    }
+                }
+                if (countResults < pubAutocompleteLimit) {
+                    pubsContainsConnectionHandler = new ConnectionsHandler(conn, PUBS_AUTOCOMPLETE_LIKE_QUERY, new QueryParameter(ParameterType.VARCHAR, "%" + text + "%"));
+                    ResultSet containsRs = pubsContainsConnectionHandler.getResultSet();
+                    while (containsRs.next() && countResults < pubAutocompleteLimit) {
+                        Pub pub = new Pub(containsRs.getInt(1), containsRs.getString(2));
+                        if (!pubs.contains(pub)) {
+                            pubs.add(pub);
+                            countResults++;
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            log.error("Exception during autocomplete pubs:", e);
+        } finally {
+            try {
+                if (pubsContainsConnectionHandler != null) {
+                    pubsContainsConnectionHandler.closeHandlerConnections();
+                }
+                if (pubsStartsConnectionHandler != null) {
+                    pubsStartsConnectionHandler.closeHandlerConnections();
+                }
+                if (pubsEqualsConnectionHandler != null) {
+                    pubsEqualsConnectionHandler.closeHandlerConnections();
+                }
+                disconnect();
+            } catch (SQLException e) {
+                log.error("Exception during autocomplete pubs");
+            }
+        }
+        return pubs;
     }
 }

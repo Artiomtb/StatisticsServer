@@ -1,5 +1,6 @@
 package servlet;
 
+import JSON.JSONAutocomplete;
 import JSON.JSONPubs;
 import model.DatabaseHandler;
 import org.apache.log4j.Logger;
@@ -17,19 +18,35 @@ public class PubsServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int page = 1;
-        String pageParameter = req.getParameter("page");
-        try {
-            page = Integer.valueOf(pageParameter);
-            if (page < 1) page = 1;
-        } catch (NumberFormatException e) {
-            log.warn("Incorrect parameter \"page\" (expected integer got " + pageParameter + "). Set to 1");
+        String actionParameter = req.getParameter("action");
+        if (actionParameter == null) {
+            int page = 1;
+            String pageParameter = req.getParameter("page");
+            try {
+                page = Integer.valueOf(pageParameter);
+                if (page < 1) page = 1;
+            } catch (NumberFormatException e) {
+                log.warn("Incorrect parameter \"page\" (expected integer got " + pageParameter + "). Set to 1");
+            }
+            resp.setContentType("application/json");
+            resp.setCharacterEncoding("UTF-8");
+            resp.addHeader("Access-Control-Allow-Origin", "*");
+            PrintWriter pw = resp.getWriter();
+            pw.println(new JSONPubs(DatabaseHandler.initialize().getPubs(page)).getJSONString());
+            pw.close();
+        } else if ("autocomplete".equals(actionParameter)) {
+            String text = req.getParameter("text");
+            if (text != null) {
+                if (!text.isEmpty()) {
+                    resp.setContentType("application/json");
+                    resp.setCharacterEncoding("UTF-8");
+                    resp.addHeader("Access-Control-Allow-Origin", "*");
+                    resp.addHeader("Cache-Control", "no-cache");
+                    PrintWriter pw = resp.getWriter();
+                    pw.println(new JSONAutocomplete(DatabaseHandler.initialize().autocompletePubsList(text)).getJSONString());
+                    pw.close();
+                }
+            }
         }
-        resp.setContentType("application/json");
-        resp.setCharacterEncoding("UTF-8");
-        resp.addHeader("Access-Control-Allow-Origin", "*");
-        PrintWriter pw = resp.getWriter();
-        pw.println(new JSONPubs(DatabaseHandler.initialize().getPubs(page)).getJSONString());
-        pw.close();
     }
 }
