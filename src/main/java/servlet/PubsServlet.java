@@ -2,6 +2,8 @@ package servlet;
 
 import JSON.JSONAutocomplete;
 import JSON.JSONPubs;
+import items.Pub;
+import items.Searchable;
 import model.DatabaseHandler;
 import org.apache.log4j.Logger;
 
@@ -11,6 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
+
+import static model.Utils.*;
 
 public class PubsServlet extends HttpServlet {
 
@@ -43,10 +49,66 @@ public class PubsServlet extends HttpServlet {
                     resp.addHeader("Access-Control-Allow-Origin", "*");
                     resp.addHeader("Cache-Control", "no-cache");
                     PrintWriter pw = resp.getWriter();
-                    pw.println(new JSONAutocomplete(DatabaseHandler.initialize().autocompletePubsList(text)).getJSONString());
+                    ArrayList<Searchable> pubs = DatabaseHandler.initialize().autocompletePubsList(text);
+                    pw.println(new JSONAutocomplete(makeResultSet(pubs, text)).getJSONString());
                     pw.close();
                 }
             }
         }
+    }
+
+    private ArrayList<Searchable> makeResultSet(ArrayList<Searchable> pubs, String text) {
+        ArrayList<Searchable> results = new ArrayList<Searchable>();
+        text = text.trim().toLowerCase();
+        int count = 0;
+        int textLength = text.length();
+        long st = System.currentTimeMillis();
+        Iterator<Searchable> iterator = pubs.iterator();
+        while (iterator.hasNext()) {
+            Pub pub = (Pub) iterator.next();
+            String title = pub.getTitle();
+            if (title.toLowerCase().equals(text)) {
+                pub.setTitle(B_CHAR_START + title + B_CHAR_END);
+                results.add(pub);
+                iterator.remove();
+                if (++count >= pubAutocompleteLimit)
+                    break;
+            }
+        }
+        if (count < pubAutocompleteLimit) {
+            iterator = pubs.iterator();
+            while (iterator.hasNext()) {
+                Pub pub = (Pub) iterator.next();
+                String title = pub.getTitle();
+                String searchableTitle = title.toLowerCase();
+                if (searchableTitle.startsWith(text)) {
+                    pub.setTitle(B_CHAR_START + title.substring(0, text.length()) + B_CHAR_END + title.substring(text.length()));
+                    results.add(pub);
+                    iterator.remove();
+                    if (++count >= pubAutocompleteLimit)
+                        break;
+                }
+            }
+            if (count < pubAutocompleteLimit) {
+                iterator = pubs.iterator();
+                while (iterator.hasNext()) {
+                    Pub pub = (Pub) iterator.next();
+                    String title = pub.getTitle();
+                    String searchableTitle = title.toLowerCase();
+                    if (searchableTitle.contains(text)) {
+                        int beginIndex = searchableTitle.indexOf(text);
+                        pub.setTitle(title.substring(0, beginIndex) + B_CHAR_START +
+                                title.substring(beginIndex, beginIndex + textLength) + B_CHAR_END
+                                + title.substring(beginIndex + textLength));
+                        results.add(pub);
+                        iterator.remove();
+                        if (++count >= pubAutocompleteLimit)
+                            break;
+                    }
+                }
+            }
+        }
+        System.out.println(System.currentTimeMillis() - st);
+        return results;
     }
 }

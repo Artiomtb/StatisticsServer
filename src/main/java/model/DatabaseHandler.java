@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+import static model.Utils.*;
+
 public class DatabaseHandler {
 
     private static final String JNDI = "java:jboss/datasources/PostgreSQLDS";
@@ -20,149 +22,6 @@ public class DatabaseHandler {
     private static DataSource dataSource;
     private Connection conn;
     private static DatabaseHandler databaseHandler;
-    private static final int PUBS_PER_PAGE = 20;
-    private static final int STUDENTS_PER_PAGE = 20;
-    private static final int DAYS_TO_PUB_TREND = 20;
-    private static final int DAYS_TO_PUB_MATERIAL_TREND = 5;
-    private static final int DAYS_TO_PUB_STUDENT_TREND = 10;
-    private static final int DAYS_TO_PUB_NODE_STUDENT_TREND = 12;
-    private static final String PUBS_QUERY = "SELECT DISTINCT pt.pub_id, pt.title FROM attendence a, pub_to_title pt where a.pub_id = pt.pub_id LIMIT " + PUBS_PER_PAGE + " OFFSET ?";
-    private static final String STUDENTS_QUERY = "SELECT party_id, title FROM party_to_title LIMIT " + STUDENTS_PER_PAGE + "OFFSET ?";
-    private static final String PUB_BY_ID_QUERY = "SELECT pub_id, title FROM pub_to_title WHERE pub_id = ?";
-    private static final String MATERIALS_BY_PUB_ID_QUERY = "SELECT nt.node_id, nt.title, n.attendance\n" +
-            "FROM (SELECT node_id, sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
-            "      FROM attendence\n" +
-            "      WHERE pub_id = ?\n" +
-            "      GROUP BY node_id) n, node_to_title nt\n" +
-            "WHERE n.node_id = nt.node_id";
-    private static final String STUDENTS_TREND_BY_PUB_ID_QUERY = "SELECT pt.party_id, pt.title, p.attendance\n" +
-            "FROM (SELECT party_id, sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
-            "      FROM attendence\n" +
-            "      WHERE pub_id = ?\n" +
-            "      GROUP BY party_id) p, party_to_title pt\n" +
-            "WHERE p.party_id = pt.party_id";
-    private static final String TREND_BY_PUB_ID_QUERY = "SELECT *\n" +
-            "FROM (\n" +
-            "  SELECT\n" +
-            "  DATE (updated_at) AS upd,\n" +
-            "  sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
-            "  FROM attendence\n" +
-            "  WHERE pub_id = ?\n" +
-            "  GROUP BY DATE(updated_at)\n" +
-            "  ORDER BY DATE(updated_at) DESC\n" +
-            "  LIMIT " + DAYS_TO_PUB_TREND + ") trend\n" +
-            "ORDER BY trend.upd";
-    private static final String STUDENT_BY_ID_QUERY = "SELECT party_id, title FROM party_to_title WHERE party_id = ?";
-    private static final String PUBS_BY_ST_ID_QUERY = "SELECT DISTINCT pt.pub_id, pt.title FROM attendence a, pub_to_title pt WHERE a.party_id = ? AND a.pub_id = pt.pub_id";
-    private static final String NODES_BY_PUB_ID_QUERY = "SELECT DISTINCT nt.node_id, nt.title FROM attendence a, node_to_title nt WHERE pub_id = ? AND a.node_id = nt.node_id ORDER BY node_id";
-    private static final String TREND_BY_PUB_ID_AND_NODE_ID_QUERY = "SELECT *\n" +
-            "FROM\n" +
-            "  (SELECT\n" +
-            "   DATE (updated_at) AS upd,\n" +
-            "  sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
-            "   FROM attendence\n" +
-            "   WHERE pub_id = ?\n" +
-            "   AND node_id = ?\n" +
-            "   GROUP BY DATE(updated_at)\n" +
-            "   ORDER BY DATE(updated_at) DESC\n" +
-            "   LIMIT " + DAYS_TO_PUB_MATERIAL_TREND + ") trend\n" +
-            "ORDER BY trend.upd";
-    private static final String TREND_BY_PUB_ID_AND_STUDENT_QUERY = "SELECT *\n" +
-            "FROM (\n" +
-            "  SELECT\n" +
-            "  DATE (updated_at) AS upd,\n" +
-            "  sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
-            "  FROM attendence\n" +
-            "  WHERE party_id = ? AND pub_id = ?\n" +
-            "  GROUP BY DATE(updated_at)\n" +
-            "  ORDER BY DATE(updated_at) DESC\n" +
-            "  LIMIT " + DAYS_TO_PUB_STUDENT_TREND + ") trend\n" +
-            "ORDER BY trend.upd";
-    private static final String NODE_TOTAL_BY_PUB_ID_AND_STUDENT_QUERY = "SELECT\n" +
-            "  nt.node_id,\n" +
-            "  nt.title,\n" +
-            "  nodes.attendance\n" +
-            "FROM (\n" +
-            "       SELECT\n" +
-            "         node_id,\n" +
-            "         sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
-            "       FROM attendence\n" +
-            "       WHERE party_id = ? AND pub_id = ?\n" +
-            "       GROUP BY node_id) nodes, node_to_title nt\n" +
-            "WHERE nodes.node_id = nt.node_id";
-    private static final String TREND_BY_PUB_ID_AND_NODE_ID_AND_STUDENT_QUERY = "SELECT *\n" +
-            "FROM (SELECT\n" +
-            "      DATE (updated_at) AS upd,\n" +
-            "sum(floor(extract(EPOCH FROM (updated_at - created_at)) / 60)) AS attendance\n" +
-            "      FROM attendence\n" +
-            "      WHERE party_id = ? AND pub_id = ? AND node_id = ?\n" +
-            "      GROUP BY DATE(updated_at)\n" +
-            "      ORDER BY DATE(updated_at) DESC\n" +
-            "      LIMIT " + DAYS_TO_PUB_NODE_STUDENT_TREND + ") trend\n" +
-            "ORDER BY trend.upd";
-    private static final String NODES_SUBSCRIBE_LINK_IN_PUB_QUERY = "SELECT DISTINCT\n" +
-            "  link.node_a,\n" +
-            "  num_a.num - 1 as num_a,\n" +
-            "  link.node_b,\n" +
-            "  num_b.num - 1 as num_b\n" +
-            "FROM (\n" +
-            "       SELECT\n" +
-            "         y.node_id AS node_a,\n" +
-            "         t.node_id AS node_b\n" +
-            "       FROM\n" +
-            "         (SELECT\n" +
-            "            row_number()\n" +
-            "            OVER (\n" +
-            "              ORDER BY created_at DESC) num,\n" +
-            "            a.*\n" +
-            "          FROM attendence a\n" +
-            "          WHERE pub_id = ?\n" +
-            "          ORDER BY created_at DESC) t,\n" +
-            "         (SELECT\n" +
-            "            row_number()\n" +
-            "            OVER (\n" +
-            "              ORDER BY created_at DESC) - 1 num,\n" +
-            "            a.*\n" +
-            "          FROM attendence a\n" +
-            "          WHERE pub_id = ?\n" +
-            "          ORDER BY created_at DESC) y\n" +
-            "       WHERE y.num = t.num AND y.node_id != t.node_id AND y.party_id = t.party_id AND\n" +
-            "             floor(extract(EPOCH FROM (t.created_at - y.updated_at)) / 60) < ?) link,\n" +
-            "  (SELECT\n" +
-            "     row_number()\n" +
-            "     OVER (\n" +
-            "       ORDER BY node_id) num,\n" +
-            "     node_id\n" +
-            "   FROM (SELECT DISTINCT\n" +
-            "           nt.node_id,\n" +
-            "           nt.title\n" +
-            "         FROM attendence a, node_to_title nt\n" +
-            "         WHERE pub_id = ? AND a.node_id = nt.node_id\n" +
-            "         ORDER BY node_id) a) num_a,\n" +
-            "  (SELECT\n" +
-            "     row_number()\n" +
-            "     OVER (\n" +
-            "       ORDER BY node_id) num,\n" +
-            "     node_id\n" +
-            "   FROM (SELECT DISTINCT\n" +
-            "           nt.node_id,\n" +
-            "           nt.title\n" +
-            "         FROM attendence a, node_to_title nt\n" +
-            "         WHERE pub_id = ? AND a.node_id = nt.node_id\n" +
-            "         ORDER BY node_id) a) num_b\n" +
-            "WHERE link.node_a = num_a.node_id AND link.node_b = num_b.node_id\n" +
-            "ORDER BY num_a, num_b";
-    private static final String PUB_PAGES_QUERY = "SELECT ceil(count(DISTINCT pt.pub_id) :: DOUBLE PRECISION / " + PUBS_PER_PAGE + ") AS pages\n" +
-            "FROM attendence a, pub_to_title pt\n" +
-            "WHERE a.pub_id = pt.pub_id";
-    private static final String STUDENT_PAGES_QUERY = "SELECT ceil(count(party_id) :: DOUBLE PRECISION / " + STUDENTS_PER_PAGE + ")\n" +
-            "FROM party_to_title";
-    private static final int pubAutocompleteLimit = 10;
-    private static final String PUBS_AUTOCOMPLETE_EQUALS_QUERY = "SELECT pub_id, title FROM pub_to_title WHERE lower(title) = ? LIMIT " + pubAutocompleteLimit;
-    private static final String PUBS_AUTOCOMPLETE_LIKE_QUERY = "SELECT pub_id, title FROM pub_to_title WHERE lower(title) LIKE ? LIMIT " + pubAutocompleteLimit;
-    private static final int studentAutocompleteLimit = 10;
-    private static final String STUDENTS_AUTOCOMPLETE_EQUALS_QUERY = "SELECT party_id, title FROM party_to_title WHERE lower(title) = ? LIMIT " + studentAutocompleteLimit;
-    private static final String STUDENTS_AUTOCOMPLETE_LIKE_QUERY = "SELECT party_id, title FROM party_to_title WHERE lower(title) like ? LIMIT " + studentAutocompleteLimit;
 
     private DatabaseHandler() {
         try {
@@ -558,10 +417,71 @@ public class DatabaseHandler {
         return nodeLinks;
     }
 
-    public ArrayList<Searchable> autoCompleteStudentsList(String text) {
+//    public ArrayList<Searchable> autoCompleteStudentsList(String text) {
+//        ArrayList<Searchable> students = new ArrayList<Searchable>();
+//        ConnectionsHandler studentsEqualsConnectionHandler = null;
+//        ConnectionsHandler studetnsStartsConnectionHandler = null;
+//        ConnectionsHandler studentsContainsConnectionHandler = null;
+//        try {
+//            if (conn == null) {
+//                if (!connect()) {
+//                    log.error("Cannot create connection");
+//                    return students;
+//                }
+//            }
+//            text = text.toLowerCase();
+//            studentsEqualsConnectionHandler = new ConnectionsHandler(conn, STUDENTS_AUTOCOMPLETE_EQUALS_QUERY, new QueryParameter(ParameterType.VARCHAR, text));
+//            ResultSet equalsRs = studentsEqualsConnectionHandler.getResultSet();
+//            int countResults = 0;
+//            while (equalsRs.next() && countResults < pubAutocompleteLimit) {
+//                students.add(new Student(equalsRs.getInt(1), equalsRs.getString(2)));
+//                countResults++;
+//            }
+//            if (countResults < pubAutocompleteLimit) {
+//                studetnsStartsConnectionHandler = new ConnectionsHandler(conn, STUDENTS_AUTOCOMPLETE_LIKE_QUERY, new QueryParameter(ParameterType.VARCHAR, text + "%"));
+//                ResultSet startsRs = studetnsStartsConnectionHandler.getResultSet();
+//                while (startsRs.next() && countResults < pubAutocompleteLimit) {
+//                    Student student = new Student(startsRs.getInt(1), startsRs.getString(2));
+//                    if (!students.contains(student)) {
+//                        students.add(student);
+//                        countResults++;
+//                    }
+//                }
+//                if (countResults < pubAutocompleteLimit) {
+//                    studentsContainsConnectionHandler = new ConnectionsHandler(conn, STUDENTS_AUTOCOMPLETE_LIKE_QUERY, new QueryParameter(ParameterType.VARCHAR, "%" + text + "%"));
+//                    ResultSet containsRs = studentsContainsConnectionHandler.getResultSet();
+//                    while (containsRs.next() && countResults < studentAutocompleteLimit) {
+//                        Student student = new Student(containsRs.getInt(1), containsRs.getString(2));
+//                        if (!students.contains(student)) {
+//                            students.add(student);
+//                            countResults++;
+//                        }
+//                    }
+//                }
+//            }
+//        } catch (SQLException e) {
+//            log.error("Exception during autocomplete pubs:", e);
+//        } finally {
+//            try {
+//                if (studentsContainsConnectionHandler != null) {
+//                    studentsContainsConnectionHandler.closeHandlerConnections();
+//                }
+//                if (studetnsStartsConnectionHandler != null) {
+//                    studetnsStartsConnectionHandler.closeHandlerConnections();
+//                }
+//                if (studentsEqualsConnectionHandler != null) {
+//                    studentsEqualsConnectionHandler.closeHandlerConnections();
+//                }
+//                disconnect();
+//            } catch (SQLException e) {
+//                log.error("Exception during autocomplete pubs");
+//            }
+//        }
+//        return students;
+//    }
+
+    public ArrayList<Searchable> autocompleteStudentsList(String text) {
         ArrayList<Searchable> students = new ArrayList<Searchable>();
-        ConnectionsHandler studentsEqualsConnectionHandler = null;
-        ConnectionsHandler studetnsStartsConnectionHandler = null;
         ConnectionsHandler studentsContainsConnectionHandler = null;
         try {
             if (conn == null) {
@@ -570,52 +490,24 @@ public class DatabaseHandler {
                     return students;
                 }
             }
-            text = text.toLowerCase();
-            studentsEqualsConnectionHandler = new ConnectionsHandler(conn, STUDENTS_AUTOCOMPLETE_EQUALS_QUERY, new QueryParameter(ParameterType.VARCHAR, text));
-            ResultSet equalsRs = studentsEqualsConnectionHandler.getResultSet();
-            int countResults = 0;
-            while (equalsRs.next() && countResults < pubAutocompleteLimit) {
-                students.add(new Student(equalsRs.getInt(1), equalsRs.getString(2)));
-                countResults++;
-            }
-            if (countResults < pubAutocompleteLimit) {
-                studetnsStartsConnectionHandler = new ConnectionsHandler(conn, STUDENTS_AUTOCOMPLETE_LIKE_QUERY, new QueryParameter(ParameterType.VARCHAR, text + "%"));
-                ResultSet startsRs = studetnsStartsConnectionHandler.getResultSet();
-                while (startsRs.next() && countResults < pubAutocompleteLimit) {
-                    Student student = new Student(startsRs.getInt(1), startsRs.getString(2));
-                    if (!students.contains(student)) {
-                        students.add(student);
-                        countResults++;
-                    }
-                }
-                if (countResults < pubAutocompleteLimit) {
-                    studentsContainsConnectionHandler = new ConnectionsHandler(conn, STUDENTS_AUTOCOMPLETE_LIKE_QUERY, new QueryParameter(ParameterType.VARCHAR, "%" + text + "%"));
-                    ResultSet containsRs = studentsContainsConnectionHandler.getResultSet();
-                    while (containsRs.next() && countResults < studentAutocompleteLimit) {
-                        Student student = new Student(containsRs.getInt(1), containsRs.getString(2));
-                        if (!students.contains(student)) {
-                            students.add(student);
-                            countResults++;
-                        }
-                    }
+            text = text.trim().toLowerCase();
+            if (!text.isEmpty()) {
+                studentsContainsConnectionHandler = new ConnectionsHandler(conn, STUDENTS_AUTOCOMPLETE_QUERY, new QueryParameter(ParameterType.VARCHAR, "%" + text + "%"));
+                ResultSet rs = studentsContainsConnectionHandler.getResultSet();
+                while (rs.next()) {
+                    students.add(new Student(rs.getInt(1), rs.getString(2)));
                 }
             }
         } catch (SQLException e) {
-            log.error("Exception during autocomplete pubs:", e);
+            log.error("Exception during autocomplete students:", e);
         } finally {
             try {
                 if (studentsContainsConnectionHandler != null) {
                     studentsContainsConnectionHandler.closeHandlerConnections();
                 }
-                if (studetnsStartsConnectionHandler != null) {
-                    studetnsStartsConnectionHandler.closeHandlerConnections();
-                }
-                if (studentsEqualsConnectionHandler != null) {
-                    studentsEqualsConnectionHandler.closeHandlerConnections();
-                }
                 disconnect();
             } catch (SQLException e) {
-                log.error("Exception during autocomplete pubs");
+                log.error("Exception during autocomplete students");
             }
         }
         return students;
@@ -623,8 +515,6 @@ public class DatabaseHandler {
 
     public ArrayList<Searchable> autocompletePubsList(String text) {
         ArrayList<Searchable> pubs = new ArrayList<Searchable>();
-        ConnectionsHandler pubsEqualsConnectionHandler = null;
-        ConnectionsHandler pubsStartsConnectionHandler = null;
         ConnectionsHandler pubsContainsConnectionHandler = null;
         try {
             if (conn == null) {
@@ -633,34 +523,12 @@ public class DatabaseHandler {
                     return pubs;
                 }
             }
-            text = text.toLowerCase();
-            pubsEqualsConnectionHandler = new ConnectionsHandler(conn, PUBS_AUTOCOMPLETE_EQUALS_QUERY, new QueryParameter(ParameterType.VARCHAR, text));
-            ResultSet equalsRs = pubsEqualsConnectionHandler.getResultSet();
-            int countResults = 0;
-            while (equalsRs.next() && countResults < pubAutocompleteLimit) {
-                pubs.add(new Pub(equalsRs.getInt(1), equalsRs.getString(2)));
-                countResults++;
-            }
-            if (countResults < pubAutocompleteLimit) {
-                pubsStartsConnectionHandler = new ConnectionsHandler(conn, PUBS_AUTOCOMPLETE_LIKE_QUERY, new QueryParameter(ParameterType.VARCHAR, text + "%"));
-                ResultSet startsRs = pubsStartsConnectionHandler.getResultSet();
-                while (startsRs.next() && countResults < pubAutocompleteLimit) {
-                    Pub pub = new Pub(startsRs.getInt(1), startsRs.getString(2));
-                    if (!pubs.contains(pub)) {
-                        pubs.add(pub);
-                        countResults++;
-                    }
-                }
-                if (countResults < pubAutocompleteLimit) {
-                    pubsContainsConnectionHandler = new ConnectionsHandler(conn, PUBS_AUTOCOMPLETE_LIKE_QUERY, new QueryParameter(ParameterType.VARCHAR, "%" + text + "%"));
-                    ResultSet containsRs = pubsContainsConnectionHandler.getResultSet();
-                    while (containsRs.next() && countResults < pubAutocompleteLimit) {
-                        Pub pub = new Pub(containsRs.getInt(1), containsRs.getString(2));
-                        if (!pubs.contains(pub)) {
-                            pubs.add(pub);
-                            countResults++;
-                        }
-                    }
+            text = text.trim().toLowerCase();
+            if (!text.isEmpty()) {
+                pubsContainsConnectionHandler = new ConnectionsHandler(conn, PUBS_AUTOCOMPLETE_QUERY, new QueryParameter(ParameterType.VARCHAR, "%" + text + "%"));
+                ResultSet rs = pubsContainsConnectionHandler.getResultSet();
+                while (rs.next()) {
+                    pubs.add(new Pub(rs.getInt(1), rs.getString(2)));
                 }
             }
         } catch (SQLException e) {
@@ -669,12 +537,6 @@ public class DatabaseHandler {
             try {
                 if (pubsContainsConnectionHandler != null) {
                     pubsContainsConnectionHandler.closeHandlerConnections();
-                }
-                if (pubsStartsConnectionHandler != null) {
-                    pubsStartsConnectionHandler.closeHandlerConnections();
-                }
-                if (pubsEqualsConnectionHandler != null) {
-                    pubsEqualsConnectionHandler.closeHandlerConnections();
                 }
                 disconnect();
             } catch (SQLException e) {
