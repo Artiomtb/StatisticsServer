@@ -62,7 +62,6 @@ public class StudentsServlet extends HttpServlet {
         text = text.trim().toLowerCase();
         int count = 0;
         int textLength = text.length();
-        long st = System.currentTimeMillis();
         Iterator<Searchable> iterator = students.iterator();
         while (iterator.hasNext()) {
             Student student = (Student) iterator.next();
@@ -108,7 +107,6 @@ public class StudentsServlet extends HttpServlet {
                 }
             }
         }
-        System.out.println(System.currentTimeMillis() - st);
         return results;
     }
 }

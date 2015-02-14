@@ -417,69 +417,6 @@ public class DatabaseHandler {
         return nodeLinks;
     }
 
-//    public ArrayList<Searchable> autoCompleteStudentsList(String text) {
-//        ArrayList<Searchable> students = new ArrayList<Searchable>();
-//        ConnectionsHandler studentsEqualsConnectionHandler = null;
-//        ConnectionsHandler studetnsStartsConnectionHandler = null;
-//        ConnectionsHandler studentsContainsConnectionHandler = null;
-//        try {
-//            if (conn == null) {
-//                if (!connect()) {
-//                    log.error("Cannot create connection");
-//                    return students;
-//                }
-//            }
-//            text = text.toLowerCase();
-//            studentsEqualsConnectionHandler = new ConnectionsHandler(conn, STUDENTS_AUTOCOMPLETE_EQUALS_QUERY, new QueryParameter(ParameterType.VARCHAR, text));
-//            ResultSet equalsRs = studentsEqualsConnectionHandler.getResultSet();
-//            int countResults = 0;
-//            while (equalsRs.next() && countResults < pubAutocompleteLimit) {
-//                students.add(new Student(equalsRs.getInt(1), equalsRs.getString(2)));
-//                countResults++;
-//            }
-//            if (countResults < pubAutocompleteLimit) {
-//                studetnsStartsConnectionHandler = new ConnectionsHandler(conn, STUDENTS_AUTOCOMPLETE_LIKE_QUERY, new QueryParameter(ParameterType.VARCHAR, text + "%"));
-//                ResultSet startsRs = studetnsStartsConnectionHandler.getResultSet();
-//                while (startsRs.next() && countResults < pubAutocompleteLimit) {
-//                    Student student = new Student(startsRs.getInt(1), startsRs.getString(2));
-//                    if (!students.contains(student)) {
-//                        students.add(student);
-//                        countResults++;
-//                    }
-//                }
-//                if (countResults < pubAutocompleteLimit) {
-//                    studentsContainsConnectionHandler = new ConnectionsHandler(conn, STUDENTS_AUTOCOMPLETE_LIKE_QUERY, new QueryParameter(ParameterType.VARCHAR, "%" + text + "%"));
-//                    ResultSet containsRs = studentsContainsConnectionHandler.getResultSet();
-//                    while (containsRs.next() && countResults < studentAutocompleteLimit) {
-//                        Student student = new Student(containsRs.getInt(1), containsRs.getString(2));
-//                        if (!students.contains(student)) {
-//                            students.add(student);
-//                            countResults++;
-//                        }
-//                    }
-//                }
-//            }
-//        } catch (SQLException e) {
-//            log.error("Exception during autocomplete pubs:", e);
-//        } finally {
-//            try {
-//                if (studentsContainsConnectionHandler != null) {
-//                    studentsContainsConnectionHandler.closeHandlerConnections();
-//                }
-//                if (studetnsStartsConnectionHandler != null) {
-//                    studetnsStartsConnectionHandler.closeHandlerConnections();
-//                }
-//                if (studentsEqualsConnectionHandler != null) {
-//                    studentsEqualsConnectionHandler.closeHandlerConnections();
-//                }
-//                disconnect();
-//            } catch (SQLException e) {
-//                log.error("Exception during autocomplete pubs");
-//            }
-//        }
-//        return students;
-//    }
-
     public ArrayList<Searchable> autocompleteStudentsList(String text) {
         ArrayList<Searchable> students = new ArrayList<Searchable>();
         ConnectionsHandler studentsContainsConnectionHandler = null;
