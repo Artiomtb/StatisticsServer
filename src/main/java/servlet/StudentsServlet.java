@@ -25,22 +25,26 @@ public class StudentsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String actionParameter = req.getParameter("action");
-        if (actionParameter == null) {
-            int page = 1;
-            String pageParameter = req.getParameter("page");
-            try {
-                page = Integer.valueOf(pageParameter);
-                if (page < 1) page = 1;
-            } catch (NumberFormatException e) {
-                log.warn("Incorrect parameter \"page\" (expected integer got " + pageParameter + "). Set to 1");
-            }
-            resp.setContentType("application/json");
-            resp.setCharacterEncoding("UTF-8");
-            resp.addHeader("Access-Control-Allow-Origin", "*");
-            PrintWriter pw = resp.getWriter();
-            pw.println(new JSONStudents(DatabaseHandler.initialize().getStudents(page)).getJSONString());
-            pw.close();
-        } else if ("autocomplete".equals(actionParameter)) {
+        int page = 1;
+        String pageParameter = req.getParameter("page");
+        try {
+            page = Integer.valueOf(pageParameter);
+            if (page < 1) page = 1;
+        } catch (NumberFormatException e) {
+            log.warn("Incorrect parameter \"page\" (expected integer got " + pageParameter + "). Set to 1");
+        }
+        resp.setContentType("application/json");
+        resp.setCharacterEncoding("UTF-8");
+        resp.addHeader("Access-Control-Allow-Origin", "*");
+        PrintWriter pw = resp.getWriter();
+        pw.println(new JSONStudents(DatabaseHandler.initialize().getStudents(page)).getJSONString());
+        pw.close();
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String actionParameter = req.getParameter("action");
+        if ("autocomplete".equals(actionParameter)) {
             String text = req.getParameter("text");
             if (text != null) {
                 if (!text.isEmpty()) {
