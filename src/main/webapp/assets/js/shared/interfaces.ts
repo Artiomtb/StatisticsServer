@@ -68,3 +68,16 @@ interface IStudentNodeStatistics {
     node_stats: Array<ITrend>;
     materials: Array<IStudentMaterial>;
 }
+
+interface ISearchEntry {
+    name: string;
+    id: number;
+}
+
+interface ISearchService {
+    autoCompletePubsHandler(): any;
+    autoCompleteStudentsHandler(): any;
+    searchPubsHandler(): any;
+    searchStudentsHandler(): any;
+    searchResults: Array<ISearchEntry>;
+}
