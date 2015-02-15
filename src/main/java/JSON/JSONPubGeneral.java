@@ -33,8 +33,8 @@ public class JSONPubGeneral implements JSONHandler {
     }
 
     private void setJSONObject() {
-        jsonObject.put("pub_id", pub.getPubId());
-        jsonObject.put("pub_name", pub.getPubTitle());
+        jsonObject.put("pub_id", pub.getId());
+        jsonObject.put("pub_name", pub.getTitle());
         final JSONArray materialsArray = new JSONArray();
         for (final Map.Entry entry : materialAttendance.entrySet()) {
             final Node node = (Node) entry.getKey();
@@ -52,8 +52,8 @@ public class JSONPubGeneral implements JSONHandler {
             final Student student = (Student) entry.getKey();
             studentArray.add(new JSONObject() {
                 {
-                    put("party_id", student.getStudentId());
-                    put("party_name", student.getStudentTitle());
+                    put("party_id", student.getId());
+                    put("party_name", student.getTitle());
                     put("total_attendance", entry.getValue());
                 }
             });

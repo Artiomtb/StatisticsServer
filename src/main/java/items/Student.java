@@ -1,6 +1,6 @@
 package items;
 
-public class Student {
+public class Student implements Searchable {
     private int studentId;
     private String studentTitle;
 
@@ -9,19 +9,41 @@ public class Student {
         this.studentTitle = studentTitle;
     }
 
-    public int getStudentId() {
+    @Override
+    public int getId() {
         return studentId;
     }
 
-    public void setStudentId(int studentId) {
+    @Override
+    public void setId(int studentId) {
         this.studentId = studentId;
     }
 
-    public String getStudentTitle() {
+    @Override
+    public String getTitle() {
         return studentTitle;
     }
 
-    public void setStudentTitle(String studentTitle) {
+    @Override
+    public void setTitle(String studentTitle) {
         this.studentTitle = studentTitle;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Student other = (Student) obj;
+        if ((this.getTitle() == null) ? (other.getTitle() != null) : !this.getTitle().equals(other.getTitle())) {
+            return false;
+        }
+        if (this.getId() != other.getId()) {
+            return false;
+        }
+        return true;
     }
 }

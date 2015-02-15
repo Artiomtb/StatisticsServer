@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Search</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container">
+    <h2>Search autocomplete test</h2>
+    <h4><i>just start to type...</i></h4>
+    <table>
+        <thead>
+        <tr>
+            <th width="300px">Student</th>
+            <th width="300px">Pub</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td><input type="text" name="student" id="student_input" onkeyup="searchStudent()"/></td>
+            <td><input type="text" name="pub" id="pub_input" onkeyup="searchPub()"/></td>
+        </tr>
+        <tr>
+            <td id="st_res"></td>
+            <td id="pres"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<br/>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+<script>
+    function searchStudent() {
+        text = $("#student_input").val();
+        $("#st_res").html("");
+        if (text.length > 1) {
+            url = "http://jbosseap-ssudataminer.rhcloud.com/monitor/students";
+            $.ajax({
+                dataType: "json",
+                url: url,
+                data: {
+                    action: "autocomplete",
+                    text: text
+                },
+                type: "POST",
+                success: function (data) {
+                    var v = "";
+                    $.each(data.items, function (key, val) {
+                        var n = val.name;
+                        n = n.replace("<=-b", "<b>");
+                        n = n.replace("b-=>", "</b>");
+                        link = "<a href=\"http://jbosseap-ssudataminer.rhcloud.com/#/monitor/student/nodes/" + val.id + "\">" + n + "</a>";
+                        v += link + "<br>";
+                    })
+                    $("#st_res").html(v);
+                }
+            });
+        }
+    }
+
+    function searchPub() {
+        text = $("#pub_input").val();
+        $("#pres").html("");
+        if (text.length > 1) {
+            url = "http://jbosseap-ssudataminer.rhcloud.com/monitor/pubs";
+            $.ajax({
+                dataType: "json",
+                url: url,
+                data: {
+                    action: "autocomplete",
+                    text: text
+                },
+                type: "POST",
+                success: function (data) {
+                    var v = "";
+                    $.each(data.items, function (key, val) {
+                        var n = val.name;
+                        n = n.replace("<=-b", "<b>");
+                        n = n.replace("b-=>", "</b>");
+                        link = "<a href=\"http://jbosseap-ssudataminer.rhcloud.com/#/monitor/general/pub/" + val.id + "\">" + n + "</a>";
+                        v += link + "<br>";
+                    })
+                    $("#pres").html(v);
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>

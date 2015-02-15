@@ -22,13 +22,13 @@ public class JSONPubsByStudent implements JSONHandler {
     }
 
     private void setJSONObject() {
-        jsonObject.put("student_name", this.student.getStudentTitle());
+        jsonObject.put("student_name", this.student.getTitle());
         JSONArray nodesArray = new JSONArray();
         for (final Pub pub : pubs) {
             nodesArray.add(new JSONObject() {
                 {
-                    put("pub_id", pub.getPubId());
-                    put("pub_name", pub.getPubTitle());
+                    put("pub_id", pub.getId());
+                    put("pub_name", pub.getTitle());
                 }
             });
         }
