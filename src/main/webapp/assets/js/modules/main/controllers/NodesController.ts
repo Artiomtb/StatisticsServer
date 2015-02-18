@@ -18,7 +18,6 @@ class NodesController {
                 autocompleteHandler: Search.autoCompletePubsHandler,
                 resultNavHandler: Search.resultNavHandlerPubs }]};
 
-        console.log("search " + $scope.options.length);
         $scope.page_path = PATH_CONSTANTS.NODES_PATH;
         $scope.pub_path = PATH_CONSTANTS.GENERAL_NODE_PATH;
         $http.get (PATH_CONSTANTS.NODES_PATH,{params: {"page": $routeParams.page}})

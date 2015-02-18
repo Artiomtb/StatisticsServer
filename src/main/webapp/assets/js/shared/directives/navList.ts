@@ -18,7 +18,6 @@ function navList() {
                     } else if (event.which == 38){
                         moveCursorUp();
                     } else if (event.which == 13){
-                        console.log("enter handler");
                         scope.enterHandler(scope.list[scope.currentActive]);
                     }
                 });

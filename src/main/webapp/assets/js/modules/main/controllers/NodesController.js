@@ -10,7 +10,6 @@ define(["require", "exports"], function (require, exports) {
                 default: SEARCH_OPTIONS.PUBS,
                 params: [{ value: SEARCH_OPTIONS.STUDENT, name: "Студенти", isActive: false, searchHandler: Search.searchStudentsHandler, autocompleteHandler: Search.autoCompleteStudentsHandler, resultNavHandler: Search.resultNavHandlerStudents }, { value: SEARCH_OPTIONS.PUBS, name: "Дисципліни", isActive: true, searchHandler: Search.searchPubsHandler, autocompleteHandler: Search.autoCompletePubsHandler, resultNavHandler: Search.resultNavHandlerPubs }]
             };
-            console.log("search " + $scope.options.length);
             $scope.page_path = PATH_CONSTANTS.NODES_PATH;
             $scope.pub_path = PATH_CONSTANTS.GENERAL_NODE_PATH;
             $http.get(PATH_CONSTANTS.NODES_PATH, { params: { "page": $routeParams.page } }).success(function (pubs) {

@@ -15,7 +15,6 @@ function search() {
 
             scope.activeResultHandler = scope.options.params[0].resultNavHandler;
 
-            console.log("search aread " + scope.searchArea);
             scope.searchText="";
 
             angular.element(document.getElementById("search-input")).bind("keydown", function (e) {
@@ -37,7 +36,6 @@ function search() {
 
             scope.$watch("searchArea", function () {
                 scope.activeResultHandler = getActiveOption().resultNavHandler;
-                console.log("logggg " + scope.activeResultHandler);
             });
 
             scope.search = getActiveOption().searchHandler;

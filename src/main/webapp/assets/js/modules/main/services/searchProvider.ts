@@ -27,7 +27,7 @@ class SearchImpl implements ISearchService {
     }
 
     autoCompletePubsHandler =(text: string)=> {
-        return this.$http.post(SearchImpl.SEARCH_PUBS_PATH, null, {
+        return this.$http.get(SearchImpl.SEARCH_PUBS_PATH, {
             headers: {"Content-Type": "application/x-www-form-urlencoded"},
             params: {action: SearchImpl.AUTOCOMPLETE_ACTION,
             text: text
@@ -35,7 +35,7 @@ class SearchImpl implements ISearchService {
     }
 
     autoCompleteStudentsHandler =  (text: string) => {
-        return this.$http.post(SearchImpl.SEARCH_STUDENTS_PATH,null, {
+        return this.$http.get(SearchImpl.SEARCH_STUDENTS_PATH, {
             headers: {"Content-Type": "application/x-www-form-urlencoded"},
             params: {action: SearchImpl.AUTOCOMPLETE_ACTION,
             text: text}})
