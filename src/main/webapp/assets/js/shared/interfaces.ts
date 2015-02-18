@@ -75,9 +75,11 @@ interface ISearchEntry {
 }
 
 interface ISearchService {
-    autoCompletePubsHandler(): any;
-    autoCompleteStudentsHandler(): any;
-    searchPubsHandler(): any;
-    searchStudentsHandler(): any;
+    autoCompletePubsHandler(text: string): any;
+    autoCompleteStudentsHandler(text: string): any;
+    searchPubsHandler(text: string): any;
+    searchStudentsHandler(text: string): any;
+    resultNavHandlerStudents(stud_id: string): any;
+    resultNavHandlerPubs(pub_id: string): any;
     searchResults: Array<ISearchEntry>;
 }

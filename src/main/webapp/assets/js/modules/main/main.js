@@ -4,12 +4,14 @@
 /// <amd-dependency path='angular_route'/>
 /// <amd-dependency path="shared/directives/pagination" />
 /// <amd-dependency path="shared/directives/trend" />
+/// <amd-dependency path="shared/directives/navList" />
 /// <amd-dependency path="chartjs" />
 /// <amd-dependency path="directives/students_bar_chart" />
 /// <amd-dependency path="directives/trend" />
 /// <amd-dependency path="directives/materials_bar_chart" />
 /// <amd-dependency path="angular-bootstrap" />
-define(["require", "exports", "controllers/MainController", "controllers/NodesController", "controllers/StudentsController", "controllers/NodeStatistics", "controllers/StudentStatistics", "controllers/StudentNodeStatistics", "directives/nodes", "directives/trend", "directives/search", "directives/students", "services/searchProvider", "angular", "angular_route", "shared/directives/pagination", "shared/directives/trend", "chartjs", "directives/students_bar_chart", "directives/trend", "directives/materials_bar_chart", "angular-bootstrap"], function (require, exports, MainCotroller, NodesController, StudentsController, NodeStatistics, StudentStatistics, StudentNodeStatistics, nodes, trend, search, students, SearchProvider) {
+define(["require", "exports", "controllers/MainController", "controllers/NodesController", "controllers/StudentsController", "controllers/NodeStatistics", "controllers/StudentStatistics", "controllers/StudentNodeStatistics", "directives/nodes", "directives/trend", "directives/search", "directives/students", "services/searchProvider", "angular", "angular_route", "shared/directives/pagination", "shared/directives/trend", "shared/directives/navList", "chartjs", "directives/students_bar_chart", "directives/trend", "directives/materials_bar_chart", "angular-bootstrap"], function (require, exports, MainCotroller, NodesController, StudentsController, NodeStatistics, StudentStatistics, StudentNodeStatistics, nodes, trend, search, students, SearchProvider) {
+    var navList = require("shared/directives/navList");
     var pagination = require("shared/directives/pagination");
     var barChart = require("directives/students_bar_chart");
     var materialsBarChart = require("directives/materials_bar_chart");
@@ -28,9 +30,10 @@ define(["require", "exports", "controllers/MainController", "controllers/NodesCo
         "STUDENT": "students",
         "PUBS": "pubs"
     });
+    angular.module("app").provider("Search", SearchProvider);
     angular.module("app").config(function ($routeProvider, PATH_CONSTANTS, SearchProvider) {
-        $routeProvider.when(PATH_CONSTANTS.NODES_PATH + "/:page", { controller: "NodesController", templateUrl: "/partials/nodes.html" }).when(PATH_CONSTANTS.GENERAL_NODE_PATH + "/:node_id", { controller: "NodeStatistics", templateUrl: "/partials/node_statistics.html" }).when(PATH_CONSTANTS.GENERAL_MATERIAL_PATH + "/:material_id", { controller: "MaterialStatistics", templateUrl: "/partials/material_statistics.html" }).when(PATH_CONSTANTS.STUDENTS_PATH + "/:page", { controller: "StudentsController", templateUrl: "/partials/students.html" }).when(PATH_CONSTANTS.STUDENT + "/:party_id", { controller: "StudentStatistics", templateUrl: "/partials/student_statistics.html" }).when(PATH_CONSTANTS.STUDENT_NODE_MATERIALS + "/:party_id/:node_id", { controller: "StudentNodeStatistics", templateUrl: "/partials/student_node_statistics.html" }).when(PATH_CONSTANTS.STUDENT_MATERIAL + "/:party_id/:material_id", { controller: "StudentMaterial", templateUrl: "/partials/student_material.html" }).when().otherwise({ redirectTo: PATH_CONSTANTS.NODES_PATH + "/1" });
-        SearchProvider.pagePath(PATH_CONSTANTS.SEARCH_PAGE);
+        $routeProvider.when(PATH_CONSTANTS.NODES_PATH + "/:page", { controller: "NodesController", templateUrl: "/partials/nodes.html" }).when(PATH_CONSTANTS.GENERAL_NODE_PATH + "/:node_id", { controller: "NodeStatistics", templateUrl: "/partials/node_statistics.html" }).when(PATH_CONSTANTS.GENERAL_MATERIAL_PATH + "/:material_id", { controller: "MaterialStatistics", templateUrl: "/partials/material_statistics.html" }).when(PATH_CONSTANTS.STUDENTS_PATH + "/:page", { controller: "StudentsController", templateUrl: "/partials/students.html" }).when(PATH_CONSTANTS.STUDENT + "/:party_id", { controller: "StudentStatistics", templateUrl: "/partials/student_statistics.html" }).when(PATH_CONSTANTS.STUDENT_NODE_MATERIALS + "/:party_id/:node_id", { controller: "StudentNodeStatistics", templateUrl: "/partials/student_node_statistics.html" }).when(PATH_CONSTANTS.STUDENT_MATERIAL + "/:party_id/:material_id", { controller: "StudentMaterial", templateUrl: "/partials/student_material.html" }).when(PATH_CONSTANTS.SEARCH_PAGE, { controller: "SearchResultsController", templateUrl: "/partials/search_page.html" }).otherwise({ redirectTo: PATH_CONSTANTS.NODES_PATH + "/1" });
+        SearchProvider.setPagePath(PATH_CONSTANTS.SEARCH_PAGE);
     });
     angular.module("app").controller('NodesController', NodesController);
     angular.module("app").controller("StudentsController", StudentsController);
@@ -38,7 +41,6 @@ define(["require", "exports", "controllers/MainController", "controllers/NodesCo
     angular.module("app").controller("NodeStatistics", NodeStatistics);
     angular.module("app").controller("StudentStatistics", StudentStatistics);
     angular.module("app").controller("StudentNodeStatistics", StudentNodeStatistics);
-    angular.module("app").provider("SearchProvider", SearchProvider);
     angular.module("app").directive("nodes", ["PATH_CONSTANTS", nodes]);
     angular.module("app").directive("students", ["PATH_CONSTANTS", students]);
     angular.module("app").directive("pageNumbers", pagination);
@@ -46,6 +48,7 @@ define(["require", "exports", "controllers/MainController", "controllers/NodesCo
     angular.module("app").directive("barChart", barChart);
     angular.module("app").directive("materialsBarChart", materialsBarChart);
     angular.module("app").directive("search", search);
+    angular.module("app").directive("navList", navList);
     angular.bootstrap(document, ["app"]);
     console.log("succesful loading");
 });

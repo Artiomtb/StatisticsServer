@@ -2,25 +2,23 @@
 
 declare var jsonEvent;
 class NodesController {
-    static $inject = ['PATH_CONSTANTS','$scope','$http',"$routeParams", "SearchProvider", "SEARCH_OPTIONS"];
-    constructor (private PATH_CONSTANTS, private $scope, private $http, $routeParams, private SearchProvider: ISearchService, SEARCH_OPTIONS){
-        $scope.options = [{value: SEARCH_OPTIONS.STUDENT, selected: false, name: "Студенти"},
-            {value: SEARCH_OPTIONS.PUBS, selected: true, name: "Дисципліни" }];
+    static $inject = ['PATH_CONSTANTS','$scope','$http',"$routeParams", "Search", "SEARCH_OPTIONS"];
+    constructor (private PATH_CONSTANTS, private $scope, private $http, $routeParams, Search: ISearchService, SEARCH_OPTIONS){
 
-        $scope.$watch("searchArea", function (option) {
-            if(option == SEARCH_OPTIONS.STUDENT) {
-                $scope.searchHandler = SearchProvider.searchStudentsHandler;
-                $scope.searchAutoCompleteHandler = SearchProvider.autoCompleteStudentsHandler;
-            } else {
-                $scope.searchHandler = SearchProvider.searchPubsHandler;
-                $scope.searchAutoCompleteHandler = SearchProvider.autoCompletePubsHandler;
-            }
-        });
+        $scope.options = {
+            default: SEARCH_OPTIONS.PUBS,
+            params: [{value: SEARCH_OPTIONS.STUDENT, name: "Студенти",
+                isActive: false,
+                searchHandler: Search.searchStudentsHandler,
+                autocompleteHandler: Search.autoCompleteStudentsHandler,
+                resultNavHandler: Search.resultNavHandlerStudents},
+            {value: SEARCH_OPTIONS.PUBS, name: "Дисципліни",
+                isActive: true,
+                searchHandler: Search.searchPubsHandler,
+                autocompleteHandler: Search.autoCompletePubsHandler,
+                resultNavHandler: Search.resultNavHandlerPubs }]};
 
-        $scope.searchHandler = SearchProvider.searchPubsHandler;
-        $scope.searchAutoCompleteHandler = SearchProvider.autoCompletePubsHandler();
-
-
+        console.log("search " + $scope.options.length);
         $scope.page_path = PATH_CONSTANTS.NODES_PATH;
         $scope.pub_path = PATH_CONSTANTS.GENERAL_NODE_PATH;
         $http.get (PATH_CONSTANTS.NODES_PATH,{params: {"page": $routeParams.page}})

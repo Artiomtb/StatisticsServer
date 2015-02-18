@@ -1,25 +1,16 @@
 /// <reference path="../../../shared/interfaces.ts" />
 define(["require", "exports"], function (require, exports) {
     var NodesController = (function () {
-        function NodesController(PATH_CONSTANTS, $scope, $http, $routeParams, SearchProvider, SEARCH_OPTIONS) {
+        function NodesController(PATH_CONSTANTS, $scope, $http, $routeParams, Search, SEARCH_OPTIONS) {
             var _this = this;
             this.PATH_CONSTANTS = PATH_CONSTANTS;
             this.$scope = $scope;
             this.$http = $http;
-            this.SearchProvider = SearchProvider;
-            $scope.options = [{ value: SEARCH_OPTIONS.STUDENT, selected: false, name: "Студенти" }, { value: SEARCH_OPTIONS.PUBS, selected: true, name: "Дисципліни" }];
-            $scope.$watch("searchArea", function (option) {
-                if (option == SEARCH_OPTIONS.STUDENT) {
-                    $scope.searchHandler = SearchProvider.searchStudentsHandler;
-                    $scope.searchAutoCompleteHandler = SearchProvider.autoCompleteStudentsHandler;
-                }
-                else {
-                    $scope.searchHandler = SearchProvider.searchPubsHandler;
-                    $scope.searchAutoCompleteHandler = SearchProvider.autoCompletePubsHandler;
-                }
-            });
-            $scope.searchHandler = SearchProvider.searchPubsHandler;
-            $scope.searchAutoCompleteHandler = SearchProvider.autoCompletePubsHandler();
+            $scope.options = {
+                default: SEARCH_OPTIONS.PUBS,
+                params: [{ value: SEARCH_OPTIONS.STUDENT, name: "Студенти", isActive: false, searchHandler: Search.searchStudentsHandler, autocompleteHandler: Search.autoCompleteStudentsHandler, resultNavHandler: Search.resultNavHandlerStudents }, { value: SEARCH_OPTIONS.PUBS, name: "Дисципліни", isActive: true, searchHandler: Search.searchPubsHandler, autocompleteHandler: Search.autoCompletePubsHandler, resultNavHandler: Search.resultNavHandlerPubs }]
+            };
+            console.log("search " + $scope.options.length);
             $scope.page_path = PATH_CONSTANTS.NODES_PATH;
             $scope.pub_path = PATH_CONSTANTS.GENERAL_NODE_PATH;
             $http.get(PATH_CONSTANTS.NODES_PATH, { params: { "page": $routeParams.page } }).success(function (pubs) {
@@ -30,7 +21,7 @@ define(["require", "exports"], function (require, exports) {
                 console.log("error");
             });
         }
-        NodesController.$inject = ['PATH_CONSTANTS', '$scope', '$http', "$routeParams", "SearchProvider", "SEARCH_OPTIONS"];
+        NodesController.$inject = ['PATH_CONSTANTS', '$scope', '$http', "$routeParams", "Search", "SEARCH_OPTIONS"];
         return NodesController;
     })();
     return NodesController;

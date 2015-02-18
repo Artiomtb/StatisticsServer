@@ -2,14 +2,14 @@
     <div class="col-lg-6">
         <div class="input-group">
             <div class="input-group-btn">
-                <select style="width: 160px" class="form-control btn btn-default" ng-model="searchType">
-                    <option ng-repeat = "opn in options" value="{{opt.value}}" ng-selected = "opt.selected">{{opt.text}}</option>
+                <select style="width: 160px" class="form-control btn btn-default" ng-model="searchArea" ng-options="opt.name for opt in options.params track by opt.value">
                 </select>
             </div>
-            <input type="text" class="form-control" aria-label="Text input with dropdown button">
+            <input id="search-input" placeholder="Текст для пошуку" type="text" class="form-control" ng-model = "searchText" >
             <div class="input-group-btn">
-                <button ng-click="search()" type="button" class="btn btn-default">Пошук</button>
+                <button ng-click="search(searchText)" type="button" class="btn btn-default">Пошук</button>
             </div>
-        </div><!-- /input-group -->
-    </div><!-- /.col-lg-6 -->
+        </div>
+        <nav-list enter-handler = "activeResultHandler()" list = "autocompletions" current="searchText"></nav-list>
+    </div>
 </div>

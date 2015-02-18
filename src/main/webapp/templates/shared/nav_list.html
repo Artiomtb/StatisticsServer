@@ -1,0 +1,5 @@
+<div class="list-group" style="position: absolute; z-index: 10; top: 40px; width: 97%;">
+    <a href="#" class="list-group-item" ng-repeat="item in list" ng-class="{active: $index == currentActive}"  ng-click="enterHandler(list[$index])">
+        <h4 class="list-group-item-heading"> {{item.name}}</h4>
+    </a>
+</div>
