@@ -44,9 +44,8 @@ class SearchImpl implements ISearchService {
     searchPubsHandler =  (text: string)=> {
         this.$http.post(SearchImpl.SEARCH_PUBS_PATH,null, {
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            params: {action: SearchImpl.SEARCH_ACTION,text: text}}).then(function(data) {
+            params: {action: SearchImpl.SEARCH_ACTION, text: text}}).then(function(data) {
             this.searchResults = data.data;
-            this.$location.path = this.pageUrl;
             this.destinationPath = SearchImpl.DESTINATION_PUBS_PATH;
         }, function () {
             console.log("search failed!");
@@ -56,9 +55,8 @@ class SearchImpl implements ISearchService {
     searchStudentsHandler =  (text: string)=> {
         this.$http.post(SearchImpl.SEARCH_STUDENTS_PATH, null, {
             headers: {"Content-Type":"application/x-www-form-urlencoded"},
-            params: {action: SearchImpl.SEARCH_ACTION,text: text}}).then(function (data) {
+            params: {action: SearchImpl.SEARCH_ACTION, text: text}}).then(function (data) {
             this.searchResults = data.data;
-            this.$location.path = this.pageUrl;
             this.destinationPath = SearchImpl.DESTINATION_STUDENTS_PATH;
         }, function () {
             console.log("search failed");

@@ -19,6 +19,10 @@ function search() {
 
             angular.element(document.getElementById("search-input")).bind("keydown", function (e) {
                 if(e.which=="38" || e.which == "40" || e.which == "13") {
+                    console.log(e.which);
+                    if(e.which == "13") {
+                        scope.search(scope.searchText);
+                    }
                     e.preventDefault();
                     return;
                 }
@@ -36,6 +40,7 @@ function search() {
 
             scope.$watch("searchArea", function () {
                 scope.activeResultHandler = getActiveOption().resultNavHandler;
+                scope.search = getActiveOption().searchHandler;
             });
 
             scope.search = getActiveOption().searchHandler;
