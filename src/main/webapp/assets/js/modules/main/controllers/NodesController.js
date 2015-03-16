@@ -8,7 +8,7 @@ define(["require", "exports"], function (require, exports) {
             this.$http = $http;
             $scope.options = {
                 default: SEARCH_OPTIONS.PUBS,
-                params: [{ value: SEARCH_OPTIONS.STUDENT, name: "Студенти", isActive: false, searchHandler: Search.searchStudentsHandler, autocompleteHandler: Search.autoCompleteStudentsHandler, resultNavHandler: Search.resultNavHandlerStudents }, { value: SEARCH_OPTIONS.PUBS, name: "Дисципліни", isActive: true, searchHandler: Search.searchPubsHandler, autocompleteHandler: Search.autoCompletePubsHandler, resultNavHandler: Search.resultNavHandlerPubs }]
+                params: [{ value: SEARCH_OPTIONS.STUDENT, name: "Студенти", isActive: false, searchHandler: Search.searchStudentsHandler, autocompleteHandler: Search.autoCompleteStudentsHandler, resultNavPath: Search.getStudentsPath() }, { value: SEARCH_OPTIONS.PUBS, name: "Дисципліни", isActive: true, searchHandler: Search.searchPubsHandler, autocompleteHandler: Search.autoCompletePubsHandler, resultNavPath: Search.getPubsResultsPath() }]
             };
             $scope.page_path = PATH_CONSTANTS.NODES_PATH;
             $scope.pub_path = PATH_CONSTANTS.GENERAL_NODE_PATH;

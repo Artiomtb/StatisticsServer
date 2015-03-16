@@ -8,18 +8,26 @@ function search() {
         },
         templateUrl: "/templates/main/search.html",
         link: function (scope) {
+            //hide id click on body
+            angular.element(document).bind('click', function (event) {
+                if(event.target !=  document.getElementById("search-input") ){
+                    console.log(event.target);
+                    scope.$apply(function(){
+                        scope.showAutocompetions = false;
+                    })
+                }
+            })
 
             scope.searchArea = scope.options.params.filter(function (option) {
                 return option.isActive;
             })[0];
 
-            scope.activeResultHandler = scope.options.params[0].resultNavHandler;
+            //scope.showAutocompetions = scope.options.params[0].resultNavHandler;
 
             scope.searchText="";
 
-            angular.element(document.getElementById("search-input")).bind("keydown", function (e) {
+            angular.element(document.getElementById("search-input")).bind("keyup", function (e) {
                 if(e.which=="38" || e.which == "40" || e.which == "13") {
-                    console.log(e.which);
                     if(e.which == "13") {
                         scope.search(scope.searchText);
                     }
@@ -28,7 +36,9 @@ function search() {
                 }
 
                 if(scope.searchText.length > 2) {
+                    scope.activeText = scope.searchText.length
                     getActiveOption().autocompleteHandler(scope.searchText).success(function (data){
+                        scope.showAutocompetions = true;
                         scope.autocompletions = data.items;
                     }).error(function () {
                         console.log("error during autocompletion call");
@@ -39,7 +49,7 @@ function search() {
             });
 
             scope.$watch("searchArea", function () {
-                scope.activeResultHandler = getActiveOption().resultNavHandler;
+                scope.activeResultPath = getActiveOption().resultNavPath;
                 scope.search = getActiveOption().searchHandler;
             });
 

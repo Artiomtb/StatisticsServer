@@ -1,18 +1,17 @@
 /// <reference path="../../../shared/interfaces.ts"/>
+declare var $;
 
 class SearchProvider  {
     setPagePath = function (path: string) {
         this.pagePathUrl = path;
     }
 
-    $get = ["$http", "$location", function ($http, $location) {
-       return new SearchImpl($http, $location, this.pagePathUrl);
+    $get = ["$http", function ($http) {
+       return new SearchImpl($http, this.pagePathUrl);
     }];
 }
 
 class SearchImpl implements ISearchService {
-
-    static $inject = ["$http", "$location"];
 
     static SEARCH_PUBS_PATH = "/monitor/pubs";
     static SEARCH_STUDENTS_PATH = "/monitor/students";
@@ -23,41 +22,78 @@ class SearchImpl implements ISearchService {
     static DESTINATION_PUBS_PATH = "/monitor/pubs/";
     destinationPath: string;
 
-    constructor(private $http, private $location, private pagePathUrl){
+    constructor(private $http, private pagePathUrl){
+    }
+
+    getPubsResultsPath() {
+        return SearchImpl.DESTINATION_PUBS_PATH;
+    }
+
+    getStudentsPath(){
+        return SearchImpl.DESTINATION_STUDENTS_PATH;
     }
 
     autoCompletePubsHandler =(text: string)=> {
-        return this.$http.post(SearchImpl.SEARCH_PUBS_PATH,null ,{
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
-            params: {action: SearchImpl.AUTOCOMPLETE_ACTION,
-            text: text
-            }})
+        this.destinationPath = SearchImpl.DESTINATION_PUBS_PATH;
+        return this.$http({
+            method: 'POST',
+            url: SearchImpl.SEARCH_PUBS_PATH,
+            data: $.param({
+                action: SearchImpl.AUTOCOMPLETE_ACTION,
+                text: text
+            }),
+                headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+            }
+         ).success(function (data) {
+                var resItems = {items: []}
+                resItems.items = data.items.map(function(item) {
+                    item.name = item.name.replace("<=-b","").replace("b-=>", "").replace(/^\s+/,"");
+                    return item;
+                });
+                return resItems;
+            });
     }
 
     autoCompleteStudentsHandler =  (text: string) => {
-        return this.$http.post(SearchImpl.SEARCH_STUDENTS_PATH, null,{
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
-            params: {action: SearchImpl.AUTOCOMPLETE_ACTION,
-            text: text}})
+        this.destinationPath = SearchImpl.DESTINATION_STUDENTS_PATH;
+        return this.$http({
+            method: 'POST',
+            url: SearchImpl.SEARCH_STUDENTS_PATH,
+            data: $.param({
+                action: SearchImpl.AUTOCOMPLETE_ACTION,
+                text: text}),
+            headers: {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}
+        })
     }
 
     searchPubsHandler =  (text: string)=> {
-        this.$http.post(SearchImpl.SEARCH_PUBS_PATH,null, {
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            params: {action: SearchImpl.SEARCH_ACTION, text: text}}).then(function(data) {
-            this.searchResults = data.data;
-            this.destinationPath = SearchImpl.DESTINATION_PUBS_PATH;
+        this.$http({
+            method: 'POST',
+            url: SearchImpl.SEARCH_PUBS_PATH,
+            data: $.param({
+                action: SearchImpl.SEARCH_ACTION,
+                text: text
+            }),
+            headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+        }).then(function(data) {
+                this.searchResults = data.data;
+                this.destinationPath = SearchImpl.DESTINATION_PUBS_PATH;
         }, function () {
             console.log("search failed!");
         });
     }
 
     searchStudentsHandler =  (text: string)=> {
-        this.$http.post(SearchImpl.SEARCH_STUDENTS_PATH, null, {
-            headers: {"Content-Type":"application/x-www-form-urlencoded"},
-            params: {action: SearchImpl.SEARCH_ACTION, text: text}}).then(function (data) {
-            this.searchResults = data.data;
-            this.destinationPath = SearchImpl.DESTINATION_STUDENTS_PATH;
+        this.$http({
+                method: 'POST',
+                url: SearchImpl.SEARCH_STUDENTS_PATH,
+                data: $.param({
+                action: SearchImpl.SEARCH_ACTION,
+                text: text}),
+                headers: {"Content-Type":"application/x-www-form-urlencoded; charset=UTF-8"}
+            }).then(function (data) {
+                this.searchResults = data.data;
+                this.destinationPath = SearchImpl.DESTINATION_STUDENTS_PATH;
         }, function () {
             console.log("search failed");
         })
@@ -66,15 +102,6 @@ class SearchImpl implements ISearchService {
     getActiveDestinationPath =()=> {
         return this.destinationPath;
     }
-
-    resultNavHandlerStudents = (student_id)=> {
-        this.$location.path(SearchImpl.DESTINATION_STUDENTS_PATH + "/" + student_id);
-    }
-
-    resultNavHandlerPubs = (pub_id)=> {
-        this.$location.path(SearchImpl.DESTINATION_PUBS_PATH + pub_id);
-    }
-
     searchResults = [];
 }
 

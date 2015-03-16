@@ -11,12 +11,12 @@ class NodesController {
                 isActive: false,
                 searchHandler: Search.searchStudentsHandler,
                 autocompleteHandler: Search.autoCompleteStudentsHandler,
-                resultNavHandler: Search.resultNavHandlerStudents},
+                resultNavPath: Search.getStudentsPath()},
             {value: SEARCH_OPTIONS.PUBS, name: "Дисципліни",
                 isActive: true,
                 searchHandler: Search.searchPubsHandler,
                 autocompleteHandler: Search.autoCompletePubsHandler,
-                resultNavHandler: Search.resultNavHandlerPubs }]};
+                resultNavPath: Search.getPubsResultsPath() }]};
 
         $scope.page_path = PATH_CONSTANTS.NODES_PATH;
         $scope.pub_path = PATH_CONSTANTS.GENERAL_NODE_PATH;

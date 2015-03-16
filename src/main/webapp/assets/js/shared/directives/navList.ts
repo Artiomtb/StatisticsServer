@@ -3,9 +3,11 @@ function navList() {
     return {
         restrict: "E",
         scope: {
-            enterHandler: "&",
+            boldLength: "@",
+            path: "@",
             list: "=",
-            current: "="
+            current: "=",
+            show: "="
         },
         templateUrl: "templates/shared/nav_list.html",
         link: function (scope, element) {
