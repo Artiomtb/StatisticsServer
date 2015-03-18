@@ -36,7 +36,7 @@ class SearchImpl implements ISearchService {
     autoCompletePubsHandler =(text: string)=> {
         this.destinationPath = SearchImpl.DESTINATION_PUBS_PATH;
         return this.$http({
-            method: 'get',
+            method: 'POST',
             url: SearchImpl.SEARCH_PUBS_PATH,
             data: $.param({
                 action: SearchImpl.AUTOCOMPLETE_ACTION,

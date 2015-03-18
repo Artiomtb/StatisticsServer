@@ -19,7 +19,7 @@ define(["require", "exports"], function (require, exports) {
             this.autoCompletePubsHandler = function (text) {
                 _this.destinationPath = SearchImpl.DESTINATION_PUBS_PATH;
                 return _this.$http({
-                    method: 'get',
+                    method: 'POST',
                     url: SearchImpl.SEARCH_PUBS_PATH,
                     data: $.param({
                         action: SearchImpl.AUTOCOMPLETE_ACTION,
