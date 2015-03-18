@@ -21,6 +21,7 @@ import StudentNodeStatistics = require("controllers/StudentNodeStatistics");
 import nodes = require("directives/nodes");
 import trend = require("directives/trend");
 import search = require("directives/search");
+import boldText = require("directives/boldText");
 
 var navList = require("shared/directives/navList");
 import students = require ("directives/students");
@@ -83,6 +84,8 @@ angular.module("app").directive("barChart", barChart);
 angular.module("app").directive("materialsBarChart", materialsBarChart);
 angular.module("app").directive("search", search);
 angular.module("app").directive("navList",navList);
+angular.module("app").directive("boldText",["$interpolate", boldText]);
 angular.bootstrap(document,["app"]);
+
 
 console.log("succesful loading");

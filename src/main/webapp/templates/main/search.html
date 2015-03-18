@@ -10,6 +10,8 @@
                 <button ng-click="search(searchText)" type="button" class="btn btn-default">Пошук</button>
             </div>
         </div>
-        <nav-list path = "{{activeResultPath}}" list = "autocompletions" current="searchText" show="showAutocompetions" bold-length="{{activeText}}"></nav-list>
+        <div style="padding-left: 160px">
+            <nav-list path = "{{activeResultPath}}" list = "autocompletions" current="searchText" show="showAutocompetions" bold-text="{{activeText}}"></nav-list>
+        </div>
     </div>
 </div>

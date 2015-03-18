@@ -3,7 +3,7 @@ define(["require", "exports"], function (require, exports) {
         return {
             restrict: "E",
             scope: {
-                boldLength: "@",
+                boldText: "@",
                 path: "@",
                 list: "=",
                 current: "=",

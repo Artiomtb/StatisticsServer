@@ -18,8 +18,8 @@ class SearchImpl implements ISearchService {
     static SEARCH_ACTION = "search";
     static AUTOCOMPLETE_ACTION = "autocomplete";
     static PAGE_RESULTS = "/monitor/search";
-    static DESTINATION_STUDENTS_PATH = "/monitor/students/";
-    static DESTINATION_PUBS_PATH = "/monitor/pubs/";
+    static DESTINATION_STUDENTS_PATH = "/monitor/student/pubs/";
+    static DESTINATION_PUBS_PATH = "/monitor/general/pub/";
     destinationPath: string;
 
     constructor(private $http, private pagePathUrl){
@@ -36,7 +36,7 @@ class SearchImpl implements ISearchService {
     autoCompletePubsHandler =(text: string)=> {
         this.destinationPath = SearchImpl.DESTINATION_PUBS_PATH;
         return this.$http({
-            method: 'POST',
+            method: 'get',
             url: SearchImpl.SEARCH_PUBS_PATH,
             data: $.param({
                 action: SearchImpl.AUTOCOMPLETE_ACTION,
@@ -47,7 +47,7 @@ class SearchImpl implements ISearchService {
          ).success(function (data) {
                 var resItems = {items: []}
                 resItems.items = data.items.map(function(item) {
-                    item.name = item.name.replace("<=-b","").replace("b-=>", "").replace(/^\s+/,"");
+                    item.name = item.name.replace(/<=-b/g,"").replace(/b-=>/g, "").replace(/^\s+/,"").toLowerCase();
                     return item;
                 });
                 return resItems;
@@ -63,7 +63,14 @@ class SearchImpl implements ISearchService {
                 action: SearchImpl.AUTOCOMPLETE_ACTION,
                 text: text}),
             headers: {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}
-        })
+        }).success(function (data) {
+            var resItems = {items: []}
+            resItems.items = data.items.map(function(item) {
+                item.name = item.name.replace(/<=-b/g,"").replace(/b-=>/g, "").replace(/^\s+/,"").toLowerCase();
+                return item;
+            });
+            return resItems;
+        });
     }
 
     searchPubsHandler =  (text: string)=> {

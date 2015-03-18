@@ -11,7 +11,6 @@ function search() {
             //hide id click on body
             angular.element(document).bind('click', function (event) {
                 if(event.target !=  document.getElementById("search-input") ){
-                    console.log(event.target);
                     scope.$apply(function(){
                         scope.showAutocompetions = false;
                     })
@@ -36,7 +35,7 @@ function search() {
                 }
 
                 if(scope.searchText.length > 2) {
-                    scope.activeText = scope.searchText.length
+                    scope.activeText = scope.searchText
                     getActiveOption().autocompleteHandler(scope.searchText).success(function (data){
                         scope.showAutocompetions = true;
                         scope.autocompletions = data.items;

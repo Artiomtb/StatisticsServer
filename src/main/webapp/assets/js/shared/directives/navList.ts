@@ -3,7 +3,7 @@ function navList() {
     return {
         restrict: "E",
         scope: {
-            boldLength: "@",
+            boldText: "@",
             path: "@",
             list: "=",
             current: "=",

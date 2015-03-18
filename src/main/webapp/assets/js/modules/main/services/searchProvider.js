@@ -19,7 +19,7 @@ define(["require", "exports"], function (require, exports) {
             this.autoCompletePubsHandler = function (text) {
                 _this.destinationPath = SearchImpl.DESTINATION_PUBS_PATH;
                 return _this.$http({
-                    method: 'POST',
+                    method: 'get',
                     url: SearchImpl.SEARCH_PUBS_PATH,
                     data: $.param({
                         action: SearchImpl.AUTOCOMPLETE_ACTION,
@@ -29,7 +29,7 @@ define(["require", "exports"], function (require, exports) {
                 }).success(function (data) {
                     var resItems = { items: [] };
                     resItems.items = data.items.map(function (item) {
-                        item.name = item.name.replace("<=-b", "").replace("b-=>", "").replace(/^\s+/, "");
+                        item.name = item.name.replace(/<=-b/g, "").replace(/b-=>/g, "").replace(/^\s+/, "").toLowerCase();
                         return item;
                     });
                     return resItems;
@@ -45,6 +45,13 @@ define(["require", "exports"], function (require, exports) {
                         text: text
                     }),
                     headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" }
+                }).success(function (data) {
+                    var resItems = { items: [] };
+                    resItems.items = data.items.map(function (item) {
+                        item.name = item.name.replace(/<=-b/g, "").replace(/b-=>/g, "").replace(/^\s+/, "").toLowerCase();
+                        return item;
+                    });
+                    return resItems;
                 });
             };
             this.searchPubsHandler = function (text) {
@@ -95,8 +102,8 @@ define(["require", "exports"], function (require, exports) {
         SearchImpl.SEARCH_ACTION = "search";
         SearchImpl.AUTOCOMPLETE_ACTION = "autocomplete";
         SearchImpl.PAGE_RESULTS = "/monitor/search";
-        SearchImpl.DESTINATION_STUDENTS_PATH = "/monitor/students/";
-        SearchImpl.DESTINATION_PUBS_PATH = "/monitor/pubs/";
+        SearchImpl.DESTINATION_STUDENTS_PATH = "/monitor/student/pubs/";
+        SearchImpl.DESTINATION_PUBS_PATH = "/monitor/general/pub/";
         return SearchImpl;
     })();
     return SearchProvider;
