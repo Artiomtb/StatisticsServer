@@ -138,12 +138,14 @@ public class Utils {
             "WHERE a.pub_id = pt.pub_id";
     public static final String STUDENT_PAGES_QUERY = "SELECT ceil(count(party_id) :: DOUBLE PRECISION / " + STUDENTS_PER_PAGE + ")\n" +
             "FROM party_to_title";
-    public static final int pubAutocompleteLimit = 10;
+    public static final int PUB_AUTOCOMPLETE_LIMIT = 10;
+    public static final int PUB_SEARCH_PAGE_LIMIT = 20;
     public static final String PUBS_AUTOCOMPLETE_QUERY = "SELECT pub_id, title FROM pub_to_title WHERE lower(title) LIKE ?";
-    public static final int studentAutocompleteLimit = 10;
+    public static final int STUDENT_AUTOCOMLETE_LIMIT = 10;
+    public static final int STUDENT_SEARCH_PAGE_LIMIT = 20;
     public static final String STUDENTS_AUTOCOMPLETE_QUERY = "SELECT party_id, title FROM party_to_title WHERE lower(title) LIKE ?";
-    public static final String STUDENTS_AUTOCOMPLETE_EQUALS_QUERY = "SELECT party_id, title FROM party_to_title WHERE lower(title) = ? LIMIT " + studentAutocompleteLimit;
-    public static final String STUDENTS_AUTOCOMPLETE_LIKE_QUERY = "SELECT party_id, title FROM party_to_title WHERE lower(title) like ? LIMIT " + studentAutocompleteLimit;
+    public static final String STUDENTS_AUTOCOMPLETE_EQUALS_QUERY = "SELECT party_id, title FROM party_to_title WHERE lower(title) = ? LIMIT " + STUDENT_AUTOCOMLETE_LIMIT;
+    public static final String STUDENTS_AUTOCOMPLETE_LIKE_QUERY = "SELECT party_id, title FROM party_to_title WHERE lower(title) like ? LIMIT " + STUDENT_AUTOCOMLETE_LIMIT;
     public static final String B_CHAR_START = "<=-b";
     public static final String B_CHAR_END = "b-=>";
 
