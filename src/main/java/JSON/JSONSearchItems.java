@@ -6,12 +6,12 @@ import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 
-public class JSONAutocomplete implements JSONHandler {
+public class JSONSearchItems implements JSONHandler {
 
     private JSONObject jsonObject = new JSONObject();
     private ArrayList<Searchable> items;
 
-    public JSONAutocomplete(ArrayList<Searchable> items) {
+    public JSONSearchItems(ArrayList<Searchable> items) {
         this.items = items;
         setJsonObject();
     }
