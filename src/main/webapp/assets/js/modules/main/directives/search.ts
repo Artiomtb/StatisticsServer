@@ -1,6 +1,6 @@
 declare var angular;
 
-function search() {
+function search($location) {
     return {
         restrict: "E",
         scope: {
@@ -52,7 +52,9 @@ function search() {
                 scope.search = getActiveOption().searchHandler;
             });
 
-            scope.search = getActiveOption().searchHandler;
+            scope.search = ()=> {
+                $location.url(getActiveOption().searchHandler + "/" + scope.searchText);
+            };
 
             function getActiveOption () {
                 for(var i = 0; i< scope.options.params.length; i++) {

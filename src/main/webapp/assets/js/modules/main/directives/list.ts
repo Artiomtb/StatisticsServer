@@ -1,12 +1,12 @@
-function students (PATH_CONSTANTS) {
+function list (PATH_CONSTANTS) {
     return {
         restrict: "E",
         scope: {
-            students: "=",
+            headers: "=",
             path: "="
         },
         templateUrl: "/templates/main/students.html"
     }
 }
 
-export=students;
+export=list;

@@ -2,21 +2,10 @@
 
 declare var jsonEvent;
 class NodesController {
-    static $inject = ['PATH_CONSTANTS','$scope','$http',"$routeParams", "Search", "SEARCH_OPTIONS"];
-    constructor (private PATH_CONSTANTS, private $scope, private $http, $routeParams, Search: ISearchService, SEARCH_OPTIONS){
+    static $inject = ['PATH_CONSTANTS','$scope','$http',"$routeParams", "Search"];
+    constructor (private PATH_CONSTANTS, private $scope, private $http, $routeParams, Search: ISearchService){
 
-        $scope.options = {
-            default: SEARCH_OPTIONS.PUBS,
-            params: [{value: SEARCH_OPTIONS.STUDENT, name: "Студенти",
-                isActive: false,
-                searchHandler: Search.searchStudentsHandler,
-                autocompleteHandler: Search.autoCompleteStudentsHandler,
-                resultNavPath: Search.getStudentsPath()},
-            {value: SEARCH_OPTIONS.PUBS, name: "Дисципліни",
-                isActive: true,
-                searchHandler: Search.searchPubsHandler,
-                autocompleteHandler: Search.autoCompletePubsHandler,
-                resultNavPath: Search.getPubsResultsPath() }]};
+        $scope.options = Search.getSearchConfiguration({pubs: true});
 
         $scope.page_path = PATH_CONSTANTS.NODES_PATH;
         $scope.pub_path = PATH_CONSTANTS.GENERAL_NODE_PATH;
@@ -25,6 +14,9 @@ class NodesController {
                 this.$scope.pages = pubs.pages;
                 this.$scope.currentPage = pubs.current_page;
                 this.$scope.pubs = pubs.pubs;
+                this.$scope.pub_names =pubs.pubs.map(function(item) {
+                    return item.node_name;
+                });
         })
              .error(()=>{console.log("error")});
     }

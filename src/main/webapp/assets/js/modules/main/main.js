@@ -10,7 +10,7 @@
 /// <amd-dependency path="directives/trend" />
 /// <amd-dependency path="directives/materials_bar_chart" />
 /// <amd-dependency path="angular-bootstrap" />
-define(["require", "exports", "controllers/MainController", "controllers/NodesController", "controllers/StudentsController", "controllers/NodeStatistics", "controllers/StudentStatistics", "controllers/StudentNodeStatistics", "directives/nodes", "directives/trend", "directives/search", "directives/boldText", "directives/students", "services/searchProvider", "angular", "angular_route", "shared/directives/pagination", "shared/directives/trend", "shared/directives/navList", "chartjs", "directives/students_bar_chart", "directives/trend", "directives/materials_bar_chart", "angular-bootstrap"], function (require, exports, MainCotroller, NodesController, StudentsController, NodeStatistics, StudentStatistics, StudentNodeStatistics, nodes, trend, search, boldText, students, SearchProvider) {
+define(["require", "exports", "controllers/MainController", "controllers/NodesController", "controllers/StudentsController", "controllers/NodeStatistics", "controllers/StudentStatistics", "controllers/StudentNodeStatistics", "directives/list", "directives/trend", "directives/search", "directives/boldText", "services/searchProvider", "angular", "angular_route", "shared/directives/pagination", "shared/directives/trend", "shared/directives/navList", "chartjs", "directives/students_bar_chart", "directives/trend", "directives/materials_bar_chart", "angular-bootstrap"], function (require, exports, MainCotroller, NodesController, StudentsController, NodeStatistics, StudentStatistics, StudentNodeStatistics, list, trend, search, boldText, SearchProvider) {
     var navList = require("shared/directives/navList");
     var pagination = require("shared/directives/pagination");
     var barChart = require("directives/students_bar_chart");
@@ -25,7 +25,7 @@ define(["require", "exports", "controllers/MainController", "controllers/NodesCo
         "STUDENT_NODE_MATERIALS": "/monitor/student/pub",
         "STUDENT_MATERIAL": "/monitor/student/material",
         "UPDATE_GRAPH": "/monitor/general/pub/links",
-        "SEARCH_PAGE": "/monitor/search"
+        "SEARCH_PAGE": "/monitor/search/:searchArea/:queryString"
     }).constant("SEARCH_OPTIONS", {
         "STUDENT": "students",
         "PUBS": "pubs"
@@ -41,13 +41,12 @@ define(["require", "exports", "controllers/MainController", "controllers/NodesCo
     angular.module("app").controller("NodeStatistics", NodeStatistics);
     angular.module("app").controller("StudentStatistics", StudentStatistics);
     angular.module("app").controller("StudentNodeStatistics", StudentNodeStatistics);
-    angular.module("app").directive("nodes", ["PATH_CONSTANTS", nodes]);
-    angular.module("app").directive("students", ["PATH_CONSTANTS", students]);
+    angular.module("app").directive("list", ["PATH_CONSTANTS", list]);
     angular.module("app").directive("pageNumbers", pagination);
     angular.module("app").directive("trend", trend);
     angular.module("app").directive("barChart", barChart);
     angular.module("app").directive("materialsBarChart", materialsBarChart);
-    angular.module("app").directive("search", search);
+    angular.module("app").directive("search", ["$location", search]);
     angular.module("app").directive("navList", navList);
     angular.module("app").directive("boldText", ["$interpolate", boldText]);
     angular.bootstrap(document, ["app"]);

@@ -6,8 +6,8 @@ class SearchProvider  {
         this.pagePathUrl = path;
     }
 
-    $get = ["$http", function ($http) {
-       return new SearchImpl($http, this.pagePathUrl);
+    $get = ["$http", "SEARCH_OPTIONS", function ($http, SEARCH_OPTIONS) {
+       return new SearchImpl($http, SEARCH_OPTIONS,this.pagePathUrl);
     }];
 }
 
@@ -22,7 +22,10 @@ class SearchImpl implements ISearchService {
     static DESTINATION_PUBS_PATH = "/monitor/general/pub/";
     destinationPath: string;
 
-    constructor(private $http, private pagePathUrl){
+    private prepareSearchResult (input): string {
+        return input.replace(/<=-b/g,"").replace(/b-=>/g, "").replace(/^\s+/,"").toLowerCase();
+    }
+    constructor(private $http, private SEARCH_OPTIONS, private pagePathUrl){
     }
 
     getPubsResultsPath() {
@@ -47,7 +50,7 @@ class SearchImpl implements ISearchService {
          ).success(function (data) {
                 var resItems = {items: []}
                 resItems.items = data.items.map(function(item) {
-                    item.name = item.name.replace(/<=-b/g,"").replace(/b-=>/g, "").replace(/^\s+/,"").toLowerCase();
+                    item.name = this.prepareSearchResult(item.name);
                     return item;
                 });
                 return resItems;
@@ -66,7 +69,7 @@ class SearchImpl implements ISearchService {
         }).success(function (data) {
             var resItems = {items: []}
             resItems.items = data.items.map(function(item) {
-                item.name = item.name.replace(/<=-b/g,"").replace(/b-=>/g, "").replace(/^\s+/,"").toLowerCase();
+                item.name = this.prepareSearchResult(item.name);
                 return item;
             });
             return resItems;
@@ -74,7 +77,7 @@ class SearchImpl implements ISearchService {
     }
 
     searchPubsHandler =  (text: string)=> {
-        this.$http({
+        return this.$http({
             method: 'POST',
             url: SearchImpl.SEARCH_PUBS_PATH,
             data: $.param({
@@ -82,34 +85,54 @@ class SearchImpl implements ISearchService {
                 text: text
             }),
             headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
-        }).then(function(data) {
-                this.searchResults = data.data;
-                this.destinationPath = SearchImpl.DESTINATION_PUBS_PATH;
-        }, function () {
-            console.log("search failed!");
         });
     }
 
     searchStudentsHandler =  (text: string)=> {
-        this.$http({
+        return this.$http({
                 method: 'POST',
                 url: SearchImpl.SEARCH_STUDENTS_PATH,
                 data: $.param({
                 action: SearchImpl.SEARCH_ACTION,
                 text: text}),
                 headers: {"Content-Type":"application/x-www-form-urlencoded; charset=UTF-8"}
-            }).then(function (data) {
-                this.searchResults = data.data;
-                this.destinationPath = SearchImpl.DESTINATION_STUDENTS_PATH;
-        }, function () {
-            console.log("search failed");
-        })
+            });
+    }
+
+    getSearchResults(searchArea, queryString): any {
+        if(searchArea == this.SEARCH_OPTIONS.STUDENT) {
+            return this.searchStudentsHandler(queryString)
+                       .success((data)=>{ data.resultPath = this.getStudentsPath()}) ;
+        } else if(searchArea == this.SEARCH_OPTIONS.PUBS) {
+            return this.searchPubsHandler(queryString)
+                .success((data)=> {data.resultPath = this.getPubsResultsPath()});
+        }
     }
 
     getActiveDestinationPath =()=> {
         return this.destinationPath;
     }
-    searchResults = [];
+
+    getResultsPath () {
+        return SearchImpl.PAGE_RESULTS;
+    }
+
+    getSearchConfiguration(areaActivation) {
+
+        return {
+        default: this.SEARCH_OPTIONS.PUBS,
+            params: [{value: this.SEARCH_OPTIONS.STUDENT, name: "Студенти",
+            isActive: areaActivation.students,
+            searchHandler: this.searchStudentsHandler,
+            autocompleteHandler: this.autoCompleteStudentsHandler,
+            resultNavPath: this.getStudentsPath()},
+            {value: this.SEARCH_OPTIONS.PUBS, name: "Дисципліни",
+                isActive: areaActivation.pubs,
+                searchHandler: this.searchPubsHandler,
+                autocompleteHandler: this.autoCompletePubsHandler,
+                resultNavPath: this.getPubsResultsPath() }]
+        };
+    }
 }
 
 export = SearchProvider;

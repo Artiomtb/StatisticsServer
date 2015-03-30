@@ -1,5 +1,5 @@
 define(["require", "exports"], function (require, exports) {
-    function search() {
+    function search($location) {
         return {
             restrict: "E",
             scope: {
@@ -45,7 +45,9 @@ define(["require", "exports"], function (require, exports) {
                     scope.activeResultPath = getActiveOption().resultNavPath;
                     scope.search = getActiveOption().searchHandler;
                 });
-                scope.search = getActiveOption().searchHandler;
+                scope.search = function () {
+                    $location.url(getActiveOption().searchHandler + "/" + scope.searchText);
+                };
                 function getActiveOption() {
                     for (var i = 0; i < scope.options.params.length; i++) {
                         if (scope.searchArea.value == scope.options.params[i].value) {

@@ -75,11 +75,23 @@ interface ISearchEntry {
 }
 
 interface ISearchService {
-    getPubsResultsPath(): text;
-    getStudentsPath(): text;
+    getPubsResultsPath(): string;
+    getStudentsPath(): string;
+    getResultsPath(): string;
     autoCompletePubsHandler(text: string): any;
     autoCompleteStudentsHandler(text: string): any;
     searchPubsHandler(text: string): any;
     searchStudentsHandler(text: string): any;
-    searchResults: Array<ISearchEntry>;
+    getSearchConfiguration(area): any ;
 }
+
+interface ISearchResult {
+    items: Array<ISearchEntry>
+}
+
+interface ISearchResults {
+    results: ISearchResult;
+    pages: number;
+    current_page: number;
+}
+

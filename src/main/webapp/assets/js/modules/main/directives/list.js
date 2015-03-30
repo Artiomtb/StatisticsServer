@@ -1,14 +1,14 @@
 define(["require", "exports"], function (require, exports) {
-    function students(PATH_CONSTANTS) {
+    function list(PATH_CONSTANTS) {
         return {
             restrict: "E",
             scope: {
-                students: "=",
+                headers: "=",
                 path: "="
             },
             templateUrl: "/templates/main/students.html"
         };
     }
-    return students;
+    return list;
 });
-//# sourceMappingURL=students.js.map
+//# sourceMappingURL=list.js.map
