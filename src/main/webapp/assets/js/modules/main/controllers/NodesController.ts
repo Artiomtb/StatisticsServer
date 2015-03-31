@@ -14,9 +14,11 @@ class NodesController {
                 this.$scope.pages = pubs.pages;
                 this.$scope.currentPage = pubs.current_page;
                 this.$scope.pubs = pubs.pubs;
-                this.$scope.pub_names =pubs.pubs.map(function(item) {
-                    return item.node_name;
-                });
+                if(pubs.pubs != undefined) {
+                    this.$scope.pub_names =pubs.pubs.map(function(item) {
+                        return {name: item.node_name, id: item.node_id};
+                    });
+                }
         })
              .error(()=>{console.log("error")});
     }

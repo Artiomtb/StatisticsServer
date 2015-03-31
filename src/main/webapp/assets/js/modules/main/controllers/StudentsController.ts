@@ -11,13 +11,15 @@ class StudentsController {
         $http.get(PATH_CONSTANTS.STUDENTS_PATH,{params: {page: $routeParams.page}})
             .success((students: IStudents) => {
                 this.$scope.students=students.students;
-                this.$scope.student_names = students.students.map(function(student){
-                    return student.party_name;
-                });
+                if(students.students != undefined){
+                    this.$scope.student_names = students.students.map(function(student){
+                        return {name: student.party_name, id: student.party_id};
+                    });
+                }
                 this.$scope.pages = students.pages;
                 this.$scope.currentPage = students.current_page;
             })
-            .error(()=>{console.log("some error occured")});
+            .error(()=>{console.log("some errors")});
     }
 }
 

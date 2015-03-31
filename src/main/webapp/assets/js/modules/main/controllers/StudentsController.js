@@ -11,13 +11,15 @@ define(["require", "exports"], function (require, exports) {
             $scope.options = Search.getSearchConfiguration({ students: true });
             $http.get(PATH_CONSTANTS.STUDENTS_PATH, { params: { page: $routeParams.page } }).success(function (students) {
                 _this.$scope.students = students.students;
-                _this.$scope.student_names = students.students.map(function (student) {
-                    return student.party_name;
-                });
+                if (students.students != undefined) {
+                    _this.$scope.student_names = students.students.map(function (student) {
+                        return { name: student.party_name, id: student.party_id };
+                    });
+                }
                 _this.$scope.pages = students.pages;
                 _this.$scope.currentPage = students.current_page;
             }).error(function () {
-                console.log("some error occured");
+                console.log("some errors");
             });
         }
         StudentsController.$inject = ['PATH_CONSTANTS', '$scope', '$http', "$routeParams", "Search", "SEARCH_OPTIONS"];

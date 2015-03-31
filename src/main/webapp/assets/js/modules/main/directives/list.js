@@ -3,10 +3,10 @@ define(["require", "exports"], function (require, exports) {
         return {
             restrict: "E",
             scope: {
-                headers: "=",
+                entries: "=",
                 path: "="
             },
-            templateUrl: "/templates/main/students.html"
+            templateUrl: "/templates/main/list.html"
         };
     }
     return list;

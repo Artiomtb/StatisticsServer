@@ -2,10 +2,10 @@ function list (PATH_CONSTANTS) {
     return {
         restrict: "E",
         scope: {
-            headers: "=",
+            entries: "=",
             path: "="
         },
-        templateUrl: "/templates/main/students.html"
+        templateUrl: "/templates/main/list.html"
     }
 }
 

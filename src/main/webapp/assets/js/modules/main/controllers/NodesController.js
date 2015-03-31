@@ -13,9 +13,11 @@ define(["require", "exports"], function (require, exports) {
                 _this.$scope.pages = pubs.pages;
                 _this.$scope.currentPage = pubs.current_page;
                 _this.$scope.pubs = pubs.pubs;
-                _this.$scope.pub_names = pubs.pubs.map(function (item) {
-                    return item.node_name;
-                });
+                if (pubs.pubs != undefined) {
+                    _this.$scope.pub_names = pubs.pubs.map(function (item) {
+                        return { name: item.node_name, id: item.node_id };
+                    });
+                }
             }).error(function () {
                 console.log("error");
             });
