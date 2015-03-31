@@ -49,12 +49,7 @@ function search($location) {
 
             scope.$watch("searchArea", function () {
                 scope.activeResultPath = getActiveOption().resultNavPath;
-                scope.search = getActiveOption().searchHandler;
             });
-
-            scope.search = ()=> {
-                $location.url(getActiveOption().searchHandler + "/" + scope.searchText);
-            };
 
             function getActiveOption () {
                 for(var i = 0; i< scope.options.params.length; i++) {

@@ -7,7 +7,7 @@
             </div>
             <input id="search-input" placeholder="Текст для пошуку" type="text" class="form-control" ng-model = "searchText" >
             <div class="input-group-btn">
-                <button ng-click="search(searchText)" type="button" class="btn btn-default">Пошук</button>
+                <a href="#{{options.searchPage}}/{{searchArea.value}}/{{searchText}}"  class="btn btn-default">Пошук</a>
             </div>
         </div>
         <div style="padding-left: 160px">

@@ -1,6 +1,5 @@
 /// <reference path="../../../shared/interfaces.ts"/>
 declare var $;
-
 class SearchProvider  {
     setPagePath = function (path: string) {
         this.pagePathUrl = path;
@@ -19,7 +18,7 @@ class SearchImpl implements ISearchService {
     static AUTOCOMPLETE_ACTION = "autocomplete";
     static PAGE_RESULTS = "/monitor/search";
     static DESTINATION_STUDENTS_PATH = "/monitor/student/pubs/";
-    static DESTINATION_PUBS_PATH = "/monitor/general/pub/";
+    static DESTINATION_PUBS_PATH = "/monitor/general/sudents/";
     destinationPath: string;
 
     private prepareSearchResult (input): string {
@@ -36,10 +35,11 @@ class SearchImpl implements ISearchService {
         return SearchImpl.DESTINATION_STUDENTS_PATH;
     }
 
-    autoCompletePubsHandler =(text: string)=> {
+    autoCompletePubsHandler =  (text: string)=> {
         this.destinationPath = SearchImpl.DESTINATION_PUBS_PATH;
+        var _thiss = this;
         return this.$http({
-            method: 'POST',
+            method: 'GET',
             url: SearchImpl.SEARCH_PUBS_PATH,
             data: $.param({
                 action: SearchImpl.AUTOCOMPLETE_ACTION,
@@ -47,29 +47,32 @@ class SearchImpl implements ISearchService {
             }),
                 headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
             }
-         ).success(function (data) {
+         ).success((data)=> {
                 var resItems = {items: []}
-                resItems.items = data.items.map(function(item) {
-                    item.name = this.prepareSearchResult(item.name);
-                    return item;
-                });
+                if(data.items != undefined) {
+                    resItems.items = data.items.map(function(item) {
+                        item.name = _thiss.prepareSearchResult(item.name);
+                        return item;
+                    });
+                }
                 return resItems;
             });
     }
 
-    autoCompleteStudentsHandler =  (text: string) => {
+    autoCompleteStudentsHandler =  (text: string)=> {
         this.destinationPath = SearchImpl.DESTINATION_STUDENTS_PATH;
+        var _thiss = this;
         return this.$http({
-            method: 'POST',
+            method: 'GET',
             url: SearchImpl.SEARCH_STUDENTS_PATH,
             data: $.param({
                 action: SearchImpl.AUTOCOMPLETE_ACTION,
                 text: text}),
             headers: {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}
-        }).success(function (data) {
+        }).success((data)=> {
             var resItems = {items: []}
             resItems.items = data.items.map(function(item) {
-                item.name = this.prepareSearchResult(item.name);
+                item.name = _thiss.prepareSearchResult(item.name);
                 return item;
             });
             return resItems;
@@ -120,17 +123,21 @@ class SearchImpl implements ISearchService {
     getSearchConfiguration(areaActivation) {
 
         return {
-        default: this.SEARCH_OPTIONS.PUBS,
-            params: [{value: this.SEARCH_OPTIONS.STUDENT, name: "Студенти",
-            isActive: areaActivation.students,
-            searchHandler: this.searchStudentsHandler,
-            autocompleteHandler: this.autoCompleteStudentsHandler,
-            resultNavPath: this.getStudentsPath()},
-            {value: this.SEARCH_OPTIONS.PUBS, name: "Дисципліни",
+            default: this.SEARCH_OPTIONS.PUBS,
+            searchPage: SearchImpl.PAGE_RESULTS,
+            params: [{
+                value: this.SEARCH_OPTIONS.STUDENT,
+                name: "Студенти",
+                isActive: areaActivation.students,
+                autocompleteHandler: this.autoCompleteStudentsHandler,
+                resultNavPath: this.getStudentsPath()
+            }, {
+                value: this.SEARCH_OPTIONS.PUBS,
+                name: "Дисципліни",
                 isActive: areaActivation.pubs,
-                searchHandler: this.searchPubsHandler,
                 autocompleteHandler: this.autoCompletePubsHandler,
-                resultNavPath: this.getPubsResultsPath() }]
+                resultNavPath: this.getPubsResultsPath()
+            }]
         };
     }
 }

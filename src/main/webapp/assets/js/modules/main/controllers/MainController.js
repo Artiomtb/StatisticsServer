@@ -4,7 +4,6 @@ define(["require", "exports"], function (require, exports) {
             var _this = this;
             this.$scope = $scope;
             this.$location = $location;
-            this.$scope.test = "test";
             this.$scope.$on('$locationChangeStart', function (next, current) {
                 _this.$scope.students = current.match(/students/g);
             });
