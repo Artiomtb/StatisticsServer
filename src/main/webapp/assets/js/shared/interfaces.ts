@@ -1,6 +1,6 @@
 interface IPub {
-    node_name: string;
-    node_id: number;
+    pub_name: string;
+    pub_id: number;
 
 }
 
@@ -32,7 +32,7 @@ interface IStudentStatistic {
 
 interface IStudentStatistics {
     student: string;
-    nodes: IPub;
+    pubs: Array<IPub>;
 }
 
 interface IStudent {

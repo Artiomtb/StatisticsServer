@@ -12,7 +12,7 @@ define(["require", "exports"], function (require, exports) {
             $http.get(PATH_CONSTANTS.STUDENTS_PATH, { params: { page: $routeParams.page } }).success(function (students) {
                 _this.$scope.students = students.students;
                 if (students.students != undefined) {
-                    _this.$scope.student_names = students.students.map(function (student) {
+                    _this.$scope.students_list = students.students.map(function (student) {
                         return { name: student.party_name, id: student.party_id };
                     });
                 }

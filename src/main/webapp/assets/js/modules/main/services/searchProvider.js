@@ -21,7 +21,7 @@ define(["require", "exports"], function (require, exports) {
                 _this.destinationPath = SearchImpl.DESTINATION_PUBS_PATH;
                 var _thiss = _this;
                 return _this.$http({
-                    method: 'GET',
+                    method: 'POST',
                     url: SearchImpl.SEARCH_PUBS_PATH,
                     data: $.param({
                         action: SearchImpl.AUTOCOMPLETE_ACTION,
@@ -43,7 +43,7 @@ define(["require", "exports"], function (require, exports) {
                 _this.destinationPath = SearchImpl.DESTINATION_STUDENTS_PATH;
                 var _thiss = _this;
                 return _this.$http({
-                    method: 'GET',
+                    method: 'POST',
                     url: SearchImpl.SEARCH_STUDENTS_PATH,
                     data: $.param({
                         action: SearchImpl.AUTOCOMPLETE_ACTION,
@@ -68,6 +68,7 @@ define(["require", "exports"], function (require, exports) {
                         text: text
                     }),
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
+                }).success(function (data) {
                 });
             };
             this.searchStudentsHandler = function (text) {
@@ -135,7 +136,7 @@ define(["require", "exports"], function (require, exports) {
         SearchImpl.AUTOCOMPLETE_ACTION = "autocomplete";
         SearchImpl.PAGE_RESULTS = "/monitor/search";
         SearchImpl.DESTINATION_STUDENTS_PATH = "/monitor/student/pubs/";
-        SearchImpl.DESTINATION_PUBS_PATH = "/monitor/general/sudents/";
+        SearchImpl.DESTINATION_PUBS_PATH = "/monitor/general/pub/";
         return SearchImpl;
     })();
     return SearchProvider;

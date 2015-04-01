@@ -12,7 +12,7 @@ class StudentsController {
             .success((students: IStudents) => {
                 this.$scope.students=students.students;
                 if(students.students != undefined){
-                    this.$scope.student_names = students.students.map(function(student){
+                    this.$scope.students_list = students.students.map(function(student){
                         return {name: student.party_name, id: student.party_id};
                     });
                 }

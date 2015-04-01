@@ -53,7 +53,7 @@ function search($location) {
 
             function getActiveOption () {
                 for(var i = 0; i< scope.options.params.length; i++) {
-                    if(scope.searchArea.value == scope.options.params[i].value ){
+                    if(scope.searchArea.value == scope.options.params[i].value){
                         return scope.options.params[i];
                     }
                 }

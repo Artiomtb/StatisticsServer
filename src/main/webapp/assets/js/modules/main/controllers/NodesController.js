@@ -14,8 +14,9 @@ define(["require", "exports"], function (require, exports) {
                 _this.$scope.currentPage = pubs.current_page;
                 _this.$scope.pubs = pubs.pubs;
                 if (pubs.pubs != undefined) {
-                    _this.$scope.pub_names = pubs.pubs.map(function (item) {
-                        return { name: item.node_name, id: item.node_id };
+                    _this.$scope.pubs_list = pubs.pubs.map(function (item) {
+                        ;
+                        return { name: item.pub_name, id: item.pub_id };
                     });
                 }
             }).error(function () {

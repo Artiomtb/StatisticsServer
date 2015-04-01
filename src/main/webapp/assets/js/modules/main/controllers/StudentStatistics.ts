@@ -7,6 +7,11 @@ class StudentStatistics {
         $http.get(PATH_CONSTANTS.STUDENT, {params: {party_id: $routeParams.party_id}})
             .success((nodes: IStudentStatistics)=>{
                 this.$scope.nodes = nodes;
+                if(nodes != undefined) {
+                    this.$scope.nodes_list = nodes.pubs.map(function(item) {
+                        return {name: item.pub_name, id: item.pub_id};
+                    });
+                }
             })
             .error(()=>{
             });

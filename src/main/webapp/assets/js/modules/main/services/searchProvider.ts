@@ -18,7 +18,7 @@ class SearchImpl implements ISearchService {
     static AUTOCOMPLETE_ACTION = "autocomplete";
     static PAGE_RESULTS = "/monitor/search";
     static DESTINATION_STUDENTS_PATH = "/monitor/student/pubs/";
-    static DESTINATION_PUBS_PATH = "/monitor/general/sudents/";
+    static DESTINATION_PUBS_PATH = "/monitor/general/pub/";
     destinationPath: string;
 
     private prepareSearchResult (input): string {
@@ -39,7 +39,7 @@ class SearchImpl implements ISearchService {
         this.destinationPath = SearchImpl.DESTINATION_PUBS_PATH;
         var _thiss = this;
         return this.$http({
-            method: 'GET',
+            method: 'POST',
             url: SearchImpl.SEARCH_PUBS_PATH,
             data: $.param({
                 action: SearchImpl.AUTOCOMPLETE_ACTION,
@@ -63,7 +63,7 @@ class SearchImpl implements ISearchService {
         this.destinationPath = SearchImpl.DESTINATION_STUDENTS_PATH;
         var _thiss = this;
         return this.$http({
-            method: 'GET',
+            method: 'POST',
             url: SearchImpl.SEARCH_STUDENTS_PATH,
             data: $.param({
                 action: SearchImpl.AUTOCOMPLETE_ACTION,
@@ -88,6 +88,8 @@ class SearchImpl implements ISearchService {
                 text: text
             }),
             headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
+        }).success(function(data) {
+
         });
     }
 
