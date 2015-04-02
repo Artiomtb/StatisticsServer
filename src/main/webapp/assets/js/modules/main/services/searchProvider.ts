@@ -123,7 +123,7 @@ class SearchImpl implements ISearchService {
     }
 
     getSearchConfiguration(areaActivation) {
-
+        areaActivation = areaActivation || {students: true};
         return {
             default: this.SEARCH_OPTIONS.PUBS,
             searchPage: SearchImpl.PAGE_RESULTS,

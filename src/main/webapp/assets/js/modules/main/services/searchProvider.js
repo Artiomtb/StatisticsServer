@@ -112,6 +112,7 @@ define(["require", "exports"], function (require, exports) {
             return SearchImpl.PAGE_RESULTS;
         };
         SearchImpl.prototype.getSearchConfiguration = function (areaActivation) {
+            areaActivation = areaActivation || { students: true };
             return {
                 default: this.SEARCH_OPTIONS.PUBS,
                 searchPage: SearchImpl.PAGE_RESULTS,

@@ -5,6 +5,7 @@ define(["require", "exports"], function (require, exports) {
             this.$scope = $scope;
             this.search = search;
             this.$routeParams = $routeParams;
+            this.$scope.options = search.getSearchConfiguration();
             search.getSearchResults($routeParams.searchArea, $routeParams.queryString).success(function (data) {
                 _this.$scope.results = data;
                 _this.$scope.results_list = data.results.items.map(function (entry) {
