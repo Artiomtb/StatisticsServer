@@ -111,21 +111,23 @@ define(["require", "exports"], function (require, exports) {
         SearchImpl.prototype.getResultsPath = function () {
             return SearchImpl.PAGE_RESULTS;
         };
-        SearchImpl.prototype.getSearchConfiguration = function (areaActivation) {
-            areaActivation = areaActivation || { students: true };
+        SearchImpl.prototype.getSearchConfiguration = function (areaActivation, defaultValue) {
+            areaActivation = areaActivation || this.SEARCH_OPTIONS.STUDENT;
+            defaultValue = defaultValue || "";
             return {
+                defaultValue: defaultValue,
                 default: this.SEARCH_OPTIONS.PUBS,
                 searchPage: SearchImpl.PAGE_RESULTS,
                 params: [{
                     value: this.SEARCH_OPTIONS.STUDENT,
                     name: "Студенти",
-                    isActive: areaActivation.students,
+                    isActive: areaActivation == this.SEARCH_OPTIONS.STUDENT,
                     autocompleteHandler: this.autoCompleteStudentsHandler,
                     resultNavPath: this.getStudentsPath()
-                }, {
+                }, {}, {
                     value: this.SEARCH_OPTIONS.PUBS,
                     name: "Дисципліни",
-                    isActive: areaActivation.pubs,
+                    isActive: areaActivation == this.SEARCH_OPTIONS.PUBS,
                     autocompleteHandler: this.autoCompletePubsHandler,
                     resultNavPath: this.getPubsResultsPath()
                 }]

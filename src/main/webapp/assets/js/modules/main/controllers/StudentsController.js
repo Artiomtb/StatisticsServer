@@ -8,7 +8,7 @@ define(["require", "exports"], function (require, exports) {
             this.$http = $http;
             $scope.page_path = PATH_CONSTANTS.STUDENTS_PATH;
             $scope.student_path = PATH_CONSTANTS.STUDENT;
-            $scope.options = Search.getSearchConfiguration({ students: true });
+            $scope.options = Search.getSearchConfiguration(SEARCH_OPTIONS.STUDENTS);
             $http.get(PATH_CONSTANTS.STUDENTS_PATH, { params: { page: $routeParams.page } }).success(function (students) {
                 _this.$scope.students = students.students;
                 if (students.students != undefined) {

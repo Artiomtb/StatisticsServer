@@ -3,9 +3,12 @@
 <search options="options"></search>
 <list entries="results_list" path = "results.resultPath"></list>
 <div class="well" style="overflow: hidden" ng-if="!results_list || results_list.length==0">
-   <div class="pull-left" style="margin-right: 7%;" >
+    <div>
+        <img class="pull-left" src="/assets/images/sad-cat.png"  />
+    </div>
+   <div  style="margin-left: 17%;" >
        <h3>Схоже по вашому запиту нічого не знайдено...</h3>
    </div>
-    <img src="/assets/images/sad-cat.png"  />
+
 </div>
 <page_numbers pages="results.pages" current-page="results.current_page" path="/monitor/search" ></page_numbers>

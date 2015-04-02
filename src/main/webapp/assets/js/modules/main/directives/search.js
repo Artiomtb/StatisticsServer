@@ -18,8 +18,8 @@ define(["require", "exports"], function (require, exports) {
                 scope.searchArea = scope.options.params.filter(function (option) {
                     return option.isActive;
                 })[0];
+                scope.searchText = scope.options.defaultValue;
                 //scope.showAutocompetions = scope.options.params[0].resultNavHandler;
-                scope.searchText = "";
                 angular.element(document.getElementById("search-input")).bind("keyup", function (e) {
                     if (e.which == "38" || e.which == "40" || e.which == "13") {
                         if (e.which == "13") {

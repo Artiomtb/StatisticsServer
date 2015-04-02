@@ -1,7 +1,7 @@
 class SearchResultsController {
     static $inject = ["$scope", "Search", "$routeParams"];
     constructor(private $scope, private search, private $routeParams){
-        this.$scope.options = search.getSearchConfiguration();
+        this.$scope.options = search.getSearchConfiguration($routeParams.searchArea, $routeParams.queryString);
         search.getSearchResults($routeParams.searchArea, $routeParams.queryString)
             .success((data)=> {
                 this.$scope.results = data;

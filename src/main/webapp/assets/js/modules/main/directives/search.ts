@@ -21,9 +21,9 @@ function search($location) {
                 return option.isActive;
             })[0];
 
-            //scope.showAutocompetions = scope.options.params[0].resultNavHandler;
+            scope.searchText = scope.options.defaultValue;
 
-            scope.searchText="";
+            //scope.showAutocompetions = scope.options.params[0].resultNavHandler;
 
             angular.element(document.getElementById("search-input")).bind("keyup", function (e) {
                 if(e.which=="38" || e.which == "40" || e.which == "13") {

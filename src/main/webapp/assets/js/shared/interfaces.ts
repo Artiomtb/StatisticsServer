@@ -82,7 +82,7 @@ interface ISearchService {
     autoCompleteStudentsHandler(text: string): any;
     searchPubsHandler(text: string): any;
     searchStudentsHandler(text: string): any;
-    getSearchConfiguration(area): any ;
+    getSearchConfiguration(area?: String, defaultValue?: String): any;
 }
 
 interface ISearchResult {

@@ -2,10 +2,10 @@
 
 declare var jsonEvent;
 class NodesController {
-    static $inject = ['PATH_CONSTANTS','$scope','$http',"$routeParams", "Search"];
-    constructor (private PATH_CONSTANTS, private $scope, private $http, $routeParams, Search: ISearchService){
+    static $inject = ['PATH_CONSTANTS','$scope','$http',"$routeParams", "Search", "SEARCH_OPTIONS"];
+    constructor (private PATH_CONSTANTS, private $scope, private $http, $routeParams, Search: ISearchService, SEARCH_OPTIONS){
 
-        $scope.options = Search.getSearchConfiguration({pubs: true});
+        $scope.options = Search.getSearchConfiguration(SEARCH_OPTIONS.PUBS);
 
         $scope.page_path = PATH_CONSTANTS.NODES_PATH;
         $scope.pub_path = PATH_CONSTANTS.GENERAL_NODE_PATH;

@@ -1,12 +1,12 @@
 /// <reference path="../../../shared/interfaces.ts" />
 define(["require", "exports"], function (require, exports) {
     var NodesController = (function () {
-        function NodesController(PATH_CONSTANTS, $scope, $http, $routeParams, Search) {
+        function NodesController(PATH_CONSTANTS, $scope, $http, $routeParams, Search, SEARCH_OPTIONS) {
             var _this = this;
             this.PATH_CONSTANTS = PATH_CONSTANTS;
             this.$scope = $scope;
             this.$http = $http;
-            $scope.options = Search.getSearchConfiguration({ pubs: true });
+            $scope.options = Search.getSearchConfiguration(SEARCH_OPTIONS.PUBS);
             $scope.page_path = PATH_CONSTANTS.NODES_PATH;
             $scope.pub_path = PATH_CONSTANTS.GENERAL_NODE_PATH;
             $http.get(PATH_CONSTANTS.NODES_PATH, { params: { "page": $routeParams.page } }).success(function (pubs) {
@@ -23,7 +23,7 @@ define(["require", "exports"], function (require, exports) {
                 console.log("error");
             });
         }
-        NodesController.$inject = ['PATH_CONSTANTS', '$scope', '$http', "$routeParams", "Search"];
+        NodesController.$inject = ['PATH_CONSTANTS', '$scope', '$http', "$routeParams", "Search", "SEARCH_OPTIONS"];
         return NodesController;
     })();
     return NodesController;
