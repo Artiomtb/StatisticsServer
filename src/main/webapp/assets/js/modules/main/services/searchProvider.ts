@@ -71,45 +71,68 @@ class SearchImpl implements ISearchService {
             headers: {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"}
         }).success((data)=> {
             var resItems = {items: []}
-            resItems.items = data.items.map(function(item) {
-                item.name = _thiss.prepareSearchResult(item.name);
-                return item;
-            });
+            if(data.items != undefined){
+                resItems.items = data.items.map(function(item) {
+                    item.name = _thiss.prepareSearchResult(item.name);
+                    return item;
+                });
+            }
             return resItems;
         });
     }
 
-    searchPubsHandler =  (text: string)=> {
+    searchPubsHandler =  (text: string, page: number)=> {
+        var thiss = this;
         return this.$http({
-            method: 'POST',
+            method: 'GET',
             url: SearchImpl.SEARCH_PUBS_PATH,
             data: $.param({
                 action: SearchImpl.SEARCH_ACTION,
-                text: text
+                text: text,
+                page: page
             }),
             headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
         }).success(function(data) {
-
+            var resItems = {items: []}
+            if(data.results != undefined) {
+                resItems.items = data.items.map(function(item) {
+                    item.name = thiss.prepareSearchResult(item.name);
+                    return item;
+                });
+            }
+            return resItems;
         });
     }
 
-    searchStudentsHandler =  (text: string)=> {
+    searchStudentsHandler =  (text: string, page: number)=> {
+        var thiss = this;
         return this.$http({
-                method: 'POST',
+                method: 'GET',
                 url: SearchImpl.SEARCH_STUDENTS_PATH,
                 data: $.param({
                 action: SearchImpl.SEARCH_ACTION,
-                text: text}),
+                text: text,
+                page: page}),
                 headers: {"Content-Type":"application/x-www-form-urlencoded; charset=UTF-8"}
-            });
+            }).success(function(data){
+            var resItems = {items: []};
+            if(data.results != undefined) {
+                resItems.items = data.results.items.map(function(item) {
+                    item.name = thiss.prepareSearchResult(item.name);
+                    return item;
+                });
+            }
+            return resItems;
+        });
     }
 
-    getSearchResults(searchArea, queryString): any {
+    getSearchResults(searchArea: string, queryString: string, page: number): any {
+        page = page || 1;
         if(searchArea == this.SEARCH_OPTIONS.STUDENT) {
-            return this.searchStudentsHandler(queryString)
+            return this.searchStudentsHandler(queryString, page)
                        .success((data)=>{ data.resultPath = this.getStudentsPath()}) ;
         } else if(searchArea == this.SEARCH_OPTIONS.PUBS) {
-            return this.searchPubsHandler(queryString)
+            return this.searchPubsHandler(queryString, page)
                 .success((data)=> {data.resultPath = this.getPubsResultsPath()});
         }
     }
@@ -135,8 +158,7 @@ class SearchImpl implements ISearchService {
                 isActive: areaActivation == this.SEARCH_OPTIONS.STUDENT,
                 autocompleteHandler: this.autoCompleteStudentsHandler,
                 resultNavPath: this.getStudentsPath()
-            }, {
-            }, {
+            },{
                 value: this.SEARCH_OPTIONS.PUBS,
                 name: "Дисципліни",
                 isActive: areaActivation == this.SEARCH_OPTIONS.PUBS,

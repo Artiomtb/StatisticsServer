@@ -25,7 +25,7 @@ define(["require", "exports", "controllers/MainController", "controllers/NodesCo
         "STUDENT_NODE_MATERIALS": "/monitor/student/pub",
         "STUDENT_MATERIAL": "/monitor/student/material",
         "UPDATE_GRAPH": "/monitor/general/pub/links",
-        "SEARCH_PAGE": "/monitor/search/:searchArea/:queryString"
+        "SEARCH_PAGE": "/monitor/search/:searchArea/:queryString/:page"
     }).constant("SEARCH_OPTIONS", {
         "STUDENT": "students",
         "PUBS": "pubs"

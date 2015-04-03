@@ -80,8 +80,9 @@ interface ISearchService {
     getResultsPath(): string;
     autoCompletePubsHandler(text: string): any;
     autoCompleteStudentsHandler(text: string): any;
-    searchPubsHandler(text: string): any;
-    searchStudentsHandler(text: string): any;
+    searchPubsHandler(text: string, page: number): any;
+    searchStudentsHandler(text: string, page: number): any;
+    getSearchResults(searchArea: string, queryString: string, page: number): any;
     getSearchConfiguration(area?: String, defaultValue?: String): any;
 }
 

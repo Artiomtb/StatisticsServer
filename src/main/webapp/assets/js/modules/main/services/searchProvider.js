@@ -52,34 +52,57 @@ define(["require", "exports"], function (require, exports) {
                     headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" }
                 }).success(function (data) {
                     var resItems = { items: [] };
-                    resItems.items = data.items.map(function (item) {
-                        item.name = _thiss.prepareSearchResult(item.name);
-                        return item;
-                    });
+                    if (data.items != undefined) {
+                        resItems.items = data.items.map(function (item) {
+                            item.name = _thiss.prepareSearchResult(item.name);
+                            return item;
+                        });
+                    }
                     return resItems;
                 });
             };
-            this.searchPubsHandler = function (text) {
+            this.searchPubsHandler = function (text, page) {
+                var thiss = _this;
                 return _this.$http({
-                    method: 'POST',
+                    method: 'GET',
                     url: SearchImpl.SEARCH_PUBS_PATH,
                     data: $.param({
                         action: SearchImpl.SEARCH_ACTION,
-                        text: text
+                        text: text,
+                        page: page
                     }),
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' }
                 }).success(function (data) {
+                    var resItems = { items: [] };
+                    if (data.results != undefined) {
+                        resItems.items = data.items.map(function (item) {
+                            item.name = thiss.prepareSearchResult(item.name);
+                            return item;
+                        });
+                    }
+                    return resItems;
                 });
             };
-            this.searchStudentsHandler = function (text) {
+            this.searchStudentsHandler = function (text, page) {
+                var thiss = _this;
                 return _this.$http({
-                    method: 'POST',
+                    method: 'GET',
                     url: SearchImpl.SEARCH_STUDENTS_PATH,
                     data: $.param({
                         action: SearchImpl.SEARCH_ACTION,
-                        text: text
+                        text: text,
+                        page: page
                     }),
                     headers: { "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8" }
+                }).success(function (data) {
+                    var resItems = { items: [] };
+                    if (data.results != undefined) {
+                        resItems.items = data.results.items.map(function (item) {
+                            item.name = thiss.prepareSearchResult(item.name);
+                            return item;
+                        });
+                    }
+                    return resItems;
                 });
             };
             this.getActiveDestinationPath = function () {
@@ -95,15 +118,16 @@ define(["require", "exports"], function (require, exports) {
         SearchImpl.prototype.getStudentsPath = function () {
             return SearchImpl.DESTINATION_STUDENTS_PATH;
         };
-        SearchImpl.prototype.getSearchResults = function (searchArea, queryString) {
+        SearchImpl.prototype.getSearchResults = function (searchArea, queryString, page) {
             var _this = this;
+            page = page || 1;
             if (searchArea == this.SEARCH_OPTIONS.STUDENT) {
-                return this.searchStudentsHandler(queryString).success(function (data) {
+                return this.searchStudentsHandler(queryString, page).success(function (data) {
                     data.resultPath = _this.getStudentsPath();
                 });
             }
             else if (searchArea == this.SEARCH_OPTIONS.PUBS) {
-                return this.searchPubsHandler(queryString).success(function (data) {
+                return this.searchPubsHandler(queryString, page).success(function (data) {
                     data.resultPath = _this.getPubsResultsPath();
                 });
             }
@@ -124,7 +148,7 @@ define(["require", "exports"], function (require, exports) {
                     isActive: areaActivation == this.SEARCH_OPTIONS.STUDENT,
                     autocompleteHandler: this.autoCompleteStudentsHandler,
                     resultNavPath: this.getStudentsPath()
-                }, {}, {
+                }, {
                     value: this.SEARCH_OPTIONS.PUBS,
                     name: "Дисципліни",
                     isActive: areaActivation == this.SEARCH_OPTIONS.PUBS,

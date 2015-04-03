@@ -8,6 +8,11 @@
     <link rel="stylesheet" href="/assets/css/custom.css"/>
     <link href="/assets/css/vendor/ng-slider.css" rel="stylesheet" />
     <meta charset="UTF-8">
+    <style>
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+            display: none !important;
+        }
+    </style>
     <title></title>
 </head>
 <body>
@@ -18,7 +23,7 @@
             <div class="col-lg-10">
                 <nav class="navbar navbar-default navbar-static-top" role="navigation">
                     <div class="container">
-                        <a class="navbar-brand" href="/">СумДу</a>
+                        <a class="navbar-brand" href="#/monitor/nodes/1">СумДу</a>
                         <div class="navbar-collapse collapse">
                             <ul class="navbar-nav nav">
                                 <li  ng-class="{active: !students}"><a href="#/monitor/nodes/1">Предмети</a></li>

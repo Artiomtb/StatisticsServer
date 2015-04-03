@@ -7,6 +7,7 @@ function pegination(){
             path: "@"
         },
         link: function (scope,element, attrs){
+
             scope.$watch(attrs.pages,()=> {
                 if(scope.currentPage + 10 < scope.pages) {
                     scope.forwardLink = scope.currentPage + 10;

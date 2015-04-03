@@ -6,11 +6,15 @@ define(["require", "exports"], function (require, exports) {
             this.search = search;
             this.$routeParams = $routeParams;
             this.$scope.options = search.getSearchConfiguration($routeParams.searchArea, $routeParams.queryString);
-            search.getSearchResults($routeParams.searchArea, $routeParams.queryString).success(function (data) {
+            search.getSearchResults($routeParams.searchArea, $routeParams.queryString, $routeParams.page).success(function (data) {
                 _this.$scope.results = data;
-                _this.$scope.results_list = data.results.items.map(function (entry) {
-                    return { name: entry.name, id: entry.id };
-                });
+                if (data != undefined && data.results != undefined) {
+                    _this.$scope.results_list = data.results.items.map(function (entry) {
+                        return { name: entry.name, id: entry.id };
+                    });
+                }
+                _this.$scope.pages = data.pages;
+                _this.$scope.currentPage = data.current_page;
             }).error(function () {
                 console.log("Oops something went really wrong");
             });
