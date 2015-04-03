@@ -1,6 +1,14 @@
 <div class="page-header"><h1>{{node_stats.pub_name}}</h1></div>
 <hr/>
-<div class="panel panel-default">
+<div ng-cloak class="ng-cloak well" style="overflow: hidden;" ng-show="!students">
+    <div >
+        <img class="pull-left" src="/assets/images/sad-cat.png"  />
+    </div>
+    <div style="margin-left: 17%;" >
+        <h3>Схоже, цей предмет ще ніхто не відвідував...</h3>
+    </div>
+</div>
+<div class="panel panel-default" ng-show="students">
         <div style = "cursor: pointer" ng-click = "generalStatistics = ! generalStatistics" class="panel-heading">Загальна статистика</div>
         <div class="panel-body" collapse="generalStatistics">
         <div class="well" style="position: relative">

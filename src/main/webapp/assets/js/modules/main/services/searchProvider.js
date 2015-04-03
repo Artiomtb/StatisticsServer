@@ -64,7 +64,7 @@ define(["require", "exports"], function (require, exports) {
             this.searchPubsHandler = function (text, page) {
                 var thiss = _this;
                 return _this.$http({
-                    method: 'GET',
+                    method: 'POST',
                     url: SearchImpl.SEARCH_PUBS_PATH,
                     data: $.param({
                         action: SearchImpl.SEARCH_ACTION,
@@ -86,7 +86,7 @@ define(["require", "exports"], function (require, exports) {
             this.searchStudentsHandler = function (text, page) {
                 var thiss = _this;
                 return _this.$http({
-                    method: 'GET',
+                    method: 'POST',
                     url: SearchImpl.SEARCH_STUDENTS_PATH,
                     data: $.param({
                         action: SearchImpl.SEARCH_ACTION,

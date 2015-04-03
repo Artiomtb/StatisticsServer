@@ -84,7 +84,7 @@ class SearchImpl implements ISearchService {
     searchPubsHandler =  (text: string, page: number)=> {
         var thiss = this;
         return this.$http({
-            method: 'GET',
+            method: 'POST',
             url: SearchImpl.SEARCH_PUBS_PATH,
             data: $.param({
                 action: SearchImpl.SEARCH_ACTION,
@@ -107,7 +107,7 @@ class SearchImpl implements ISearchService {
     searchStudentsHandler =  (text: string, page: number)=> {
         var thiss = this;
         return this.$http({
-                method: 'GET',
+                method: 'POST',
                 url: SearchImpl.SEARCH_STUDENTS_PATH,
                 data: $.param({
                 action: SearchImpl.SEARCH_ACTION,
