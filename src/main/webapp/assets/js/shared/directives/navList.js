@@ -20,9 +20,6 @@ define(["require", "exports"], function (require, exports) {
                         else if (event.which == 38) {
                             moveCursorUp();
                         }
-                        else if (event.which == 13) {
-                            scope.enterHandler(scope.list[scope.currentActive]);
-                        }
                     });
                 });
                 function moveCursorDown() {

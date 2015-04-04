@@ -5,18 +5,19 @@ define(["require", "exports"], function (require, exports) {
             this.setPagePath = function (path) {
                 this.pagePathUrl = path;
             };
-            this.$get = ["$http", "SEARCH_OPTIONS", function ($http, SEARCH_OPTIONS) {
-                return new SearchImpl($http, SEARCH_OPTIONS, this.pagePathUrl);
+            this.$get = ["$http", "SEARCH_OPTIONS", "$location", function ($http, SEARCH_OPTIONS, $location) {
+                return new SearchImpl($http, SEARCH_OPTIONS, this.pagePathUrl, $location);
             }];
         }
         return SearchProvider;
     })();
     var SearchImpl = (function () {
-        function SearchImpl($http, SEARCH_OPTIONS, pagePathUrl) {
+        function SearchImpl($http, SEARCH_OPTIONS, pagePathUrl, $location) {
             var _this = this;
             this.$http = $http;
             this.SEARCH_OPTIONS = SEARCH_OPTIONS;
             this.pagePathUrl = pagePathUrl;
+            this.$location = $location;
             this.autoCompletePubsHandler = function (text) {
                 _this.destinationPath = SearchImpl.DESTINATION_PUBS_PATH;
                 var _thiss = _this;
@@ -75,7 +76,7 @@ define(["require", "exports"], function (require, exports) {
                 }).success(function (data) {
                     var resItems = { items: [] };
                     if (data.results != undefined) {
-                        resItems.items = data.items.map(function (item) {
+                        resItems.items = data.results.items.map(function (item) {
                             item.name = thiss.prepareSearchResult(item.name);
                             return item;
                         });
@@ -138,6 +139,7 @@ define(["require", "exports"], function (require, exports) {
         SearchImpl.prototype.getSearchConfiguration = function (areaActivation, defaultValue) {
             areaActivation = areaActivation || this.SEARCH_OPTIONS.STUDENT;
             defaultValue = defaultValue || "";
+            var thizz = this;
             return {
                 defaultValue: defaultValue,
                 default: this.SEARCH_OPTIONS.PUBS,
@@ -147,13 +149,20 @@ define(["require", "exports"], function (require, exports) {
                     name: "Студенти",
                     isActive: areaActivation == this.SEARCH_OPTIONS.STUDENT,
                     autocompleteHandler: this.autoCompleteStudentsHandler,
-                    resultNavPath: this.getStudentsPath()
+                    resultNavPath: this.getStudentsPath(),
+                    enterHandler: function (searchText) {
+                        thizz.$location.url(SearchImpl.SEARCH_STUDENTS_PAGE + searchText + "/1");
+                    }
                 }, {
                     value: this.SEARCH_OPTIONS.PUBS,
                     name: "Дисципліни",
                     isActive: areaActivation == this.SEARCH_OPTIONS.PUBS,
                     autocompleteHandler: this.autoCompletePubsHandler,
-                    resultNavPath: this.getPubsResultsPath()
+                    resultNavPath: this.getPubsResultsPath(),
+                    enterHandler: function (searchText) {
+                        console.log(SearchImpl.SEARCH_PUBS_PAGE + "/" + searchText + "/1");
+                        thizz.$location.url(SearchImpl.SEARCH_PUBS_PAGE + searchText + "/1");
+                    }
                 }]
             };
         };
@@ -164,6 +173,8 @@ define(["require", "exports"], function (require, exports) {
         SearchImpl.PAGE_RESULTS = "/monitor/search";
         SearchImpl.DESTINATION_STUDENTS_PATH = "/monitor/student/pubs/";
         SearchImpl.DESTINATION_PUBS_PATH = "/monitor/general/pub/";
+        SearchImpl.SEARCH_STUDENTS_PAGE = '/monitor/search/students/';
+        SearchImpl.SEARCH_PUBS_PAGE = '/monitor/search/pubs/';
         return SearchImpl;
     })();
     return SearchProvider;

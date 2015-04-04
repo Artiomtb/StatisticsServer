@@ -23,7 +23,9 @@ define(["require", "exports"], function (require, exports) {
                 angular.element(document.getElementById("search-input")).bind("keyup", function (e) {
                     if (e.which == "38" || e.which == "40" || e.which == "13") {
                         if (e.which == "13") {
-                            scope.search(scope.searchText);
+                            scope.$apply(function () {
+                                getActiveOption().enterHandler(scope.searchText);
+                            });
                         }
                         e.preventDefault();
                         return;

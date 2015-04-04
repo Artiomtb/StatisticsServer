@@ -19,8 +19,6 @@ function navList() {
                         moveCursorDown();
                     } else if (event.which == 38){
                         moveCursorUp();
-                    } else if (event.which == 13){
-                        scope.enterHandler(scope.list[scope.currentActive]);
                     }
                 });
             });

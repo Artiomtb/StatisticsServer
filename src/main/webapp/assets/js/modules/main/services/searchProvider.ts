@@ -5,8 +5,8 @@ class SearchProvider  {
         this.pagePathUrl = path;
     }
 
-    $get = ["$http", "SEARCH_OPTIONS", function ($http, SEARCH_OPTIONS) {
-       return new SearchImpl($http, SEARCH_OPTIONS,this.pagePathUrl);
+    $get = ["$http", "SEARCH_OPTIONS", "$location", function ($http, SEARCH_OPTIONS, $location) {
+       return new SearchImpl($http, SEARCH_OPTIONS,this.pagePathUrl, $location);
     }];
 }
 
@@ -19,12 +19,15 @@ class SearchImpl implements ISearchService {
     static PAGE_RESULTS = "/monitor/search";
     static DESTINATION_STUDENTS_PATH = "/monitor/student/pubs/";
     static DESTINATION_PUBS_PATH = "/monitor/general/pub/";
+    static SEARCH_STUDENTS_PAGE = '/monitor/search/students/';
+    static SEARCH_PUBS_PAGE = '/monitor/search/pubs/';
+
     destinationPath: string;
 
     private prepareSearchResult (input): string {
         return input.replace(/<=-b/g,"").replace(/b-=>/g, "").replace(/^\s+/,"").toLowerCase();
     }
-    constructor(private $http, private SEARCH_OPTIONS, private pagePathUrl){
+    constructor(private $http, private SEARCH_OPTIONS, private pagePathUrl, private $location){
     }
 
     getPubsResultsPath() {
@@ -95,7 +98,7 @@ class SearchImpl implements ISearchService {
         }).success(function(data) {
             var resItems = {items: []}
             if(data.results != undefined) {
-                resItems.items = data.items.map(function(item) {
+                resItems.items = data.results.items.map(function(item) {
                     item.name = thiss.prepareSearchResult(item.name);
                     return item;
                 });
@@ -148,6 +151,7 @@ class SearchImpl implements ISearchService {
     getSearchConfiguration(areaActivation: string, defaultValue: string) {
         areaActivation = areaActivation || this.SEARCH_OPTIONS.STUDENT;
         defaultValue = defaultValue || "";
+        var thizz = this;
         return {
             defaultValue: defaultValue,
             default: this.SEARCH_OPTIONS.PUBS,
@@ -157,13 +161,20 @@ class SearchImpl implements ISearchService {
                 name: "Студенти",
                 isActive: areaActivation == this.SEARCH_OPTIONS.STUDENT,
                 autocompleteHandler: this.autoCompleteStudentsHandler,
-                resultNavPath: this.getStudentsPath()
+                resultNavPath: this.getStudentsPath(),
+                enterHandler: (searchText: string)=> {
+                    thizz.$location.url(SearchImpl.SEARCH_STUDENTS_PAGE  + searchText + "/1");
+                }
             },{
                 value: this.SEARCH_OPTIONS.PUBS,
                 name: "Дисципліни",
                 isActive: areaActivation == this.SEARCH_OPTIONS.PUBS,
                 autocompleteHandler: this.autoCompletePubsHandler,
-                resultNavPath: this.getPubsResultsPath()
+                resultNavPath: this.getPubsResultsPath(),
+                enterHandler: (searchText: string)=> {
+                    console.log(SearchImpl.SEARCH_PUBS_PAGE + "/" + searchText + "/1");
+                    thizz.$location.url(SearchImpl.SEARCH_PUBS_PAGE  + searchText + "/1");
+                }
             }]
         };
     }
