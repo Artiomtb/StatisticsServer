@@ -5,6 +5,9 @@ declare var angular;
 class NodeStatistics {
     static $inject = ["$scope", "$http","$routeParams" ,"PATH_CONSTANTS", "$timeout"];
 
+    public static get UP_IMAGE():string { return "up"; }
+    public static get DOWN_IMAGE():string { return "down"; }
+
     constructor(private $scope, private $http, private $routeParams, private PATH_CONSTANTS, $timeout){
         $scope.material_path=PATH_CONSTANTS.GENERAL_MATERIAL_PATH;
 
@@ -52,7 +55,6 @@ class NodeStatistics {
                 .success(function (data) {
                     if (angular.element(document.getElementsByTagName("svg"))) {
                         angular.element(document.getElementsByTagName("svg")).remove();
-                        console.log("remove svg");
                     }
                     document.json = data;
                     $scope.loadGraph = false;
@@ -68,6 +70,28 @@ class NodeStatistics {
         $http.get(PATH_CONSTANTS.GENERAL_NODE_PATH,{params: {pub_id: $routeParams.node_id }})
             .success (graphDataCallback)
             .error(()=>{console.log("something went wrong")});
+
+        $scope.imageTendencyDirection =  NodeStatistics.UP_IMAGE;
+        $scope.imageGeneralDirection =  NodeStatistics.UP_IMAGE;
+
+        $scope.collapseGeneral = ()=>{
+            $scope.generalStatistics = ! $scope.generalStatistics;
+            if($scope.generalStatistics) {
+                $scope.imageGeneralDirection = NodeStatistics.DOWN_IMAGE;
+            } else {
+                $scope.imageGeneralDirection = NodeStatistics.UP_IMAGE;
+            }
+        }
+
+        $scope.collapseTendency = ()=>{
+            $scope.materialStatistics = ! $scope.materialStatistics;
+            if($scope.materialStatistics) {
+                $scope.imageTendencyDirection = NodeStatistics.DOWN_IMAGE;
+            } else {
+                $scope.imageTendencyDirection = NodeStatistics.UP_IMAGE;
+            }
+        }
+
     }
 }
 

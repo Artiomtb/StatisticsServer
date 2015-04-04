@@ -47,7 +47,6 @@ define(["require", "exports", "d3_chart", "ng-slider"], function (require, expor
                 $http.get(PATH_CONSTANTS.UPDATE_GRAPH, { params: { pub_id: $routeParams.node_id, link_time: newValue } }).success(function (data) {
                     if (angular.element(document.getElementsByTagName("svg"))) {
                         angular.element(document.getElementsByTagName("svg")).remove();
-                        console.log("remove svg");
                     }
                     document.json = data;
                     $scope.loadGraph = false;
@@ -60,7 +59,41 @@ define(["require", "exports", "d3_chart", "ng-slider"], function (require, expor
             $http.get(PATH_CONSTANTS.GENERAL_NODE_PATH, { params: { pub_id: $routeParams.node_id } }).success(graphDataCallback).error(function () {
                 console.log("something went wrong");
             });
+            $scope.imageTendencyDirection = NodeStatistics.UP_IMAGE;
+            $scope.imageGeneralDirection = NodeStatistics.UP_IMAGE;
+            $scope.collapseGeneral = function () {
+                $scope.generalStatistics = !$scope.generalStatistics;
+                if ($scope.generalStatistics) {
+                    $scope.imageGeneralDirection = NodeStatistics.DOWN_IMAGE;
+                }
+                else {
+                    $scope.imageGeneralDirection = NodeStatistics.UP_IMAGE;
+                }
+            };
+            $scope.collapseTendency = function () {
+                $scope.materialStatistics = !$scope.materialStatistics;
+                if ($scope.materialStatistics) {
+                    $scope.imageTendencyDirection = NodeStatistics.DOWN_IMAGE;
+                }
+                else {
+                    $scope.imageTendencyDirection = NodeStatistics.UP_IMAGE;
+                }
+            };
         }
+        Object.defineProperty(NodeStatistics, "UP_IMAGE", {
+            get: function () {
+                return "up";
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(NodeStatistics, "DOWN_IMAGE", {
+            get: function () {
+                return "down";
+            },
+            enumerable: true,
+            configurable: true
+        });
         NodeStatistics.$inject = ["$scope", "$http", "$routeParams", "PATH_CONSTANTS", "$timeout"];
         return NodeStatistics;
     })();
