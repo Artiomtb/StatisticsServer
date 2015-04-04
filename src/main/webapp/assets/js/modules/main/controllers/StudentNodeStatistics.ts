@@ -9,7 +9,7 @@ class StudentNodeStatistics {
             .success((node_stats: IStudentNodeStatistics)=> {
                 this.$scope.node_stats = node_stats;
                 this.$scope.isAnyMaterialStats = node_stats.materials.some(function(item: IStudentMaterial){
-                    return item.total_attendance != 0;
+                    return item.total_attendance != 0 && item.trend.length >= 2;
                 });
             })
             .error(()=> {

@@ -48,7 +48,7 @@ interface ITrend {
 interface INodeStatistics {
     materials: Array<IMaterial>;
     students: Array<IStudent>;
-    trend: ITrend;
+    trend: Array<ITrend>;
 }
 
 interface IStudents {
@@ -59,7 +59,7 @@ interface IStudents {
 
 interface IStudentMaterial {
     material_name: IMaterial;
-    trend: ITrend;
+    trend:  Array<ITrend>;
     total_attendance: number;
 }
 

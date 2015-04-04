@@ -10,7 +10,7 @@ define(["require", "exports"], function (require, exports) {
             $http.get(PATH_CONSTANTS.STUDENT_NODE_MATERIALS, { params: { party_id: $routeParams.party_id, pub_id: $routeParams.node_id } }).success(function (node_stats) {
                 _this.$scope.node_stats = node_stats;
                 _this.$scope.isAnyMaterialStats = node_stats.materials.some(function (item) {
-                    return item.total_attendance != 0;
+                    return item.total_attendance != 0 && item.trend.length >= 2;
                 });
             }).error(function () {
             });
