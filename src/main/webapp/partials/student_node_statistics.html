@@ -1,16 +1,23 @@
-<h1>{{node_stats.node_name}}</h1>
+<h1>{{node_stats.pub_name}}</h1>
 <hr/>
-
 <div class="panel panel-default">
-    <div style = "cursor: pointer" ng-click = "generalStatistics = ! generalStatistics" class="panel-heading">Загальна статистика</div>
+    <div style = "cursor: pointer; position: relative;" ng-click = "collapseGeneral()" class="panel-heading">Загальна статистика
+        <div class="pull-right" style="height: 100%; position: relative;">
+            <img height="20px;" ng-src="/assets/images/{{imageGeneralDirection}}.png" alt=""/>
+        </div>
+    </div>
     <div class="panel-body" collapse="generalStatistics">
         <trend trend="node_stats.pub_stats"></trend>
         <materials_bar_chart materials_stats="node_stats.materials"></materials_bar_chart>
     </div>
 </div>
 
-<div class="panel panel-default">
-    <div style = "cursor: pointer" ng-click = "materialStatistics = ! materialStatistics" class="panel-heading">Тенденція відвідування матеріалів</div>
+<div class="panel panel-default" ng-if="isAnyMaterialStats">
+    <div style = "cursor: pointer" ng-click = "collapseTendency()" class="panel-heading">Тенденція відвідування матеріалів
+        <div class="pull-right">
+                <img src="/assets/images/up.png" alt=""/>
+        </div>
+    </div>
     <div class="panel-body" collapse="materialStatistics">
         <trend name = "{{material.material_name}}" trend="material.trend" ng-repeat="material in node_stats.materials"></trend>
     </div>
