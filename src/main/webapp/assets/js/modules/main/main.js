@@ -11,7 +11,7 @@
 /// <amd-dependency path="directives/materials_bar_chart" />
 /// <amd-dependency path="angular-bootstrap" />
 /// <amd-dependency path="angular-slick"/>
-define(["require", "exports", "controllers/MainController", "controllers/NodesController", "controllers/StudentsController", "controllers/NodeStatistics", "controllers/StudentStatistics", "controllers/StudentNodeStatistics", "controllers/SearchResultsController", "directives/list", "directives/trend", "directives/search", "directives/boldText", "services/searchProvider", "angular", "angular_route", "shared/directives/pagination", "shared/directives/trend", "shared/directives/navList", "chartjs", "directives/students_bar_chart", "directives/trend", "directives/materials_bar_chart", "angular-bootstrap", "angular-slick"], function (require, exports, MainCotroller, NodesController, StudentsController, NodeStatistics, StudentStatistics, StudentNodeStatistics, SearchResultsController, list, trend, search, boldText, SearchProvider) {
+define(["require", "exports", "controllers/MainController", "controllers/NodesController", "controllers/StudentsController", "controllers/NodeStatistics", "controllers/StudentStatistics", "controllers/StudentNodeStatistics", "controllers/SearchResultsController", "controllers/HelpController", "directives/list", "directives/trend", "directives/search", "directives/boldText", "services/searchProvider", "angular", "angular_route", "shared/directives/pagination", "shared/directives/trend", "shared/directives/navList", "chartjs", "directives/students_bar_chart", "directives/trend", "directives/materials_bar_chart", "angular-bootstrap", "angular-slick"], function (require, exports, MainCotroller, NodesController, StudentsController, NodeStatistics, StudentStatistics, StudentNodeStatistics, SearchResultsController, HelpController, list, trend, search, boldText, SearchProvider) {
     var navList = require("shared/directives/navList");
     var pagination = require("shared/directives/pagination");
     var barChart = require("directives/students_bar_chart");
@@ -43,6 +43,7 @@ define(["require", "exports", "controllers/MainController", "controllers/NodesCo
     angular.module("app").controller("StudentStatistics", StudentStatistics);
     angular.module("app").controller("StudentNodeStatistics", StudentNodeStatistics);
     angular.module("app").controller("SearchResultsController", SearchResultsController);
+    angular.module("app").controller("HelpController", HelpController);
     angular.module("app").directive("list", ["PATH_CONSTANTS", list]);
     angular.module("app").directive("pageNumbers", pagination);
     angular.module("app").directive("trend", trend);

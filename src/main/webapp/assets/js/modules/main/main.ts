@@ -19,6 +19,7 @@ import NodeStatistics = require("controllers/NodeStatistics");
 import StudentStatistics = require("controllers/StudentStatistics");
 import StudentNodeStatistics = require("controllers/StudentNodeStatistics");
 import SearchResultsController = require("controllers/SearchResultsController");
+import HelpController = require("controllers/HelpController");
 
 import list = require("directives/list");
 import trend = require("directives/trend");
@@ -77,6 +78,7 @@ angular.module("app").controller("NodeStatistics", NodeStatistics);
 angular.module("app").controller("StudentStatistics", StudentStatistics);
 angular.module("app").controller("StudentNodeStatistics", StudentNodeStatistics);
 angular.module("app").controller("SearchResultsController",SearchResultsController);
+angular.module("app").controller("HelpController", HelpController);
 
 angular.module("app").directive("list", ["PATH_CONSTANTS", list]);
 angular.module("app").directive("pageNumbers", pagination);

@@ -7,7 +7,7 @@ require.config({
             'angular': 'vendor/angular/angular',
             'chartjs': 'vendor/chartjs/Chart',
             'chart_js': 'vendor/Chart.js/Chart',
-            'angular-bootstrap': 'vendor/angular-bootstrap/ui-bootstrap',
+            'angular-bootstrap': 'vendor/angular-bootstrap/ui-bootstrap-tpls',
             'module': 'js/modules',
             'controllers': 'modules/' + loc +'/controllers',
             'services': 'modules/' + loc +'/services',
