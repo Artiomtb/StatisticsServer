@@ -10,7 +10,7 @@ class MainController {
         this.$scope.help = this.help;
     }
 
-    help(): any {
+    help = ()=> {
         this.$modal.open({
             templateUrl: '/templates/shared/help-modal.html',
             controller: 'HelpController',
