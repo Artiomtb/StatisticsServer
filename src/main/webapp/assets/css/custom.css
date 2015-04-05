@@ -100,3 +100,13 @@ input[type="checkbox"], input[type="radio"] {
     z-index: 1040;
     background-color: #000;
 }
+
+.slick-track{
+    overflow: auto;
+    max-height: 500px;
+}
+
+.demo-image-container{
+    text-align: center;
+    margin: 20px;
+}
