@@ -12,7 +12,10 @@ require.config({
         'services': 'modules/' + loc + '/services',
         'directives': 'modules/' + loc + '/directives',
         'd3_chart': 'vendor/d3chart',
-        'ng-slider': 'vendor/ng-slider/dist/ng-slider.min'
+        'ng-slider': 'vendor/ng-slider/dist/ng-slider.min',
+        'angular-slick': "vendor/angular-slick/dist/slick",
+        'slick-carousel': "vendor/slick-carousel/slick/slick.min",
+        'jquery': 'vendor/jquery/dist/jquery.min'
     },
     shim: {
         'angular': {
@@ -28,6 +31,15 @@ require.config({
         'd3_chart': {},
         'ng-slider': {
             deps: ['angular']
+        },
+        'slick-carousel': {
+            deps: ['jquery']
+        },
+        'angular-slick': {
+            deps: ['angular', 'slick-carousel']
+        },
+        'jquery': {
+            exports: 'jquery'
         }
     }
 });

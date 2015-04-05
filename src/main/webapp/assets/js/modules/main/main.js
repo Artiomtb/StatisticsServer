@@ -10,12 +10,13 @@
 /// <amd-dependency path="directives/trend" />
 /// <amd-dependency path="directives/materials_bar_chart" />
 /// <amd-dependency path="angular-bootstrap" />
-define(["require", "exports", "controllers/MainController", "controllers/NodesController", "controllers/StudentsController", "controllers/NodeStatistics", "controllers/StudentStatistics", "controllers/StudentNodeStatistics", "controllers/SearchResultsController", "directives/list", "directives/trend", "directives/search", "directives/boldText", "services/searchProvider", "angular", "angular_route", "shared/directives/pagination", "shared/directives/trend", "shared/directives/navList", "chartjs", "directives/students_bar_chart", "directives/trend", "directives/materials_bar_chart", "angular-bootstrap"], function (require, exports, MainCotroller, NodesController, StudentsController, NodeStatistics, StudentStatistics, StudentNodeStatistics, SearchResultsController, list, trend, search, boldText, SearchProvider) {
+/// <amd-dependency path="angular-slick"/>
+define(["require", "exports", "controllers/MainController", "controllers/NodesController", "controllers/StudentsController", "controllers/NodeStatistics", "controllers/StudentStatistics", "controllers/StudentNodeStatistics", "controllers/SearchResultsController", "directives/list", "directives/trend", "directives/search", "directives/boldText", "services/searchProvider", "angular", "angular_route", "shared/directives/pagination", "shared/directives/trend", "shared/directives/navList", "chartjs", "directives/students_bar_chart", "directives/trend", "directives/materials_bar_chart", "angular-bootstrap", "angular-slick"], function (require, exports, MainCotroller, NodesController, StudentsController, NodeStatistics, StudentStatistics, StudentNodeStatistics, SearchResultsController, list, trend, search, boldText, SearchProvider) {
     var navList = require("shared/directives/navList");
     var pagination = require("shared/directives/pagination");
     var barChart = require("directives/students_bar_chart");
     var materialsBarChart = require("directives/materials_bar_chart");
-    angular.module('app', ['ngRoute', 'tc.chartjs', 'ui.bootstrap', 'ngSlider']);
+    angular.module('app', ['ngRoute', 'tc.chartjs', 'ui.bootstrap', 'ngSlider', 'slick']);
     angular.module('app').constant("PATH_CONSTANTS", {
         "NODES_PATH": "/monitor/pubs",
         "GENERAL_NODE_PATH": "/monitor/general/pub",

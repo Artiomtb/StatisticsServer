@@ -10,6 +10,7 @@
 /// <amd-dependency path="directives/trend" />
 /// <amd-dependency path="directives/materials_bar_chart" />
 /// <amd-dependency path="angular-bootstrap" />
+/// <amd-dependency path="angular-slick"/>
 
 import MainCotroller = require("controllers/MainController");
 import NodesController = require("controllers/NodesController");
@@ -31,7 +32,7 @@ var materialsBarChart = require("directives/materials_bar_chart");
 
 import SearchProvider = require("services/searchProvider");
 
-angular.module('app',['ngRoute','tc.chartjs','ui.bootstrap', 'ngSlider']);
+angular.module('app',['ngRoute','tc.chartjs','ui.bootstrap', 'ngSlider', 'slick']);
 
 angular.module('app')
     .constant(
