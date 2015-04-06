@@ -102,7 +102,7 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 .slick-track{
-    overflow: auto;
+    overflow: hidden;
     max-height: 500px;
 }
 

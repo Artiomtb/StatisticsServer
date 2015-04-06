@@ -1,4 +1,4 @@
-<div  >
+<div>
     <div class="modal-header">
         <h3 class="modal-title">Довідка</h3>
     </div>
@@ -8,26 +8,26 @@
                 <span>Статистичні дані кожної дисципліни складаються з двох частин: "Загальна статистика"
                     та "Тенденція відвідування матеріалів"</span>
                 <div class="demo-image-container">
-                    <img style="display: inline-block" data-lazy="/assets/images/demo/pub_statistics_compartments.jpg"/>
+                    <img style="display: inline-block" data-lazy="/assets/images/demo/pub_statistics_compartments.JPG"/>
                 </div>
             </div>
             <div>
                 <span>Розділ "Загальна статистика" містить статистичні дані загальні для <i><b>вієї дисципліни.</b></i> Цей розділ містить
                 граф переходів між розділами дисципліни.</span>
                 <div class="demo-image-container">
-                    <img style="display: inline-block" data-lazy="/assets/images/demo/graph_header.jpg"/>
+                    <img style="display: inline-block" data-lazy="/assets/images/demo/graph_header.JPG"/>
                 </div>
                 Вузлами графу є розділи дисципліни. Ребра графа з`єднують розділи, переходи між якими були здійснені на протязі вказаного <i><b>інтервалу.</b></i>
                 Інтервал можна встанавлювати за допомогою бігунка.
                 <div class="demo-image-container">
-                    <img style="display: inline-block" data-lazy="/assets/images/demo/graph_interval.jpg"/>
+                    <img style="display: inline-block" data-lazy="/assets/images/demo/graph_interval.JPG"/>
                 </div>
             </div>
             <div>
                 <span>В розділі "Загальна статистика" міститься графік, який відображає тенденцію відвідування
                 дисципліни на протязі останніх <i><b>10 днів.</b></i></span>
                 <div class="demo-image-container">
-                    <img style="display: inline-block" data-lazy="/assets/images/demo/pub_general_statistics.jpg"/>
+                    <img style="display: inline-block" data-lazy="/assets/images/demo/pub_general_statistics.JPG"/>
                 </div>
             </div>
             <div>
@@ -37,7 +37,7 @@
                     Також при наведені курсора на певного студента, можна побачити точний час.
                                     </span>
                 <div class="demo-image-container">
-                        <img style="display: inline-block" data-lazy="/assets/images/demo/pub_students_attendance.jpg"/>
+                        <img style="display: inline-block" data-lazy="/assets/images/demo/pub_students_attendance.JPG"/>
                 </div>
             </div>
             <div>
@@ -46,7 +46,7 @@
                     конкретного розділу дисципліни в процентному відношенні.
                 </span>
                 <div class="demo-image-container">
-                    <img style="display: inline-block" data-lazy="/assets/images/demo/pub_material_attendance.jpg"/>
+                    <img style="display: inline-block" data-lazy="/assets/images/demo/pub_material_attendance.JPG"/>
                 </div>
             </div>
 
@@ -55,17 +55,27 @@
                     Також в цьому розділі представлена тенденція відвідування кожного розділу
                 </span>
                 <div class="demo-image-container">
-                    <img style="display: inline-block" data-lazy="/assets/images/demo/pub_material_trend.jpg"/>
+                    <img style="display: inline-block" data-lazy="/assets/images/demo/pub_material_trend.JPG"/>
                 </div>
                 По осі <i><b>ОХ</b></i> йдуть дати, по осі <i><b>ОY</b></i> - час відвідування в <i><b>хвилинах</b></i>
             </div>
+
             <div>
+                <span>
+                        За допомогою даного ресурсу можна отримати дані відвідування конкретного студента. Для цього потрібно перейти
+                    до пункту меню "Cтуденти", обрати конкретного студента, обрати предмет. В отриманому вікні можна побачити динаміку
+                    відвідування певного предмету певним студентом. Дані представлені в тій самій формі, що і на сторінці дисципліни, але
+                    в контексті певного предмету.
+                </span>
+                <div class="demo-image-container">
+                    <img style="display: inline-block" data-lazy="/assets/images/demo/pub_general_statistics.JPG"/>
+                </div>
             </div>
         </slick>
     </div>
     <div class="modal-footer">
         <label class="i-checks pull-left">
-            <input type="checkbox" ng-model="showNextTime"><i></i>Не показувати наступного разу
+            <input type="checkbox" ng-model="showHelp"><i></i>Не показувати наступного разу
         </label>
         <button class="btn btn-primary" ng-click="ok()">Зрозуміло</button>
     </div>

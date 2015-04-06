@@ -11,6 +11,7 @@
 /// <amd-dependency path="directives/materials_bar_chart" />
 /// <amd-dependency path="angular-bootstrap" />
 /// <amd-dependency path="angular-slick"/>
+/// <amd-dependency path="moment"/>
 
 import MainCotroller = require("controllers/MainController");
 import NodesController = require("controllers/NodesController");

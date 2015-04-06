@@ -1,3 +1,5 @@
+declare var moment;
+
 function materialsBarChart() {
     return {
         restrict: "E",
@@ -18,6 +20,7 @@ function materialsBarChart() {
                         scope.data.push({});
                         scope.data[i].label = scope.materialsStats[i].material_name;
                         scope.data[i].attendance = Math.round(scope.materialsStats[i].total_attendance*100/max);
+                        scope.data[i].duration = moment.duration(scope.materialsStats[i].total_attendance,'minutes').humanize();
                     }
                 }
             });

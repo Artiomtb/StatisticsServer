@@ -6,7 +6,10 @@ class MainController {
         this.$scope.$on('$locationChangeStart', (next, current)=> {
              this.$scope.students = current.match(/students/g);
         });
-        this.help();
+        console.log(localStorage.getItem("asdfasd"));
+        if( localStorage.getItem("showHelp") !== "true" || localStorage.getItem("showHelp") == null){
+            this.help();
+        }
         this.$scope.help = this.help;
     }
 

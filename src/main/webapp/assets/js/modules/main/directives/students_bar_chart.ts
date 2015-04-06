@@ -1,3 +1,5 @@
+declare var moment;
+
 function studentsBarChart() {
     return {
         restrict: "E",
@@ -18,6 +20,7 @@ function studentsBarChart() {
                         scope.data.push({});
                         scope.data[i].label = scope.trend[i].party_name;
                         scope.data[i].attendance = Math.round(scope.trend[i].total_attendance*100/max);
+                        scope.data[i].duration =  moment.duration(scope.trend[i].total_attendance,'minutes').humanize();
                     }
                 }
             })

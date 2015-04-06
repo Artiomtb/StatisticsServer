@@ -1,7 +1,7 @@
 <div class="well" ng-if="data.length > 0">
     <h1>Відвідування студентами:</h1>
     <hr/>
-    <div ng-repeat = "student in data">
+    <div ng-repeat = "student in data" title = "{{student.duration}}">
         <h4>{{student.label}}<small ng-if="student.attendance <= 1" style="color: red">  Відвідування &lt 1% </small></h4>
 
         <div class="progress"  ng-if ="student.attendance > 1">

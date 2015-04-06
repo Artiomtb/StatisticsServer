@@ -15,7 +15,8 @@ require.config({
         'ng-slider': 'vendor/ng-slider/dist/ng-slider.min',
         'angular-slick': "vendor/angular-slick/dist/slick",
         'slick-carousel': "vendor/slick-carousel/slick/slick.min",
-        'jquery': 'vendor/jquery/dist/jquery.min'
+        'jquery': 'vendor/jquery/dist/jquery.min',
+        'moment': 'vendor/moment/min/moment-with-locales.min'
     },
     shim: {
         'angular': {

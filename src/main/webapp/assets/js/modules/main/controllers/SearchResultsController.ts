@@ -1,7 +1,9 @@
 class SearchResultsController {
     static $inject = ["$scope", "Search", "$routeParams"];
     constructor(private $scope, private search, private $routeParams){
+        alert("asdfasd");
         this.$scope.searchArea = this.$routeParams.searchArea;
+        console.log(this.$scope.searchArea);
         this.$scope.queryString = this.$routeParams.queryString;
         this.$scope.options = search.getSearchConfiguration($routeParams.searchArea, $routeParams.queryString);
         search.getSearchResults($routeParams.searchArea, $routeParams.queryString, $routeParams.page)
