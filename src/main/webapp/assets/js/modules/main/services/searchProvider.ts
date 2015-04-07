@@ -17,8 +17,8 @@ class SearchImpl implements ISearchService {
     static SEARCH_ACTION = "search";
     static AUTOCOMPLETE_ACTION = "autocomplete";
     static PAGE_RESULTS = "/monitor/search";
-    static DESTINATION_STUDENTS_PATH = "/monitor/student/pubs/";
-    static DESTINATION_PUBS_PATH = "/monitor/general/pub/";
+    static DESTINATION_STUDENTS_PATH = "/monitor/student/pubs";
+    static DESTINATION_PUBS_PATH = "/monitor/general/pub";
     static SEARCH_STUDENTS_PAGE = '/monitor/search/students/';
     static SEARCH_PUBS_PAGE = '/monitor/search/pubs/';
 

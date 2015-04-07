@@ -29,7 +29,8 @@
             <bar-chart trend = "trend" ></bar-chart>
         </div>
 </div>
-<div class="panel panel-default">
+<div class="panel panel-default"
+         ng-if="showMaterialsTab">
     <div style = "cursor: pointer" ng-click = "collapseTendency()" class="panel-heading">Тенденція відвідування матеріалів
         <div class="pull-right">
             <img height="20px;" src="/assets/images/{{imageTendencyDirection}}.png" alt=""/>

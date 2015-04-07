@@ -171,8 +171,8 @@ define(["require", "exports"], function (require, exports) {
         SearchImpl.SEARCH_ACTION = "search";
         SearchImpl.AUTOCOMPLETE_ACTION = "autocomplete";
         SearchImpl.PAGE_RESULTS = "/monitor/search";
-        SearchImpl.DESTINATION_STUDENTS_PATH = "/monitor/student/pubs/";
-        SearchImpl.DESTINATION_PUBS_PATH = "/monitor/general/pub/";
+        SearchImpl.DESTINATION_STUDENTS_PATH = "/monitor/student/pubs";
+        SearchImpl.DESTINATION_PUBS_PATH = "/monitor/general/pub";
         SearchImpl.SEARCH_STUDENTS_PAGE = '/monitor/search/students/';
         SearchImpl.SEARCH_PUBS_PAGE = '/monitor/search/pubs/';
         return SearchImpl;

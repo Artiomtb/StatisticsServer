@@ -39,6 +39,9 @@ define(["require", "exports", "d3_chart", "ng-slider"], function (require, expor
                 var jsonEvent = new CustomEvent("jsonEvent", { detail: pub.transitions });
                 document.dispatchEvent(jsonEvent);
                 $scope.loadGraph = false;
+                $scope.showMaterialsTab = pub.materials.some(function (item) {
+                    return item.total_attendance > 0;
+                });
             };
             $scope.$watch("value", function (newValue, oldValue) {
                 if (newValue === oldValue) {

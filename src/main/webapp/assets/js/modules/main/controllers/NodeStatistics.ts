@@ -44,6 +44,9 @@ class NodeStatistics {
             var jsonEvent  = new CustomEvent("jsonEvent", {detail: pub.transitions});
             document.dispatchEvent(jsonEvent);
             $scope.loadGraph = false;
+            $scope.showMaterialsTab = pub.materials.some(function(item){
+                return item.total_attendance > 0;
+            })
         };
 
 
