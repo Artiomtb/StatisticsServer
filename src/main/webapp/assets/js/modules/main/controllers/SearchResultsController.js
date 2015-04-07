@@ -5,7 +5,6 @@ define(["require", "exports"], function (require, exports) {
             this.$scope = $scope;
             this.search = search;
             this.$routeParams = $routeParams;
-            alert("asdfasd");
             this.$scope.searchArea = this.$routeParams.searchArea;
             console.log(this.$scope.searchArea);
             this.$scope.queryString = this.$routeParams.queryString;

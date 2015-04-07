@@ -1,4 +1,4 @@
-<nav class="center" ng-if="pagesArray.length > 1">
+<nav class="center" ng-if="pages > 1">
     <ul class="pagination" >
         <li ng-if="backLink"><a href="#{{path}}/{{backLink}}">&lt;&lt;</a></li>
         <li ng-class="{'active': page==currentPage}" ng-repeat="page in pagesArray"><a href="#{{path}}/{{page}}">{{page}}</a></li>
