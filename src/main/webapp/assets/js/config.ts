@@ -17,7 +17,8 @@ require.config({
             'angular-slick' : "vendor/angular-slick/dist/slick",
             'slick-carousel' : "vendor/slick-carousel/slick/slick.min",
             'jquery':  'vendor/jquery/dist/jquery.min',
-            'moment': 'vendor/moment/min/moment-with-locales.min'
+            'moment': 'vendor/moment/min/moment-with-locales.min',
+            'angular_route': 'vendor/angular-route/angular-route'
         },
         shim: {
             'angular': {
@@ -44,9 +45,12 @@ require.config({
             },
             'jquery': {
                 exports: 'jquery'
+            },
+            'angular_route': {
+                deps: ['angular']
             }
         }
     }
 );
 
-require(["modules/main/config"]);
+require(["modules/main/main"]);
