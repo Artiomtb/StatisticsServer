@@ -1,6 +1,5 @@
 /// <reference path="../typings/requirejs/requirejs.d.ts" />
 
-var loc = "main";
 require.config({
         baseURL: "/assets/js",
         paths: {
@@ -9,9 +8,9 @@ require.config({
             'chart_js': 'vendor/Chart.js/Chart',
             'angular-bootstrap': 'vendor/angular-bootstrap/ui-bootstrap-tpls',
             'module': 'js/modules',
-            'controllers': 'modules/' + loc +'/controllers',
-            'services': 'modules/' + loc +'/services',
-            'directives': 'modules/' + loc +'/directives',
+            'controllers': 'modules/main/controllers',
+            'services': 'modules/main/services',
+            'directives': 'modules/main/directives',
             'd3_chart': 'vendor/d3chart',
             'ng-slider' : 'vendor/ng-slider/dist/ng-slider.min',
             'angular-slick' : "vendor/angular-slick/dist/slick",

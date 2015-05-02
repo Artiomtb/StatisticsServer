@@ -33,10 +33,10 @@ define(["require", "exports", "controllers/MainController", "controllers/NodesCo
         "PUBS": "pubs"
     });
     angular.module("app").provider("Search", SearchProvider);
-    angular.module("app").config(function ($routeProvider, PATH_CONSTANTS, SearchProvider) {
+    angular.module("app").config(['$routeProvider', 'PATH_CONSTANTS', 'SearchProvider', function ($routeProvider, PATH_CONSTANTS, SearchProvider) {
         $routeProvider.when(PATH_CONSTANTS.NODES_PATH + "/:page", { controller: "NodesController", templateUrl: "/partials/nodes.html" }).when(PATH_CONSTANTS.GENERAL_NODE_PATH + "/:node_id", { controller: "NodeStatistics", templateUrl: "/partials/node_statistics.html" }).when(PATH_CONSTANTS.GENERAL_MATERIAL_PATH + "/:material_id", { controller: "MaterialStatistics", templateUrl: "/partials/material_statistics.html" }).when(PATH_CONSTANTS.STUDENTS_PATH + "/:page", { controller: "StudentsController", templateUrl: "/partials/students.html" }).when(PATH_CONSTANTS.STUDENT + "/:party_id", { controller: "StudentStatistics", templateUrl: "/partials/student_statistics.html" }).when(PATH_CONSTANTS.STUDENT_NODE_MATERIALS + "/:party_id/:node_id", { controller: "StudentNodeStatistics", templateUrl: "/partials/student_node_statistics.html" }).when(PATH_CONSTANTS.STUDENT_MATERIAL + "/:party_id/:material_id", { controller: "StudentMaterial", templateUrl: "/partials/student_material.html" }).when(PATH_CONSTANTS.SEARCH_PAGE, { controller: "SearchResultsController", templateUrl: "/partials/search_page.html" }).otherwise({ redirectTo: PATH_CONSTANTS.NODES_PATH + "/1" });
         SearchProvider.setPagePath(PATH_CONSTANTS.SEARCH_PAGE);
-    });
+    }]);
     angular.module("app").controller('NodesController', NodesController);
     angular.module("app").controller("StudentsController", StudentsController);
     angular.module("app").controller("MainContoller", MainCotroller);

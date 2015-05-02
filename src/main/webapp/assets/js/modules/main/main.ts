@@ -56,7 +56,7 @@ angular.module('app')
 ;
 angular.module("app").provider("Search",SearchProvider);
 
-angular.module("app").config(($routeProvider, PATH_CONSTANTS, SearchProvider)=>{
+angular.module("app").config(['$routeProvider','PATH_CONSTANTS','SearchProvider',($routeProvider, PATH_CONSTANTS, SearchProvider)=>{
     $routeProvider
         .when(PATH_CONSTANTS.NODES_PATH + "/:page",{controller: "NodesController", templateUrl: "/partials/nodes.html"})
         .when(PATH_CONSTANTS.GENERAL_NODE_PATH + "/:node_id", {controller: "NodeStatistics", templateUrl: "/partials/node_statistics.html"})
@@ -70,7 +70,7 @@ angular.module("app").config(($routeProvider, PATH_CONSTANTS, SearchProvider)=>{
         .otherwise({redirectTo: PATH_CONSTANTS.NODES_PATH+"/1"});
 
     SearchProvider.setPagePath(PATH_CONSTANTS.SEARCH_PAGE);
-});
+}]);
 
 angular.module("app").controller('NodesController', NodesController);
 angular.module("app").controller("StudentsController", StudentsController);
