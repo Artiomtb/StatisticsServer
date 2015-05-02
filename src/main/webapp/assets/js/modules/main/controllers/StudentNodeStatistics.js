@@ -49,7 +49,7 @@ define(["require", "exports"], function (require, exports) {
             enumerable: true,
             configurable: true
         });
-        StudentNodeStatistics.$injcet = ['$scope', '$http', 'PATH_CONSTANTS', '$routeParams'];
+        StudentNodeStatistics.$inject = ['$scope', '$http', 'PATH_CONSTANTS', '$routeParams'];
         return StudentNodeStatistics;
     })();
     return StudentNodeStatistics;
